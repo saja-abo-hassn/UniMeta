@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { Suspense, useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthLayout } from "@/components/auth/auth-layout";
@@ -11,6 +11,41 @@ interface InvitePageProps {
 }
 
 export default function InvitePage({ params }: InvitePageProps) {
+  return (
+    <Suspense fallback={<InviteLoading />}>
+      <InvitePageContent params={params} />
+    </Suspense>
+  );
+}
+
+function InviteLoading() {
+  return (
+    <AuthLayout
+      visualTitle="تفعيل حساب المشرف"
+      visualSubtitle="انضم إلى فريق إدارة وتنسيق منصة UniMeta الجامعية وتسلّم صلاحياتك الأكاديمية."
+    >
+      <div className="w-full space-y-6 animate-fade-in" dir="rtl">
+        <div>
+          <span className="text-xs font-bold text-[#0057C8] uppercase tracking-wider">
+            دعوة مسؤول جديد
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#16324A] mt-1">
+            تفعيل حساب الإشراف
+          </h2>
+          <p className="text-xs sm:text-sm text-[#66788A] pt-1">
+            أهلاً بك! لقد تمت دعوتك للانضمام إلى فريق إدارة منصة UniMeta.
+          </p>
+        </div>
+        <div className="p-8 rounded-2xl bg-white border border-[#D7EAF7] text-center space-y-3">
+          <div className="w-8 h-8 mx-auto border-3 border-[#0057C8] border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs font-bold text-[#66788A]">جاري التحقق من صحة رابط الدعوة...</p>
+        </div>
+      </div>
+    </AuthLayout>
+  );
+}
+
+function InvitePageContent({ params }: InvitePageProps) {
   const router = useRouter();
   const resolvedParams = use(params);
   const token = resolvedParams.token;
