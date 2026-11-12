@@ -1,6 +1,14 @@
-import type { ReactNode } from "react";
-import { DashboardShell } from "@/components/shared/sidebar";
+import React, { Suspense } from "react";
+import { StudentShell } from "@/components/layout/student-shell";
 
-export default function StudentLayout({ children }: { children: ReactNode }) {
-  return <DashboardShell area="student">{children}</DashboardShell>;
+export default function StudentLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <StudentShell>{children}</StudentShell>
+    </Suspense>
+  );
 }

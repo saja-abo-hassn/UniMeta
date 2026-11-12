@@ -1,6 +1,11 @@
-import type { ReactNode } from "react";
-import { DashboardShell } from "@/components/shared/sidebar";
+import React from "react";
+import { AdminShell } from "@/components/layout/admin-shell";
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  return <DashboardShell area="admin">{children}</DashboardShell>;
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <AdminShell>{children}</AdminShell>;
 }
+

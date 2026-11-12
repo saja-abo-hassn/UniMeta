@@ -1,9 +1,9 @@
 export * from "./button";
 export * from "./card";
+export * from "./table";
 export * from "./form-fields";
 export * from "./modal";
 export * from "./navbar";
-export * from "./page-placeholder";
 export * from "./sidebar";
-export * from "./state-panel";
-export * from "./table";
+export * from "./logo";
+

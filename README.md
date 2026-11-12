@@ -1,31 +1,44 @@
-# UniMate
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Arabic-first university platform foundation built with Next.js App Router and TypeScript. The app is RTL at the document level and uses a local Arabic-capable system font stack.
+## Getting Started
 
-## Run locally
+First, run the development server:
 
 ```bash
-npm install
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Copy `.env.example` to `.env.local` to configure the API source. The default mode is `mock`; set `NEXT_PUBLIC_API_MODE=real` to send requests to the Laravel API. Set `NEXT_PUBLIC_API_URL` when the API is not available at `http://localhost:8000/api`.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Routes
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- Public: `/`, `/login`, `/register`
-- Student: `/student`, `/student/academic`, `/student/library`, `/student/productivity`, `/student/interests`, `/student/teams`, `/student/exchange/books`, `/student/exchange/devices`, `/student/agreements`, `/student/settings`
-- Admin: `/admin`, `/admin/students`, `/admin/library`, `/admin/agreements`, `/admin/reports`
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Geist, a font family for Vercel.
 
-All dashboard routes use shared area shells. Route pages are intentionally placeholders; authentication, business workflows, and backend behavior are out of scope for this foundation.
+## Learn More
 
-## Structure
+To learn more about Next.js, take a look at the following resources:
 
-- `app/`: routes, area layouts, root RTL layout, and global tokens/styles
-- `components/shared/`: navigation, placeholders, cards, tables, fields, modal, buttons, and UI states
-- `src/lib/api/`: typed API request surface, error normalization, source switch, and Laravel transport
-- `src/mocks/`: mock fixtures and transport, separate from the Laravel transport
-- `DESIGN.md`: palette, typography, layout, and component direction
-- `UX-CONTRACT.md`: route-shell and shared behavior contracts
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-The API source is selected in `src/lib/api/config.ts` through the single `NEXT_PUBLIC_API_MODE` setting. Mock fixtures are only consumed by the mock transport.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## نظام الأدوار والصلاحيات
+- واجهة واحدة تتغير حسب الدور: المشرف يجهّز (محتوى، بلاغات، مراجعة تحقق)، والأدمن يقرر (الاتفاقيات، المالية، الصلاحيات).
+- الدور والصلاحيات تأتي من قاعدة البيانات عبر التوكن، والسيرفر يفحصها بكل طلب (403 عند عدم الصلاحية)، والواجهة تستخدمها للعرض فقط.
+- الأدمن يعيّن المشرفين ويحدد صلاحياتهم من مصفوفة on/off، وكل إجراء للمشرف يُسجَّل في audit log.
+
+الحالة: قيد العمل

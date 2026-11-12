@@ -1,5 +1,12 @@
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+import React from "react";
+import { StudentDashboard } from "@/components/student/student-dashboard";
+import type { Metadata } from "next";
 
-export default function StudentDashboardPage() {
-  return <PagePlaceholder section="student" title="لوحة الطالب" description="ملخصك الجامعي ونقطة الوصول إلى خدماتك اليومية." />;
+export const metadata: Metadata = {
+  title: "لوحة الطالب - الرئيسية | UniMeta",
+  description: "لوحة المتابعة الشاملة للخدمات الأكاديمية والمهام والتقدم لطلاب UniMeta",
+};
+
+export default function StudentOverviewPage() {
+  return <StudentDashboard />;
 }
