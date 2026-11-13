@@ -42,7 +42,7 @@ export function AgreementActionModals({
             />
             <Modal.Body className="space-y-3 text-xs">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   سبب الرفض <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -51,7 +51,7 @@ export function AgreementActionModals({
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   placeholder="مثال: تعارض مواعيد الاستعارة مع امتحانات المعامل، أو عدم كفاية مبلغ التأمين..."
-                  className="w-full p-3 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-medium text-[#16324A] focus:outline-none focus:border-red-500"
+                  className="w-full p-3 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-medium text-brand-ink focus:outline-none focus:border-red-500"
                 />
               </div>
             </Modal.Body>
@@ -59,7 +59,7 @@ export function AgreementActionModals({
               <button
                 type="button"
                 onClick={onCloseReject}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 إلغاء
               </button>
@@ -84,8 +84,8 @@ export function AgreementActionModals({
             />
             <Modal.Body className="space-y-3 text-xs">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#16324A] block">
-                  تفاصيل التعديل المطلوب <span className="text-blue-600">*</span>
+                <label className="text-xs font-bold text-brand-ink block">
+                  تفاصيل التعديل المطلوب <span className="text-brand-primary">*</span>
                 </label>
                 <textarea
                   rows={3}
@@ -93,7 +93,7 @@ export function AgreementActionModals({
                   value={modificationNote}
                   onChange={(e) => setModificationNote(e.target.value)}
                   placeholder="مثال: يرجى تمديد مدة الإرجاع لـ 20 يوماً أو تعديل قيمة التأمين لتصبح 100 شيكل..."
-                  className="w-full p-3 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full p-3 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
             </Modal.Body>
@@ -101,13 +101,13 @@ export function AgreementActionModals({
               <button
                 type="button"
                 onClick={onCloseModify}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 إلغاء
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs cursor-pointer"
               >
                 إرسال طلب التعديل
               </button>

@@ -1,7 +1,7 @@
 export const TARGET_TYPE_BADGES: Record<string, { label: string; badge: string }> = {
-  "محتوى": { label: "محتوى تعليمي", badge: "bg-blue-50 text-blue-700 border-blue-200" },
-  "تعليق": { label: "تعليق / منتدى", badge: "bg-purple-50 text-purple-700 border-purple-200" },
-  "اتفاقية": { label: "اتفاقية عهدة", badge: "bg-amber-50 text-amber-700 border-amber-200" },
+  "محتوى": { label: "محتوى تعليمي", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
+  "تعليق": { label: "تعليق / منتدى", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
+  "اتفاقية": { label: "اتفاقية عهدة", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
   "مستخدم": { label: "حساب طالب", badge: "bg-rose-50 text-rose-700 border-rose-200" },
 };
 

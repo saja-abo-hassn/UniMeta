@@ -70,7 +70,7 @@ export default function AdminLibraryPage() {
                     <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
                       res.status === "منشور للطلاب"
                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        : "bg-amber-50 text-amber-700 border border-amber-200"
+                        : "bg-brand-surface-blue text-brand-primary border border-brand-border-soft"
                     }`}>
                       {res.status}
                     </span>

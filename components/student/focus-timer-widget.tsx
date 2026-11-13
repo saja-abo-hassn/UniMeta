@@ -65,20 +65,20 @@ export function FocusTimerWidget() {
 
   return (
     <div
-      className="card-entrance card-hover-effect rounded-3xl p-6 shadow-md relative overflow-hidden bg-gradient-to-br from-[#0057C8] via-[#2D78B7] to-[#16324A] text-white flex flex-col justify-between"
+      className="card-entrance card-hover-effect rounded-3xl p-6 shadow-md relative overflow-hidden bg-gradient-to-br from-brand-primary via-brand-hover-medium to-brand-ink text-white flex flex-col justify-between"
       style={{ animationDelay: "400ms" }}
     >
       {/* Decorative background glow */}
-      <div className="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-[#4DB7F2]/20 blur-2xl pointer-events-none" />
-      <div className="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-[#0057C8]/40 blur-2xl pointer-events-none" />
+      <div className="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-brand-secondary/20 blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-brand-primary/40 blur-2xl pointer-events-none" />
 
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/15">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-white/15 text-[#BFE8FF] border border-white/20">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4DB7F2] animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-pulse" />
           <span>إنتاجية الدراسة</span>
         </div>
-        <span className="text-[11px] text-blue-100/80">تقنية بومودورو</span>
+        <span className="text-[11px] text-brand-light/80">تقنية بومودورو</span>
       </div>
 
       {/* Timer Display & Content (Figma node 1:1411) */}
@@ -87,7 +87,7 @@ export function FocusTimerWidget() {
           <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight">
             جاهز لجلسة تركيز؟
           </h2>
-          <p className="text-xs text-blue-100/90 mt-1 max-w-xs leading-relaxed">
+          <p className="text-xs text-brand-light/90 mt-1 max-w-xs leading-relaxed">
             ابدأ {studyMinutes} دقيقة من التركيز العميق بدون مقاطعة لإنهاء مهامك الدراسية.
           </p>
         </div>
@@ -108,7 +108,7 @@ export function FocusTimerWidget() {
         <button
           type="button"
           onClick={toggleTimer}
-          className="flex-1 py-2 px-4 rounded-xl bg-white hover:bg-[#F0F7FD] text-[#0057C8] text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-1.5"
+          className="flex-1 py-2 px-4 rounded-xl bg-white hover:bg-brand-surface-soft text-brand-primary text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-1.5"
         >
           {isActive ? (
             <>

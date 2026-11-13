@@ -63,14 +63,14 @@ export function PlanCard({
     <div
       className={`card-hover-effect relative rounded-3xl p-5 sm:p-6 transition-all duration-200 flex flex-col justify-between gap-5 border bg-white h-full ${
         isSelected
-          ? "border-[#0057C8] ring-2 ring-[#0057C8]/25 shadow-md"
-          : "border-[#D7EAF7] hover:border-[#4DB7F2] shadow-xs"
+          ? "border-brand-primary ring-2 ring-brand-primary/25 shadow-md"
+          : "border-brand-border-soft hover:border-brand-secondary shadow-xs"
       }`}
       dir="rtl"
     >
       {/* Top Banner for Selected State */}
       {isSelected && (
-        <div className="absolute -top-3 end-6 inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#0057C8] text-white text-[11px] font-bold shadow-xs">
+        <div className="absolute -top-3 end-6 inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-brand-primary text-white text-[11px] font-bold shadow-xs">
           <span>✓ الخطة الحالية المعتمدة</span>
         </div>
       )}
@@ -82,8 +82,8 @@ export function PlanCard({
           <div
             className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${
               isSelected
-                ? "bg-[#0057C8] text-white shadow-sm"
-                : "bg-[#EAF4FD] text-[#0057C8]"
+                ? "bg-brand-primary text-white shadow-sm"
+                : "bg-brand-surface-blue text-brand-primary"
             }`}
           >
             {renderIcon()}
@@ -93,13 +93,13 @@ export function PlanCard({
             <span
               className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
                 plan.degree === "ماجستير"
-                  ? "bg-purple-50 text-purple-700 border-purple-200"
-                  : "bg-[#EAF4FD] text-[#0057C8] border-[#D7EAF7]"
+                  ? "bg-brand-surface-blue text-brand-primary border-brand-border-soft"
+                  : "bg-brand-surface-blue text-brand-primary border-brand-border-soft"
               }`}
             >
               {plan.degree}
             </span>
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#F4FAFF] text-[#16324A] border border-[#D7EAF7]">
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#F4FAFF] text-brand-ink border border-brand-border-soft">
               سعر الساعة: {plan.hourlyRate} د.أ
             </span>
           </div>
@@ -107,30 +107,30 @@ export function PlanCard({
 
         {/* Major Title & College */}
         <div>
-          <h3 className="text-lg sm:text-xl font-black text-[#16324A] tracking-tight group-hover:text-[#0057C8] transition-colors line-clamp-2 min-h-[3.25rem]">
+          <h3 className="text-lg sm:text-xl font-black text-brand-ink tracking-tight group-hover:text-brand-primary transition-colors line-clamp-2 min-h-[3.25rem]">
             {plan.major}
           </h3>
-          <span className="text-xs text-[#66788A] font-medium block mt-1">
+          <span className="text-xs text-brand-muted font-medium block mt-1">
             {plan.college}
           </span>
         </div>
 
         {/* Description snippet */}
-        <p className="text-xs text-[#66788A] leading-relaxed line-clamp-2">
+        <p className="text-xs text-brand-muted leading-relaxed line-clamp-2">
           {plan.description}
         </p>
 
         {/* Metrics Bar matching Al-Azhar portal screenshot */}
-        <div className="pt-3 border-t border-[#D7EAF7]/60 grid grid-cols-2 gap-2 text-xs">
-          <div className="flex items-center gap-1.5 text-[#16324A] font-bold">
-            <svg className="w-4 h-4 text-[#0057C8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="pt-3 border-t border-brand-border-soft/60 grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-1.5 text-brand-ink font-bold">
+            <svg className="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span>{plan.totalCredits} ساعة دراسية</span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[#66788A] font-semibold">
-            <svg className="w-4 h-4 text-[#2D78B7]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-1.5 text-brand-muted font-semibold">
+            <svg className="w-4 h-4 text-brand-hover-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             <span>{plan.semestersCount} فصول أكاديمية</span>
@@ -138,22 +138,22 @@ export function PlanCard({
         </div>
 
         {/* Compulsory vs Elective Hours Breakdown (From user table) */}
-        <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-xl bg-[#F4FAFF] border border-[#D7EAF7] text-[#16324A]">
-          <span className="font-semibold text-[#16324A]">
-            إجباري: <strong className="text-[#0057C8] font-black">{plan.compulsoryCredits} س</strong>
+        <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-xl bg-[#F4FAFF] border border-brand-border-soft text-brand-ink">
+          <span className="font-semibold text-brand-ink">
+            إجباري: <strong className="text-brand-primary font-black">{plan.compulsoryCredits} س</strong>
           </span>
-          <span className="text-[#D7EAF7]">|</span>
-          <span className="font-semibold text-[#16324A]">
-            اختياري: <strong className="text-[#2D78B7] font-black">{plan.electiveCredits} س</strong>
+          <span className="text-brand-border-soft">|</span>
+          <span className="font-semibold text-brand-ink">
+            اختياري: <strong className="text-brand-hover-medium font-black">{plan.electiveCredits} س</strong>
             {plan.majorElectiveCredits ? (
-              <span className="text-[10px] text-[#66788A] ms-1">({plan.majorElectiveCredits} تخصص)</span>
+              <span className="text-[10px] text-brand-muted ms-1">({plan.majorElectiveCredits} تخصص)</span>
             ) : null}
           </span>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="pt-3 border-t border-[#D7EAF7]/60 space-y-2">
+      <div className="pt-3 border-t border-brand-border-soft/60 space-y-2">
         <div className="flex items-center gap-2">
           {/* Primary Action: Select Plan */}
           <button
@@ -162,8 +162,8 @@ export function PlanCard({
             disabled={isSelected}
             className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 ${
               isSelected
-                ? "bg-[#EAF4FD] text-[#0057C8] border border-[#0057C8]/30 cursor-default"
-                : "bg-[#0057C8] hover:bg-[#2D78B7] text-white hover:shadow-sm"
+                ? "bg-brand-surface-blue text-brand-primary border border-brand-primary/30 cursor-default"
+                : "bg-brand-primary hover:bg-brand-hover-medium text-white hover:shadow-sm"
             }`}
           >
             {isSelected ? (
@@ -180,7 +180,7 @@ export function PlanCard({
           <button
             type="button"
             onClick={() => onViewDetails(plan)}
-            className="py-2.5 px-3.5 rounded-xl border border-[#D7EAF7] hover:border-[#4DB7F2] bg-[#F8FBFE] hover:bg-white text-[#16324A] hover:text-[#0057C8] text-xs font-bold transition-colors"
+            className="py-2.5 px-3.5 rounded-xl border border-brand-border-soft hover:border-brand-secondary bg-brand-surface-muted hover:bg-white text-brand-ink hover:text-brand-primary text-xs font-bold transition-colors"
             title="عرض المساقات وتفاصيل الفصول"
           >
             عرض الخطة
@@ -191,7 +191,7 @@ export function PlanCard({
             <a
               href={plan.pdfUrl}
               download={plan.pdfFilename || `${plan.major}.pdf`}
-              className="p-2.5 rounded-xl border border-[#D7EAF7] hover:border-red-200 bg-white hover:bg-red-50 text-red-600 transition-colors"
+              className="p-2.5 rounded-xl border border-brand-border-soft hover:border-red-200 bg-white hover:bg-red-50 text-red-600 transition-colors"
               title="تحميل ملف الخطة (PDF)"
               aria-label="تحميل PDF"
             >

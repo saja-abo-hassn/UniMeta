@@ -99,8 +99,8 @@ export function AgreementDetailsModal({
         </div>
 
         {selectedDetails.notes && (
-          <div className="p-3.5 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7] text-[#66788A]">
-            <strong className="text-[#16324A] block mb-1">ملاحظات العقد:</strong>
+          <div className="p-3.5 rounded-xl bg-brand-surface-muted border border-brand-border-soft text-brand-muted">
+            <strong className="text-brand-ink block mb-1">ملاحظات العقد:</strong>
             {selectedDetails.notes}
           </div>
         )}
@@ -113,7 +113,7 @@ export function AgreementDetailsModal({
         )}
 
         {selectedDetails.modificationNote && (
-          <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 space-y-1">
+          <div className="p-3.5 rounded-xl bg-brand-surface-blue border border-brand-border-soft text-brand-ink space-y-1">
             <span className="font-bold block">ملاحظات طلب التعديل:</span>
             <p>{selectedDetails.modificationNote}</p>
           </div>
@@ -124,7 +124,7 @@ export function AgreementDetailsModal({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+          className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
         >
           إغلاق النافذة
         </button>
@@ -134,7 +134,7 @@ export function AgreementDetailsModal({
             <button
               type="button"
               onClick={() => onOpenModify(selectedDetails)}
-              className="px-3.5 py-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-bold transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl border border-brand-border-soft bg-brand-surface-blue text-brand-primary hover:bg-brand-surface-blue text-xs font-bold transition-colors cursor-pointer"
             >
               طلب تعديل 📝
             </button>

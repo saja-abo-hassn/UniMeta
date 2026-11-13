@@ -18,16 +18,16 @@ export function FilePreview({
   disabled = false,
 }: FilePreviewProps) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] text-start">
+    <div className="flex items-center justify-between p-3 rounded-2xl bg-brand-surface-soft border border-brand-border-soft text-start">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="w-10 h-10 rounded-xl bg-[#0057C8] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+        <div className="w-10 h-10 rounded-xl bg-brand-primary text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
           {fileType}
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-bold text-[#16324A] truncate max-w-[240px] sm:max-w-xs">
+          <p className="text-xs font-bold text-brand-ink truncate max-w-[240px] sm:max-w-xs">
             {fileName}
           </p>
-          <div className="flex items-center gap-2 text-[10px] text-[#66788A] mt-0.5">
+          <div className="flex items-center gap-2 text-[10px] text-brand-muted mt-0.5">
             <span className="font-mono">{fileSize}</span>
             <span>•</span>
             <span className="text-emerald-700 font-bold">تم الفحص بنجاح</span>

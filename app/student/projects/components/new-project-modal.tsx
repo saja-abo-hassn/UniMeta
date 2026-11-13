@@ -47,24 +47,24 @@ export function NewProjectModal({
 
         <Modal.Body className="p-5 sm:p-6 space-y-3.5 text-xs">
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">عنوان المشروع المقترح:</label>
+            <label className="font-bold text-brand-ink block">عنوان المشروع المقترح:</label>
             <input
               type="text"
               required
               value={newTitle}
               onChange={(e) => onTitleChange(e.target.value)}
               placeholder="مثال: نظام ذكي للتنبؤ بالأعطال باستخدام تعلم الآلة"
-              className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+              className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">التخصص الأكاديمي:</label>
+              <label className="font-bold text-brand-ink block">التخصص الأكاديمي:</label>
               <select
                 value={newMajor}
                 onChange={(e) => onMajorChange(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               >
                 <option value="هندسة البرمجيات ونظم المعلومات">هندسة البرمجيات ونظم المعلومات</option>
                 <option value="علوم الحاسوب">علوم الحاسوب</option>
@@ -75,37 +75,37 @@ export function NewProjectModal({
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">المشرف المقترح:</label>
+              <label className="font-bold text-brand-ink block">المشرف المقترح:</label>
               <input
                 type="text"
                 value={newSupervisor}
                 onChange={(e) => onSupervisorChange(e.target.value)}
                 placeholder="اسم الدكتور أو المدرس المقترح"
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">ملخص الفكرة والأهداف:</label>
+            <label className="font-bold text-brand-ink block">ملخص الفكرة والأهداف:</label>
             <textarea
               rows={3}
               required
               value={newSummary}
               onChange={(e) => onSummaryChange(e.target.value)}
               placeholder="اشرح المشكلة والحل المقترح والتقنيات المستخدمة..."
-              className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+              className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">الدور الشاغر المطلوب انضمامه:</label>
+            <label className="font-bold text-brand-ink block">الدور الشاغر المطلوب انضمامه:</label>
             <input
               type="text"
               value={newNeededRole}
               onChange={(e) => onNeededRoleChange(e.target.value)}
               placeholder="مثال: مطور بايثون أو مهندس روبوتات أو مصمم تجربة مستخدم"
-              className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+              className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
             />
           </div>
         </Modal.Body>
@@ -114,13 +114,13 @@ export function NewProjectModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-[#16324A] font-semibold hover:bg-[#F8FBFE] cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-brand-border-soft text-brand-ink font-semibold hover:bg-brand-surface-muted cursor-pointer"
           >
             إلغاء
           </button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl bg-[#0057C8] text-white font-bold shadow-xs hover:bg-[#2D78B7] cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
           >
             إرسال المقترح للاعتماد
           </button>

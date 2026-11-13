@@ -101,7 +101,7 @@ export function Modal({
           flexDirection: "column",
           minHeight: 0,
         }}
-        className={`${SIZE_CLASSES[size]} bg-white rounded-3xl border border-[#D7EAF7] shadow-2xl overflow-hidden focus:outline-none motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200 ${className}`}
+        className={`${SIZE_CLASSES[size]} bg-white rounded-3xl border border-brand-border-soft shadow-2xl overflow-hidden focus:outline-none motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200 ${className}`}
       >
         {hasCompoundChildren ? (
           children

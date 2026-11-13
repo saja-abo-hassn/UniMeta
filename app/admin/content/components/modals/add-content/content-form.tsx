@@ -64,7 +64,7 @@ export function ContentForm({
       />
 
       <div className="space-y-1.5">
-        <label htmlFor="content-title-input" className="text-xs font-bold text-[#16324A] block">
+        <label htmlFor="content-title-input" className="text-xs font-bold text-brand-ink block">
           عنوان الملف أو المحتوى <span className="text-red-500">*</span>
         </label>
         <input
@@ -77,8 +77,8 @@ export function ContentForm({
             onValuesChange((prev) => ({ ...prev, title: val }));
           }}
           placeholder="مثال: ملخص شامل للفصل الثاني مع مسائل نموذجية"
-          className={`w-full px-3 py-2 rounded-xl border text-xs sm:text-sm font-semibold text-[#16324A] bg-white transition-colors focus:outline-none ${
-            errors.title ? "border-red-400 bg-red-50/30" : "border-[#D7EAF7] focus:border-[#0057C8]"
+          className={`w-full px-3 py-2 rounded-xl border text-xs sm:text-sm font-semibold text-brand-ink bg-white transition-colors focus:outline-none ${
+            errors.title ? "border-red-400 bg-red-50/30" : "border-brand-border-soft focus:border-brand-primary"
           }`}
         />
         {errors.title && (
@@ -109,7 +109,7 @@ export function ContentForm({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1">
-          <label htmlFor="content-author-input" className="text-xs font-bold text-[#16324A] block">
+          <label htmlFor="content-author-input" className="text-xs font-bold text-brand-ink block">
             المُعد أو المرجع الأكاديمي
           </label>
           <input
@@ -121,13 +121,13 @@ export function ContentForm({
               onValuesChange((prev) => ({ ...prev, author: val }));
             }}
             placeholder="مثال: د. أحمد / المكتب الأكاديمي"
-            className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+            className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
           />
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="content-url-input" className="text-xs font-bold text-[#16324A] block">
-            رابط سحابي مباشر <span className="text-slate-400 font-normal">(اختياري)</span>
+          <label htmlFor="content-url-input" className="text-xs font-bold text-brand-ink block">
+            رابط سحابي مباشر <span className="text-brand-subtle font-normal">(اختياري)</span>
           </label>
           <input
             id="content-url-input"
@@ -139,14 +139,14 @@ export function ContentForm({
               onValuesChange((prev) => ({ ...prev, url: val }));
             }}
             placeholder="https://drive.google.com/..."
-            className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-mono text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+            className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-mono text-brand-ink focus:outline-none focus:border-brand-primary"
           />
         </div>
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="content-desc-input" className="text-xs font-bold text-[#16324A] block">
-          وصف أو ملاحظات للطلبة <span className="text-slate-400 font-normal">(اختياري)</span>
+        <label htmlFor="content-desc-input" className="text-xs font-bold text-brand-ink block">
+          وصف أو ملاحظات للطلبة <span className="text-brand-subtle font-normal">(اختياري)</span>
         </label>
         <textarea
           id="content-desc-input"
@@ -157,7 +157,7 @@ export function ContentForm({
             onValuesChange((prev) => ({ ...prev, description: val }));
           }}
           placeholder="ملاحظات حول الفصول المغطاة أو نصائح للدراسة..."
-          className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+          className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
         />
       </div>
     </div>

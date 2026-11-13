@@ -49,36 +49,36 @@ export function StepKycForm({
 }: StepKycFormProps) {
   return (
     <div className="space-y-4 animate-fade-in">
-      <div className="p-3.5 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] text-xs text-[#48627A] flex items-start gap-2.5">
+      <div className="p-3.5 rounded-2xl bg-brand-surface-soft border border-brand-border-soft text-xs text-brand-copy-muted flex items-start gap-2.5">
         <span className="text-base shrink-0 mt-0.5">🔒</span>
         <div className="leading-relaxed">
-          <strong className="block text-[#16324A] font-bold mb-0.5">حماية البيانات والخصوصية:</strong>
+          <strong className="block text-brand-ink font-bold mb-0.5">حماية البيانات والخصوصية:</strong>
           تُحفظ بياناتك بأمان وتُشفّر في سجلات المنصة لاستكمال إجراءات العهدة الجامعية والتحكيم الأكاديمي، وتُعبأ تلقائياً في طلباتك القادمة.
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <div className="space-y-1">
-          <label className="block text-xs font-bold text-[#16324A]">اسم الطالب كاملاً</label>
+          <label className="block text-xs font-bold text-brand-ink">اسم الطالب كاملاً</label>
           <input
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="الاسم الرباعي المعتمد"
-            className="w-full h-11 px-3.5 text-xs rounded-xl bg-white border border-[#D7EAF7] focus:outline-none focus:border-[#0057C8] text-[#16324A]"
+            className="w-full h-11 px-3.5 text-xs rounded-xl bg-white border border-brand-border-soft focus:outline-none focus:border-brand-primary text-brand-ink"
           />
           {errors.fullName && <p className="text-[11px] text-red-600">{errors.fullName}</p>}
         </div>
 
         <div className="space-y-1">
-          <label className="block text-xs font-bold text-[#16324A]">الرقم الجامعي</label>
+          <label className="block text-xs font-bold text-brand-ink">الرقم الجامعي</label>
           <input
             type="text"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
             placeholder="مثال: 20221084"
             dir="ltr"
-            className="w-full h-11 px-3.5 text-xs rounded-xl bg-white border border-[#D7EAF7] focus:outline-none focus:border-[#0057C8] text-[#16324A] font-mono"
+            className="w-full h-11 px-3.5 text-xs rounded-xl bg-white border border-brand-border-soft focus:outline-none focus:border-brand-primary text-brand-ink font-mono"
           />
           {errors.studentId && <p className="text-[11px] text-red-600">{errors.studentId}</p>}
         </div>
@@ -86,8 +86,8 @@ export function StepKycForm({
 
       <div className="space-y-1">
         <div className="flex items-center justify-between text-xs">
-          <label className="font-bold text-[#16324A]">رقم الهوية الوطنية (9 أرقام)</label>
-          <span className="text-[11px] text-[#8297A8]">تُحفظ مشفرة ولا تظهر إلا للمشرف</span>
+          <label className="font-bold text-brand-ink">رقم الهوية الوطنية (9 أرقام)</label>
+          <span className="text-[11px] text-brand-subtle">تُحفظ مشفرة ولا تظهر إلا للمشرف</span>
         </div>
         <input
           type="text"
@@ -102,15 +102,15 @@ export function StepKycForm({
           placeholder="مثال: 405128914"
           dir="ltr"
           className={`w-full h-11 px-3.5 text-xs rounded-xl bg-white border font-mono tracking-widest ${
-            errors.nationalId ? "border-red-400 focus:border-red-500" : "border-[#D7EAF7] focus:border-[#0057C8]"
-          } focus:outline-none text-[#16324A]`}
+            errors.nationalId ? "border-red-400 focus:border-red-500" : "border-brand-border-soft focus:border-brand-primary"
+          } focus:outline-none text-brand-ink`}
         />
         {errors.nationalId && <p className="text-[11px] text-red-600">{errors.nationalId}</p>}
       </div>
 
-      <div className="space-y-2 p-4 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7]">
+      <div className="space-y-2 p-4 rounded-2xl bg-brand-surface-muted border border-brand-border-soft">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-bold text-[#16324A]">رقم الجوال للتواصل وتأكيد الحساب</label>
+          <label className="text-xs font-bold text-brand-ink">رقم الجوال للتواصل وتأكيد الحساب</label>
           {isPhoneVerified && (
             <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
               <span>✓</span>
@@ -131,7 +131,7 @@ export function StepKycForm({
             placeholder="مثال: 0599182744"
             dir="ltr"
             disabled={isPhoneVerified}
-            className="flex-1 h-11 px-3.5 text-xs rounded-xl bg-white border border-[#D7EAF7] focus:outline-none focus:border-[#0057C8] text-[#16324A] font-mono"
+            className="flex-1 h-11 px-3.5 text-xs rounded-xl bg-white border border-brand-border-soft focus:outline-none focus:border-brand-primary text-brand-ink font-mono"
           />
 
           {!isPhoneVerified && (
@@ -139,7 +139,7 @@ export function StepKycForm({
               type="button"
               onClick={onSendOtp}
               disabled={isSendingOtp || otpCountdown > 0}
-              className="px-4 h-11 text-xs font-bold bg-[#0057C8] hover:bg-[#0046A0] disabled:bg-[#A3C7E8] text-white rounded-xl transition-colors shrink-0 shadow-2xs"
+              className="px-4 h-11 text-xs font-bold bg-brand-primary hover:bg-[#0046A0] disabled:bg-[#A3C7E8] text-white rounded-xl transition-colors shrink-0 shadow-2xs"
             >
               {isSendingOtp
                 ? "جاري الإرسال..."
@@ -155,7 +155,7 @@ export function StepKycForm({
 
         {!isPhoneVerified && otpSent && (
           <div className="pt-2 space-y-2 border-t border-[#EAF2F8] animate-fade-in">
-            <span className="text-[11px] text-[#48627A] block">
+            <span className="text-[11px] text-brand-copy-muted block">
               أدخل رمز التحقق (4 أرقام) المرسل إلى جوالك:
             </span>
             <div className="flex gap-2">
@@ -167,7 +167,7 @@ export function StepKycForm({
                 onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
                 placeholder="••••"
                 dir="ltr"
-                className="w-32 h-10 px-3 text-center text-sm font-bold font-mono tracking-widest rounded-xl bg-white border border-[#D7EAF7] focus:outline-none focus:border-[#0057C8]"
+                className="w-32 h-10 px-3 text-center text-sm font-bold font-mono tracking-widest rounded-xl bg-white border border-brand-border-soft focus:outline-none focus:border-brand-primary"
               />
               <button
                 type="button"
@@ -183,7 +183,7 @@ export function StepKycForm({
         )}
 
         {otpNotice && (
-          <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px] flex items-center gap-1.5 animate-fade-in">
+          <div className="p-2.5 rounded-xl bg-brand-surface-blue border border-brand-border-soft text-brand-dark text-[11px] flex items-center gap-1.5 animate-fade-in">
             <span>ℹ️</span>
             <span>{otpNotice}</span>
           </div>

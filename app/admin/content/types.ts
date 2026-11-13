@@ -2,9 +2,9 @@ import { ContentStatus } from "@/src/contexts/admin-context";
 
 export const MAIN_CATEGORIES = [
   { id: "الكتب", label: "الكتب", icon: "📚", badge: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  { id: "الملخصات", label: "الملخصات", icon: "📝", badge: "bg-blue-50 text-blue-700 border-blue-200" },
-  { id: "النماذج السابقة", label: "النماذج السابقة", icon: "📋", badge: "bg-amber-50 text-amber-700 border-amber-200" },
-  { id: "الفيديوهات", label: "الفيديوهات", icon: "🎬", badge: "bg-purple-50 text-purple-700 border-purple-200" },
+  { id: "الملخصات", label: "الملخصات", icon: "📝", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
+  { id: "النماذج السابقة", label: "النماذج السابقة", icon: "📋", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
+  { id: "الفيديوهات", label: "الفيديوهات", icon: "🎬", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
 ] as const;
 
 export type MainCategoryType = (typeof MAIN_CATEGORIES)[number]["id"];
@@ -42,15 +42,15 @@ export function normalizeCategory(cat: string): MainCategoryType {
 
 export const CATEGORY_MAP: Record<MainCategoryType, { label: string; icon: string; badge: string }> = {
   "الكتب": { label: "الكتب", icon: "📚", badge: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  "الملخصات": { label: "الملخصات", icon: "📝", badge: "bg-blue-50 text-blue-700 border-blue-200" },
-  "النماذج السابقة": { label: "النماذج السابقة", icon: "📋", badge: "bg-amber-50 text-amber-700 border-amber-200" },
-  "الفيديوهات": { label: "الفيديوهات", icon: "🎬", badge: "bg-purple-50 text-purple-700 border-purple-200" },
+  "الملخصات": { label: "الملخصات", icon: "📝", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
+  "النماذج السابقة": { label: "النماذج السابقة", icon: "📋", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
+  "الفيديوهات": { label: "الفيديوهات", icon: "🎬", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
 };
 
 export const STATUS_BADGES: Record<ContentStatus, { label: string; badge: string }> = {
   "منشور": { label: "منشور للطلاب", badge: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  "مسودة": { label: "مسودة غير معلنة", badge: "bg-slate-100 text-slate-700 border-slate-200" },
-  "قيد المراجعة": { label: "قيد المراجعة والتدقيق", badge: "bg-amber-50 text-amber-700 border-amber-200" },
+  "مسودة": { label: "مسودة غير معلنة", badge: "bg-slate-100 text-brand-ink border-brand-border-soft" },
+  "قيد المراجعة": { label: "قيد المراجعة والتدقيق", badge: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" },
   "مرفوض": { label: "مرفوض", badge: "bg-red-50 text-red-700 border-red-200" },
 };
 

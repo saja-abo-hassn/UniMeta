@@ -51,16 +51,16 @@ export function StepPledgeSignature({
 }: StepPledgeSignatureProps) {
   return (
     <div className="space-y-5 animate-fade-in">
-      <div className="p-3 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] flex items-center justify-between text-xs">
+      <div className="p-3 rounded-2xl bg-brand-surface-soft border border-brand-border-soft flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-[#16324A]">{fullName}</span>
-          <span className="text-[#8297A8]">&bull;</span>
-          <span className="font-mono text-[#0057C8]">{maskNationalId(nationalId)}</span>
+          <span className="font-bold text-brand-ink">{fullName}</span>
+          <span className="text-brand-subtle">&bull;</span>
+          <span className="font-mono text-brand-primary">{maskNationalId(nationalId)}</span>
         </div>
         <button
           type="button"
           onClick={onBackToStep1}
-          className="text-[11px] font-bold text-[#0057C8] hover:underline"
+          className="text-[11px] font-bold text-brand-primary hover:underline"
         >
           تعديل بيانات الخطوة 1 &larr;
         </button>
@@ -68,16 +68,16 @@ export function StepPledgeSignature({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-extrabold text-[#16324A] flex items-center gap-1.5">
+          <label className="text-xs font-extrabold text-brand-ink flex items-center gap-1.5">
             <span>📜</span>
             <span>وثيقة التعهد والالتزام الأكاديمي</span>
           </label>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#EAF4FD] text-[#0057C8] border border-[#BEE3F8]">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-brand-surface-blue text-brand-primary border border-[#BEE3F8]">
             {OFFICIAL_PLEDGE_VERSION}
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7] max-h-40 overflow-y-auto text-xs text-[#16324A] leading-relaxed whitespace-pre-line font-medium shadow-inner">
+        <div className="p-4 rounded-2xl bg-brand-surface-muted border border-brand-border-soft max-h-40 overflow-y-auto text-xs text-brand-ink leading-relaxed whitespace-pre-line font-medium shadow-inner">
           {OFFICIAL_PLEDGE_TEXT}
         </div>
 
@@ -86,9 +86,9 @@ export function StepPledgeSignature({
             type="checkbox"
             checked={pledgeAgreed}
             onChange={(e) => setPledgeAgreed(e.target.checked)}
-            className="w-4 h-4 rounded border-[#D7EAF7] text-[#0057C8] focus:ring-[#0057C8] mt-0.5 shrink-0"
+            className="w-4 h-4 rounded border-brand-border-soft text-brand-primary focus:ring-brand-primary mt-0.5 shrink-0"
           />
-          <span className="text-xs font-bold text-[#16324A] leading-relaxed">
+          <span className="text-xs font-bold text-brand-ink leading-relaxed">
             قرأت بنود التعهد والمسؤولية أعلاه، وأوافق عليها بكامل الأهلية والالتزام الأكاديمي والمدني.
           </span>
         </label>
@@ -96,13 +96,13 @@ export function StepPledgeSignature({
 
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-extrabold text-[#16324A]">
+          <label className="text-xs font-extrabold text-brand-ink">
             التوقيع الرقمي المعتمد للاتفاقية (إجباري)
           </label>
-          <span className="text-[11px] text-[#8297A8]">اختر طريقة التوقيع الأنسب لك</span>
+          <span className="text-[11px] text-brand-subtle">اختر طريقة التوقيع الأنسب لك</span>
         </div>
 
-        <div className="grid grid-cols-2 p-1 rounded-xl bg-[#F0F6FA] border border-[#D7EAF7] text-xs font-bold">
+        <div className="grid grid-cols-2 p-1 rounded-xl bg-[#F0F6FA] border border-brand-border-soft text-xs font-bold">
           <button
             type="button"
             onClick={() => {
@@ -112,8 +112,8 @@ export function StepPledgeSignature({
             }}
             className={`py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${
               signatureType === "canvas"
-                ? "bg-white text-[#0057C8] shadow-xs"
-                : "text-[#66788A] hover:text-[#16324A]"
+                ? "bg-white text-brand-primary shadow-xs"
+                : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             <span>✍️</span>
@@ -128,8 +128,8 @@ export function StepPledgeSignature({
             }}
             className={`py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5 ${
               signatureType === "upload"
-                ? "bg-white text-[#0057C8] shadow-xs"
-                : "text-[#66788A] hover:text-[#16324A]"
+                ? "bg-white text-brand-primary shadow-xs"
+                : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             <span>📤</span>
@@ -139,7 +139,7 @@ export function StepPledgeSignature({
 
         {signatureType === "canvas" && (
           <div className="space-y-2 animate-fade-in">
-            <div className="relative border-2 border-dashed border-[#BEE3F8] hover:border-[#0057C8] rounded-2xl bg-white overflow-hidden shadow-inner flex flex-col items-center justify-center">
+            <div className="relative border-2 border-dashed border-[#BEE3F8] hover:border-brand-primary rounded-2xl bg-white overflow-hidden shadow-inner flex flex-col items-center justify-center">
               <canvas
                 ref={canvasRef}
                 width={500}
@@ -155,14 +155,14 @@ export function StepPledgeSignature({
               />
 
               {!hasDrawnOnCanvas && (
-                <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-xs text-[#8297A8] font-medium">
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-xs text-brand-subtle font-medium">
                   <span>ارسم توقيعك هنا بالماوس أو الإصبع...</span>
                 </div>
               )}
             </div>
 
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[11px] text-[#8297A8]">توقيع رسمي ملزم</span>
+              <span className="text-[11px] text-brand-subtle">توقيع رسمي ملزم</span>
               <button
                 type="button"
                 onClick={clearCanvas}
@@ -177,7 +177,7 @@ export function StepPledgeSignature({
 
         {signatureType === "upload" && (
           <div className="space-y-2 animate-fade-in">
-            <div className="p-5 border-2 border-dashed border-[#BEE3F8] hover:border-[#0057C8] rounded-2xl bg-[#F8FBFE] text-center space-y-2">
+            <div className="p-5 border-2 border-dashed border-[#BEE3F8] hover:border-brand-primary rounded-2xl bg-brand-surface-muted text-center space-y-2">
               <input
                 type="file"
                 id="signature-file-input"
@@ -187,12 +187,12 @@ export function StepPledgeSignature({
               />
               <label
                 htmlFor="signature-file-input"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0057C8] text-white text-xs font-bold hover:bg-[#0046A0] transition-colors cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-[#0046A0] transition-colors cursor-pointer shadow-xs"
               >
                 <span>اختيار صورة التوقيع</span>
                 <span>📎</span>
               </label>
-              <p className="text-[11px] text-[#66788A]">
+              <p className="text-[11px] text-brand-muted">
                 الصيغ المسموحة: PNG، JPG، WebP &bull; الحد الأقصى للحجم: <strong>2MB</strong>
               </p>
             </div>
@@ -201,15 +201,15 @@ export function StepPledgeSignature({
         )}
 
         {signatureDataUrl && (
-          <div className="p-3.5 rounded-2xl bg-[#F0F7FD] border border-[#BEE3F8] flex items-center justify-between gap-4 animate-fade-in">
+          <div className="p-3.5 rounded-2xl bg-brand-surface-soft border border-[#BEE3F8] flex items-center justify-between gap-4 animate-fade-in">
             <div className="space-y-0.5">
-              <span className="text-[11px] font-bold text-[#0057C8] block">معاينة التوقيع المعتمد:</span>
-              <span className="text-[10px] text-[#8297A8]">
+              <span className="text-[11px] font-bold text-brand-primary block">معاينة التوقيع المعتمد:</span>
+              <span className="text-[10px] text-brand-subtle">
                 الموقع: {fullName} &bull; التاريخ: {new Date().toLocaleDateString("ar-EG")}
               </span>
             </div>
 
-            <div className="p-1 bg-white rounded-xl border border-[#D7EAF7] shadow-2xs max-w-[160px] h-14 flex items-center justify-center">
+            <div className="p-1 bg-white rounded-xl border border-brand-border-soft shadow-2xs max-w-[160px] h-14 flex items-center justify-center">
               <Image
                 src={signatureDataUrl}
                 alt="Signature Preview"

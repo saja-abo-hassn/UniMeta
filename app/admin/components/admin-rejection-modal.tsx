@@ -30,7 +30,7 @@ export function AdminRejectionModal({
 
         <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">
+            <label className="font-bold text-brand-ink block">
               سبب الرفض (سيظهر لأطراف الاتفاقية مباشرة): <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -39,7 +39,7 @@ export function AdminRejectionModal({
               value={rejectionReasonInput}
               onChange={(e) => onReasonChange(e.target.value)}
               placeholder="وضح سبب الرفض بالتفصيل (مثل: الغرض غير مطابق للشروط، أو البيانات ناقصة...)"
-              className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-red-500"
+              className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-red-500"
             />
           </div>
         </Modal.Body>
@@ -48,7 +48,7 @@ export function AdminRejectionModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-semibold text-[#16324A] hover:bg-[#F8FBFE] cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-semibold text-brand-ink hover:bg-brand-surface-muted cursor-pointer"
           >
             تراجع
           </button>

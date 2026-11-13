@@ -43,7 +43,7 @@ export function StudentSidebar({ isOpen = false, onClose }: StudentSidebarProps)
     : (user?.faculty || "لم تُحدد الخطة بعد");
 
   const content = (
-    <div className="flex flex-col h-full bg-white text-[#16324A] border-e border-[#D7EAF7]">
+    <div className="flex flex-col h-full bg-white text-brand-ink border-e border-brand-border-soft">
       <SidebarBrandHeader onClose={onClose} />
 
       <SidebarProfileCard

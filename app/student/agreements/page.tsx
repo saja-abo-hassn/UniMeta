@@ -59,26 +59,26 @@ export default function StudentAgreementsPage() {
 
   return (
     <div className="space-y-6 animate-fade-in" dir="rtl">
-      <section className="card-entrance relative overflow-hidden p-6 sm:p-7 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs">
-        <div className="absolute top-0 end-0 -mt-8 -me-8 w-64 h-64 bg-gradient-to-br from-[#4DB7F2]/10 to-[#0057C8]/5 rounded-full blur-2xl pointer-events-none" />
+      <section className="card-entrance relative overflow-hidden p-6 sm:p-7 rounded-3xl bg-white border border-brand-border-soft shadow-xs">
+        <div className="absolute top-0 end-0 -mt-8 -me-8 w-64 h-64 bg-gradient-to-br from-brand-secondary/10 to-brand-primary/5 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-1 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF4FD] text-[#0057C8] border border-[#D7EAF7]">
-                <span className="w-2 h-2 rounded-full bg-[#0057C8]" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-brand-surface-blue text-brand-primary border border-brand-border-soft">
+                <span className="w-2 h-2 rounded-full bg-brand-primary" />
                 عقود الإعارة والطلبات الأكاديمية الموثقة
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#16324A] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-brand-ink tracking-tight">
               اتفاقياتي وطلباتي
             </h1>
-            <p className="text-xs sm:text-sm text-[#66788A] mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-brand-muted mt-1 max-w-2xl leading-relaxed">
               إدارة عقود تبادل واستئجار الأجهزة والمراجع الدراسية، متابعة مواعيد الإرجاع، وتوثيق استلام وتسليم المقتنيات بالشيكل (₪).
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="px-3.5 py-1.5 rounded-xl bg-[#F0F7FD] text-xs font-bold text-[#0057C8] border border-[#D7EAF7]">
+            <span className="px-3.5 py-1.5 rounded-xl bg-brand-surface-soft text-xs font-bold text-brand-primary border border-brand-border-soft">
               العملة المعتمدة: الشيكل (₪)
             </span>
           </div>
@@ -92,21 +92,21 @@ export default function StudentAgreementsPage() {
         pendingOutgoingCount={pendingOutgoingCount}
       />
 
-      <div className="bg-white border border-[#D7EAF7] rounded-2xl p-1.5 shadow-xs overflow-x-auto">
+      <div className="bg-white border border-brand-border-soft rounded-2xl p-1.5 shadow-xs overflow-x-auto">
         <div className="flex items-center justify-between gap-1.5 min-w-[550px] sm:min-w-0">
           <button
             type="button"
             onClick={() => setActiveTab("agreements")}
             className={`flex-1 py-2.5 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all duration-150 flex items-center justify-center gap-2 ${
               activeTab === "agreements"
-                ? "bg-[#0057C8] text-white shadow-xs"
-                : "text-[#16324A] hover:text-[#0057C8] hover:bg-[#F4FAFF]"
+                ? "bg-brand-primary text-white shadow-xs"
+                : "text-brand-ink hover:text-brand-primary hover:bg-[#F4FAFF]"
             }`}
           >
             <span>اتفاقياتي السارية والمكتملة</span>
             <span
               className={`text-[11px] px-2 py-0.5 rounded-full ${
-                activeTab === "agreements" ? "bg-white/20 text-white" : "bg-[#F0F7FD] text-[#0057C8]"
+                activeTab === "agreements" ? "bg-white/20 text-white" : "bg-brand-surface-soft text-brand-primary"
               }`}
             >
               {filteredAgreements.length}
@@ -118,14 +118,14 @@ export default function StudentAgreementsPage() {
             onClick={() => setActiveTab("outgoing")}
             className={`flex-1 py-2.5 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all duration-150 flex items-center justify-center gap-2 ${
               activeTab === "outgoing"
-                ? "bg-[#0057C8] text-white shadow-xs"
-                : "text-[#16324A] hover:text-[#0057C8] hover:bg-[#F4FAFF]"
+                ? "bg-brand-primary text-white shadow-xs"
+                : "text-brand-ink hover:text-brand-primary hover:bg-[#F4FAFF]"
             }`}
           >
             <span>طلباتي الصادرة</span>
             <span
               className={`text-[11px] px-2 py-0.5 rounded-full ${
-                activeTab === "outgoing" ? "bg-white/20 text-white" : "bg-[#F0F7FD] text-[#0057C8]"
+                activeTab === "outgoing" ? "bg-white/20 text-white" : "bg-brand-surface-soft text-brand-primary"
               }`}
             >
               {outgoingRequests.length}
@@ -137,8 +137,8 @@ export default function StudentAgreementsPage() {
             onClick={() => setActiveTab("incoming")}
             className={`flex-1 py-2.5 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all duration-150 flex items-center justify-center gap-2 ${
               activeTab === "incoming"
-                ? "bg-[#0057C8] text-white shadow-xs"
-                : "text-[#16324A] hover:text-[#0057C8] hover:bg-[#F4FAFF]"
+                ? "bg-brand-primary text-white shadow-xs"
+                : "text-brand-ink hover:text-brand-primary hover:bg-[#F4FAFF]"
             }`}
           >
             <span>طلباتي الواردة</span>

@@ -67,7 +67,7 @@ export function useAcademicCalculations({
         progressPercentage: 0,
         cumulativeGpa: 0,
         gpaFormatted: "—",
-        gpaRating: { label: "لم تُحدد الخطة", color: "text-[#66788A] bg-slate-50 border-slate-200" },
+        gpaRating: { label: "لم تُحدد الخطة", color: "text-brand-muted bg-brand-surface-muted border-brand-border-soft" },
       };
     }
 
@@ -108,10 +108,10 @@ export function useAcademicCalculations({
     const gpa = gradedCreditsCount > 0 ? Number((totalGradePoints / gradedCreditsCount).toFixed(2)) : 0;
     const formatted = gradedCreditsCount > 0 && gpa > 0 ? gpa.toFixed(2) : "—";
 
-    let rating = { label: "لا توجد علامات", color: "text-[#66788A] bg-slate-50 border-slate-200" };
+    let rating = { label: "لا توجد علامات", color: "text-brand-muted bg-brand-surface-muted border-brand-border-soft" };
     if (gradedCreditsCount > 0 && gpa > 0) {
-      if (gpa >= 90) rating = { label: "ممتاز", color: "text-[#0057C8] bg-[#EAF4FD] border-[#D7EAF7]" };
-      else if (gpa >= 80) rating = { label: "جيد جداً", color: "text-[#2D78B7] bg-[#F0F7FD] border-[#D7EAF7]" };
+      if (gpa >= 90) rating = { label: "ممتاز", color: "text-brand-primary bg-brand-surface-blue border-brand-border-soft" };
+      else if (gpa >= 80) rating = { label: "جيد جداً", color: "text-brand-hover-medium bg-brand-surface-soft border-brand-border-soft" };
       else if (gpa >= 70) rating = { label: "جيد", color: "text-emerald-700 bg-emerald-50 border-emerald-200" };
       else if (gpa >= 60) rating = { label: "مقبول", color: "text-amber-700 bg-amber-50 border-amber-200" };
       else rating = { label: "راسب / غير مستوف", color: "text-red-700 bg-red-50 border-red-200" };

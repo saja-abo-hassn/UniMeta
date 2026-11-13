@@ -12,7 +12,7 @@ export function SidebarNavList({ pathname, onClose }: SidebarNavListProps) {
   return (
     <>
       <div className="px-5 pt-1 pb-1">
-        <span className="text-[10px] font-bold text-[#66788A] uppercase tracking-wider block">
+        <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider block">
           مساحة الطالب
         </span>
       </div>
@@ -36,24 +36,24 @@ export function SidebarNavList({ pathname, onClose }: SidebarNavListProps) {
                   aria-current={isDirectParentActive ? "page" : undefined}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
                     isDirectParentActive
-                      ? "bg-[#EAF4FD] text-[#0057C8] border-s-4 border-[#0057C8] shadow-xs"
+                      ? "bg-brand-surface-blue text-brand-primary border-s-4 border-brand-primary shadow-xs"
                       : isParentActive
-                      ? "text-[#0057C8] hover:bg-[#F0F7FD]"
-                      : "text-[#16324A] hover:bg-[#F0F7FD] hover:text-[#0057C8]"
+                      ? "text-brand-primary hover:bg-brand-surface-soft"
+                      : "text-brand-ink hover:bg-brand-surface-soft hover:text-brand-primary"
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className={isDirectParentActive || isParentActive ? "text-[#0057C8]" : "text-[#66788A]"}>
+                    <span className={isDirectParentActive || isParentActive ? "text-brand-primary" : "text-brand-muted"}>
                       {renderSidebarIcon(dest.icon)}
                     </span>
                     <span className="truncate">{dest.title}</span>
                   </div>
                   {isDirectParentActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0057C8] shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-primary shrink-0" />
                   )}
                 </Link>
 
-                <div className="ps-4 pe-1 space-y-1 border-s-2 border-[#D7EAF7] ms-5 my-1">
+                <div className="ps-4 pe-1 space-y-1 border-s-2 border-brand-border-soft ms-5 my-1">
                   {dest.subItems?.map((sub) => {
                     const isSubActive =
                       (sub.id === "my-hours" && (pathname === "/my-hours" || pathname === "/student/my-hours")) ||
@@ -79,8 +79,8 @@ export function SidebarNavList({ pathname, onClose }: SidebarNavListProps) {
                         aria-current={isSubActive ? "page" : undefined}
                         className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
                           isSubActive
-                            ? "bg-[#0057C8] text-white font-bold shadow-xs"
-                            : "text-[#16324A] hover:bg-[#F0F7FD] hover:text-[#0057C8] font-medium"
+                            ? "bg-brand-primary text-white font-bold shadow-xs"
+                            : "text-brand-ink hover:bg-brand-surface-soft hover:text-brand-primary font-medium"
                         }`}
                       >
                         <span className="truncate">{sub.title}</span>
@@ -116,18 +116,18 @@ export function SidebarNavList({ pathname, onClose }: SidebarNavListProps) {
               aria-current={isActive ? "page" : undefined}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-[#EAF4FD] text-[#0057C8] font-bold border-s-4 border-[#0057C8] shadow-xs"
-                  : "text-[#16324A] hover:bg-[#F0F7FD] hover:text-[#0057C8]"
+                  ? "bg-brand-surface-blue text-brand-primary font-bold border-s-4 border-brand-primary shadow-xs"
+                  : "text-brand-ink hover:bg-brand-surface-soft hover:text-brand-primary"
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <span className={isActive ? "text-[#0057C8]" : "text-[#66788A]"}>
+                <span className={isActive ? "text-brand-primary" : "text-brand-muted"}>
                   {renderSidebarIcon(dest.icon)}
                 </span>
                 <span className="truncate">{dest.title}</span>
               </div>
               {dest.badge && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0057C8] text-white">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-primary text-white">
                   {dest.badge}
                 </span>
               )}

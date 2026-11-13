@@ -15,18 +15,18 @@ interface AgreementStatsCardsProps {
 export function AgreementStatsCards({ counts }: AgreementStatsCardsProps) {
   return (
     <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div className="card-hover-effect p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs flex flex-col justify-between min-h-[135px]">
+      <div className="card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs flex flex-col justify-between min-h-[135px]">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-semibold text-[#66788A] truncate">إجمالي الاتفاقيات</span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F0F7FD] text-[#0057C8] border border-[#D7EAF7]">
+          <span className="text-xs font-semibold text-brand-muted truncate">إجمالي الاتفاقيات</span>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-surface-soft text-brand-primary border border-brand-border-soft">
             عقود مسجلة
           </span>
         </div>
         <div className="flex items-baseline gap-2 my-auto">
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#16324A]">{counts.total}</span>
+          <span className="text-2xl sm:text-3xl font-extrabold text-brand-ink">{counts.total}</span>
         </div>
-        <div className="mt-2 pt-2 border-t border-[#D7EAF7]/60 flex items-center gap-1.5 text-[11px] text-[#66788A]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4DB7F2]" />
+        <div className="mt-2 pt-2 border-t border-brand-border-soft/60 flex items-center gap-1.5 text-[11px] text-brand-muted">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary" />
           <span>استعارة وتبادل وعهد</span>
         </div>
       </div>
@@ -41,7 +41,7 @@ export function AgreementStatsCards({ counts }: AgreementStatsCardsProps) {
         <div className="flex items-baseline gap-2 my-auto">
           <span className="text-2xl sm:text-3xl font-extrabold text-amber-800">{counts.pending}</span>
         </div>
-        <div className="mt-2 pt-2 border-t border-amber-200/60 flex items-center gap-1.5 text-[11px] text-amber-800">
+        <div className="mt-2 pt-2 border-t border-brand-border-soft/60 flex items-center gap-1.5 text-[11px] text-amber-800">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
           <span>تحتاج تدقيقاً وقراراً</span>
         </div>
@@ -63,9 +63,9 @@ export function AgreementStatsCards({ counts }: AgreementStatsCardsProps) {
         </div>
       </div>
 
-      <div className="card-hover-effect p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs flex flex-col justify-between min-h-[135px]">
+      <div className="card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs flex flex-col justify-between min-h-[135px]">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-semibold text-[#66788A] truncate">المرفوضة أو قيد التعديل</span>
+          <span className="text-xs font-semibold text-brand-muted truncate">المرفوضة أو قيد التعديل</span>
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200">
             متابعة
           </span>
@@ -73,7 +73,7 @@ export function AgreementStatsCards({ counts }: AgreementStatsCardsProps) {
         <div className="flex items-baseline gap-2 my-auto">
           <span className="text-2xl sm:text-3xl font-extrabold text-red-600">{counts.rejected + counts.modification}</span>
         </div>
-        <div className="mt-2 pt-2 border-t border-[#D7EAF7]/60 flex items-center gap-1.5 text-[11px] text-[#66788A]">
+        <div className="mt-2 pt-2 border-t border-brand-border-soft/60 flex items-center gap-1.5 text-[11px] text-brand-muted">
           <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
           <span>{counts.rejected} مرفوضة • {counts.modification} تعديل</span>
         </div>

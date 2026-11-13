@@ -19,11 +19,11 @@ export function PartiesComparisonCard({
   const isOwner = partyType === "owner";
 
   return (
-    <div className="p-4 rounded-2xl bg-white border border-[#D7EAF7] space-y-3 relative shadow-2xs">
-      <div className="flex items-center justify-between pb-2 border-b border-[#D7EAF7]">
+    <div className="p-4 rounded-2xl bg-white border border-brand-border-soft space-y-3 relative shadow-2xs">
+      <div className="flex items-center justify-between pb-2 border-b border-brand-border-soft">
         <span
           className={`text-[10px] font-black uppercase tracking-wider ${
-            isOwner ? "text-purple-700" : "text-[#0057C8]"
+            isOwner ? "text-brand-primary" : "text-brand-primary"
           }`}
         >
           {isOwner ? "الطرف المالك (المعير)" : "الطرف المستعير (المستأجر)"}
@@ -42,34 +42,34 @@ export function PartiesComparisonCard({
       </div>
 
       <div className="space-y-1.5">
-        <div className="font-black text-sm text-[#16324A]">{student.name}</div>
-        <div className="flex items-center gap-2 text-[11px] text-[#66788A]">
+        <div className="font-black text-sm text-brand-ink">{student.name}</div>
+        <div className="flex items-center gap-2 text-[11px] text-brand-muted">
           <span>الرقم الجامعي:</span>
-          <span className="font-mono font-bold text-[#16324A]" dir="ltr">
+          <span className="font-mono font-bold text-brand-ink" dir="ltr">
             {student.studentId}
           </span>
         </div>
-        <div className="text-[11px] text-[#66788A]">
+        <div className="text-[11px] text-brand-muted">
           {student.major} • {student.academicYear}
         </div>
       </div>
 
-      <div className="p-2.5 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7] space-y-1 text-[11px]">
+      <div className="p-2.5 rounded-xl bg-brand-surface-muted border border-brand-border-soft space-y-1 text-[11px]">
         <div className="flex items-center justify-between">
-          <span className="text-[#66788A]">رقم الجوال:</span>
-          <span className="font-mono font-bold text-[#16324A]" dir="ltr">
+          <span className="text-brand-muted">رقم الجوال:</span>
+          <span className="font-mono font-bold text-brand-ink" dir="ltr">
             {isUnmasked ? student.phone : student.maskedPhone}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-[#66788A]">رقم الهوية:</span>
-          <span className="font-mono font-bold text-[#16324A]" dir="ltr">
+          <span className="text-brand-muted">رقم الهوية:</span>
+          <span className="font-mono font-bold text-brand-ink" dir="ltr">
             {isUnmasked ? student.nationalId : student.maskedNationalId}
           </span>
         </div>
       </div>
 
-      <div className="text-[10px] text-[#2D78B7] font-semibold bg-[#EAF4FD]/60 p-2 rounded-lg">
+      <div className="text-[10px] text-brand-hover-medium font-semibold bg-brand-surface-blue/60 p-2 rounded-lg">
         {student.borrowingEligibility}
       </div>
 
@@ -77,7 +77,7 @@ export function PartiesComparisonCard({
         <button
           type="button"
           onClick={onOpenUnmask}
-          className="w-full py-1.5 rounded-lg border border-[#D7EAF7] text-[11px] font-bold text-[#0057C8] hover:bg-[#F0F7FD] transition-colors"
+          className="w-full py-1.5 rounded-lg border border-brand-border-soft text-[11px] font-bold text-brand-primary hover:bg-brand-surface-soft transition-colors"
         >
           👁️ عرض الجوال والهوية الكاملين (يتطلب تصريح)
         </button>

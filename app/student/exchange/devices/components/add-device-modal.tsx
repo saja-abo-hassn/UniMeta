@@ -43,24 +43,24 @@ export function AddDeviceModal({
 
         <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">اسم الجهاز والموديل:</label>
+            <label className="font-bold text-brand-ink block">اسم الجهاز والموديل:</label>
             <input
               type="text"
               required
               value={newDeviceName}
               onChange={(e) => setNewDeviceName(e.target.value)}
               placeholder="مثال: راسبيري باي 4 أو حاسبة بيانية TI-84"
-              className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+              className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">تصنيف الأداة:</label>
+              <label className="font-bold text-brand-ink block">تصنيف الأداة:</label>
               <select
                 value={newDeviceCategory}
                 onChange={(e) => setNewDeviceCategory(e.target.value as DeviceItem["category"])}
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               >
                 <option value="حاسبات بيانية">حاسبات بيانية</option>
                 <option value="لوحات إلكترونية ومتحكمات">لوحات إلكترونية ومتحكمات</option>
@@ -71,11 +71,11 @@ export function AddDeviceModal({
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">نوع الإتاحة:</label>
+              <label className="font-bold text-brand-ink block">نوع الإتاحة:</label>
               <select
                 value={newDeviceType}
                 onChange={(e) => setNewDeviceType(e.target.value as DeviceItem["type"])}
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               >
                 <option value="إعارة مجانية">إعارة مجانية</option>
                 <option value="استئجار رمزي">استئجار رمزي</option>
@@ -86,13 +86,13 @@ export function AddDeviceModal({
 
           {newDeviceType === "استئجار رمزي" && (
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">بدل الإيجار أو الشروط:</label>
+              <label className="font-bold text-brand-ink block">بدل الإيجار أو الشروط:</label>
               <input
                 type="text"
                 value={newFeeText}
                 onChange={(e) => setNewFeeText(e.target.value)}
                 placeholder="مثال: 15 ₪ / أسبوع مع تأمين"
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
               />
             </div>
           )}
@@ -102,13 +102,13 @@ export function AddDeviceModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-[#16324A] font-semibold hover:bg-[#F8FBFE] cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-brand-border-soft text-brand-ink font-semibold hover:bg-brand-surface-muted cursor-pointer"
           >
             إلغاء
           </button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl bg-[#0057C8] text-white font-bold shadow-xs hover:bg-[#2D78B7] cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
           >
             حفظ وإدراج
           </button>

@@ -58,7 +58,7 @@ export function PermissionsModals({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   الاسم الكامل <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -67,12 +67,12 @@ export function PermissionsModals({
                   value={formData.name}
                   onChange={(e) => onFormDataChange({ ...formData, name: e.target.value })}
                   placeholder="مثال: د. يوسف النجار"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   البريد الإلكتروني <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -82,14 +82,14 @@ export function PermissionsModals({
                   value={formData.email}
                   onChange={(e) => onFormDataChange({ ...formData, email: e.target.value })}
                   placeholder="yousef@unimeta.edu.ps"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   المسمى الوظيفي <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -98,28 +98,28 @@ export function PermissionsModals({
                   value={formData.title}
                   onChange={(e) => onFormDataChange({ ...formData, title: e.target.value })}
                   placeholder="مثال: مشرف أكاديمي أو منسق المحتوى"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A] block">القسم الأكاديمي المخصص</label>
+                <label className="text-xs font-bold text-brand-ink block">القسم الأكاديمي المخصص</label>
                 <input
                   type="text"
                   value={formData.assignedDepartment}
                   onChange={(e) => onFormDataChange({ ...formData, assignedDepartment: e.target.value })}
                   placeholder="مثال: كلية الهندسة وتكنولوجيا المعلومات"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-[#D7EAF7]">
+            <div className="space-y-2 pt-2 border-t border-brand-border-soft">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   مصفوفة الصلاحيات الممنوحة:
                 </label>
-                <span className="text-[11px] text-[#66788A]">
+                <span className="text-[11px] text-brand-muted">
                   حدد الأقسام التي يسمح للمشرف بالوصول إليها
                 </span>
               </div>
@@ -127,11 +127,11 @@ export function PermissionsModals({
                 {PERMISSION_COLUMNS.map((p) => (
                   <label
                     key={p.key}
-                    className="p-2.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] flex items-center justify-between cursor-pointer hover:bg-white transition-colors"
+                    className="p-2.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted flex items-center justify-between cursor-pointer hover:bg-white transition-colors"
                   >
                     <div>
-                      <span className="text-xs font-bold text-[#16324A] block">{p.label}</span>
-                      <span className="text-[10px] text-[#66788A]">{p.description}</span>
+                      <span className="text-xs font-bold text-brand-ink block">{p.label}</span>
+                      <span className="text-[10px] text-brand-muted">{p.description}</span>
                     </div>
                     <input
                       type="checkbox"
@@ -142,7 +142,7 @@ export function PermissionsModals({
                           permissions: { ...formData.permissions, [p.key]: e.target.checked },
                         })
                       }
-                      className="w-4 h-4 rounded text-[#0057C8] border-[#D7EAF7] cursor-pointer"
+                      className="w-4 h-4 rounded text-brand-primary border-brand-border-soft cursor-pointer"
                     />
                   </label>
                 ))}
@@ -155,14 +155,14 @@ export function PermissionsModals({
               type="button"
               onClick={onCloseAddModal}
               disabled={isSubmitting}
-              className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+              className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
             >
               إلغاء
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-all cursor-pointer flex items-center gap-2"
+              className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-all cursor-pointer flex items-center gap-2"
             >
               {isSubmitting ? "جاري إنشاء الدعوة..." : "إرسال الدعوة ✉️"}
             </button>
@@ -178,15 +178,15 @@ export function PermissionsModals({
               <div className="w-14 h-14 mx-auto rounded-2xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center text-2xl font-bold">
                 ⚠️
               </div>
-              <p className="text-xs text-[#66788A] leading-relaxed">
-                هل أنت متأكد من سحب الصلاحيات وإزالة حساب <strong className="text-[#16324A]">{deleteCandidate.name}</strong> ({deleteCandidate.email})؟
+              <p className="text-xs text-brand-muted leading-relaxed">
+                هل أنت متأكد من سحب الصلاحيات وإزالة حساب <strong className="text-brand-ink">{deleteCandidate.name}</strong> ({deleteCandidate.email})؟
               </p>
             </Modal.Body>
             <Modal.Footer>
               <button
                 type="button"
                 onClick={onCloseDelete}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 تراجع
               </button>

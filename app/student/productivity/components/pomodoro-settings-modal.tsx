@@ -37,7 +37,7 @@ export function PomodoroSettingsModal({
 
       <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
         <div className="space-y-2">
-          <label className="block font-bold text-[#16324A]">
+          <label className="block font-bold text-brand-ink">
             مدة جلسة المذاكرة والتركيز (بالدقائق):
           </label>
           <div className="flex flex-wrap gap-2">
@@ -55,8 +55,8 @@ export function PomodoroSettingsModal({
                 }}
                 className={`py-2 px-3.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                   settings.studyMinutes === mins && !customStudyInput
-                    ? "bg-[#0057C8] text-white border-[#0057C8] shadow-xs"
-                    : "bg-[#F8FBFE] text-[#16324A] border-[#D7EAF7] hover:border-[#0057C8]"
+                    ? "bg-brand-primary text-white border-brand-primary shadow-xs"
+                    : "bg-brand-surface-muted text-brand-ink border-brand-border-soft hover:border-brand-primary"
                 }`}
               >
                 {mins} دقيقة
@@ -83,14 +83,14 @@ export function PomodoroSettingsModal({
                   }));
                 }
               }}
-              className="w-48 px-3 py-1.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+              className="w-48 px-3 py-1.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
             />
-            <span className="text-[11px] text-[#66788A]">دقيقة (مخصص)</span>
+            <span className="text-[11px] text-brand-muted">دقيقة (مخصص)</span>
           </div>
         </div>
 
-        <div className="space-y-2 pt-2 border-t border-[#D7EAF7]/60">
-          <label className="block font-bold text-[#16324A]">
+        <div className="space-y-2 pt-2 border-t border-brand-border-soft/60">
+          <label className="block font-bold text-brand-ink">
             مدة الاستراحة القصيرة (بالدقائق):
           </label>
           <div className="flex flex-wrap gap-2">
@@ -107,8 +107,8 @@ export function PomodoroSettingsModal({
                 }}
                 className={`py-2 px-3.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                   settings.shortBreakMinutes === mins && !customShortBreakInput
-                    ? "bg-[#0057C8] text-white border-[#0057C8] shadow-xs"
-                    : "bg-[#F8FBFE] text-[#16324A] border-[#D7EAF7] hover:border-[#0057C8]"
+                    ? "bg-brand-primary text-white border-brand-primary shadow-xs"
+                    : "bg-brand-surface-muted text-brand-ink border-brand-border-soft hover:border-brand-primary"
                 }`}
               >
                 {mins} دقائق
@@ -134,16 +134,16 @@ export function PomodoroSettingsModal({
                   }));
                 }
               }}
-              className="w-48 px-3 py-1.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+              className="w-48 px-3 py-1.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
             />
-            <span className="text-[11px] text-[#66788A]">دقيقة</span>
+            <span className="text-[11px] text-brand-muted">دقيقة</span>
           </div>
         </div>
 
-        <div className="space-y-3 pt-2 border-t border-[#D7EAF7]/60">
+        <div className="space-y-3 pt-2 border-t border-brand-border-soft/60">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="block font-bold text-[#16324A]">الاستراحة الطويلة:</label>
+              <label className="block font-bold text-brand-ink">الاستراحة الطويلة:</label>
               <select
                 value={settings.longBreakMinutes}
                 onChange={(e) =>
@@ -152,7 +152,7 @@ export function PomodoroSettingsModal({
                     longBreakMinutes: parseInt(e.target.value, 10),
                   }))
                 }
-                className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A]"
+                className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink"
               >
                 <option value={15}>15 دقيقة</option>
                 <option value={20}>20 دقيقة</option>
@@ -162,7 +162,7 @@ export function PomodoroSettingsModal({
             </div>
 
             <div className="space-y-1">
-              <label className="block font-bold text-[#16324A]">تكرار الاستراحة الطويلة:</label>
+              <label className="block font-bold text-brand-ink">تكرار الاستراحة الطويلة:</label>
               <select
                 value={settings.sessionsBeforeLongBreak}
                 onChange={(e) =>
@@ -171,7 +171,7 @@ export function PomodoroSettingsModal({
                     sessionsBeforeLongBreak: parseInt(e.target.value, 10),
                   }))
                 }
-                className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A]"
+                className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink"
               >
                 <option value={3}>كل 3 جلسات</option>
                 <option value={4}>كل 4 جلسات (افتراضي)</option>
@@ -181,7 +181,7 @@ export function PomodoroSettingsModal({
           </div>
         </div>
 
-        <div className="pt-2 border-t border-[#D7EAF7]/60">
+        <div className="pt-2 border-t border-brand-border-soft/60">
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -189,9 +189,9 @@ export function PomodoroSettingsModal({
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, autoStartBreak: e.target.checked }))
               }
-              className="w-4 h-4 rounded text-[#0057C8] border-[#D7EAF7] focus:ring-[#4DB7F2]/30 cursor-pointer"
+              className="w-4 h-4 rounded text-brand-primary border-brand-border-soft focus:ring-brand-secondary/30 cursor-pointer"
             />
-            <span className="font-bold text-[#16324A]">
+            <span className="font-bold text-brand-ink">
               بدء الاستراحة تلقائياً فور اكتمال جلسة التركيز
             </span>
           </label>
@@ -202,7 +202,7 @@ export function PomodoroSettingsModal({
         <button
           type="button"
           onClick={onClose}
-          className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+          className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
         >
           حفظ وإغلاق
         </button>

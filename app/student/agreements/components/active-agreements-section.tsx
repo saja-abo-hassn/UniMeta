@@ -26,23 +26,23 @@ export function ActiveAgreementsSection({
   onOpenReturn,
 }: ActiveAgreementsSectionProps) {
   return (
-    <section className="p-6 sm:p-7 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-5 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#D7EAF7]">
+    <section className="p-6 sm:p-7 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-5 animate-fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-brand-border-soft">
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-[#16324A]">
+          <h2 className="text-base sm:text-lg font-bold text-brand-ink">
             سجل العقود والاتفاقيات
           </h2>
-          <p className="text-xs text-[#66788A]">
+          <p className="text-xs text-brand-muted">
             متابعة حالة الإعارة، تواريخ الإرجاع، واسترداد مبلغ التأمين المالي.
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-[#F4FAFF] p-1 rounded-xl border border-[#D7EAF7] text-xs">
+        <div className="flex items-center gap-1.5 bg-[#F4FAFF] p-1 rounded-xl border border-brand-border-soft text-xs">
           <button
             type="button"
             onClick={() => setAgreementFilter("all")}
             className={`px-3 py-1.5 rounded-lg font-semibold transition-colors ${
-              agreementFilter === "all" ? "bg-white text-[#0057C8] shadow-xs" : "text-[#66788A]"
+              agreementFilter === "all" ? "bg-white text-brand-primary shadow-xs" : "text-brand-muted"
             }`}
           >
             الكل ({agreements.length})
@@ -51,7 +51,7 @@ export function ActiveAgreementsSection({
             type="button"
             onClick={() => setAgreementFilter("active")}
             className={`px-3 py-1.5 rounded-lg font-semibold transition-colors ${
-              agreementFilter === "active" ? "bg-white text-[#0057C8] shadow-xs" : "text-[#66788A]"
+              agreementFilter === "active" ? "bg-white text-brand-primary shadow-xs" : "text-brand-muted"
             }`}
           >
             نشطة ({activeAgreementsCount})
@@ -60,7 +60,7 @@ export function ActiveAgreementsSection({
             type="button"
             onClick={() => setAgreementFilter("returning")}
             className={`px-3 py-1.5 rounded-lg font-semibold transition-colors ${
-              agreementFilter === "returning" ? "bg-white text-[#0057C8] shadow-xs" : "text-[#66788A]"
+              agreementFilter === "returning" ? "bg-white text-brand-primary shadow-xs" : "text-brand-muted"
             }`}
           >
             بانتظار الإرجاع ({returningCount})
@@ -69,7 +69,7 @@ export function ActiveAgreementsSection({
             type="button"
             onClick={() => setAgreementFilter("completed")}
             className={`px-3 py-1.5 rounded-lg font-semibold transition-colors ${
-              agreementFilter === "completed" ? "bg-white text-[#0057C8] shadow-xs" : "text-[#66788A]"
+              agreementFilter === "completed" ? "bg-white text-brand-primary shadow-xs" : "text-brand-muted"
             }`}
           >
             مكتملة
@@ -80,7 +80,7 @@ export function ActiveAgreementsSection({
       <div className="overflow-x-auto">
         <table className="w-full text-start text-xs sm:text-sm">
           <thead>
-            <tr className="border-b border-[#D7EAF7] text-[#66788A] font-semibold">
+            <tr className="border-b border-brand-border-soft text-brand-muted font-semibold">
               <th className="py-3 px-3 text-start">رقم العقد</th>
               <th className="py-3 px-3 text-start">العنصر والتصنيف</th>
               <th className="py-3 px-3 text-start">الطرف الآخر</th>
@@ -90,28 +90,28 @@ export function ActiveAgreementsSection({
               <th className="py-3 px-3 text-start">الإجراءات</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#D7EAF7]/60">
+          <tbody className="divide-y divide-brand-border-soft/60">
             {filteredAgreements.map((agreement) => (
-              <tr key={agreement.id} className="hover:bg-[#F8FBFE] transition-colors">
-                <td className="py-4 px-3 font-mono font-bold text-[#0057C8]" dir="ltr">
+              <tr key={agreement.id} className="hover:bg-brand-surface-muted transition-colors">
+                <td className="py-4 px-3 font-mono font-bold text-brand-primary" dir="ltr">
                   {agreement.id}
                 </td>
 
                 <td className="py-4 px-3 max-w-xs">
-                  <span className="font-bold text-[#16324A] block leading-snug">
+                  <span className="font-bold text-brand-ink block leading-snug">
                     {agreement.itemName}
                   </span>
-                  <span className="text-[11px] text-[#2D78B7] font-medium inline-block mt-0.5">
+                  <span className="text-[11px] text-brand-hover-medium font-medium inline-block mt-0.5">
                     {agreement.category}
                   </span>
                 </td>
 
                 <td className="py-4 px-3">
                   <div className="space-y-0.5">
-                    <span className="font-semibold text-[#16324A] block">
+                    <span className="font-semibold text-brand-ink block">
                       {agreement.otherParty.name}
                     </span>
-                    <span className="text-[11px] text-[#66788A] block">
+                    <span className="text-[11px] text-brand-muted block">
                       {agreement.otherParty.major} · ({agreement.otherParty.role})
                     </span>
                   </div>
@@ -119,13 +119,13 @@ export function ActiveAgreementsSection({
 
                 <td className="py-4 px-3">
                   <div className="space-y-0.5">
-                    <span className="font-mono text-xs text-[#16324A]" dir="ltr">
+                    <span className="font-mono text-xs text-brand-ink" dir="ltr">
                       {agreement.returnDeadline}
                     </span>
                     {agreement.status !== "مكتملة" && (
                       <span
                         className={`text-[10px] font-bold block ${
-                          agreement.daysRemaining <= 2 ? "text-amber-600" : "text-[#2D78B7]"
+                          agreement.daysRemaining <= 2 ? "text-amber-600" : "text-brand-hover-medium"
                         }`}
                       >
                         متبقي {agreement.daysRemaining} أيام
@@ -134,7 +134,7 @@ export function ActiveAgreementsSection({
                   </div>
                 </td>
 
-                <td className="py-4 px-3 font-bold text-[#0057C8]">
+                <td className="py-4 px-3 font-bold text-brand-primary">
                   {formatCurrency(agreement.depositAmount, "ILS")}
                 </td>
 
@@ -145,7 +145,7 @@ export function ActiveAgreementsSection({
                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                         : agreement.status === "بانتظار الإرجاع"
                         ? "bg-amber-50 text-amber-700 border border-amber-200"
-                        : "bg-slate-100 text-slate-600 border border-slate-200"
+                        : "bg-slate-100 text-brand-muted border border-brand-border-soft"
                     }`}
                   >
                     {agreement.status}
@@ -159,21 +159,21 @@ export function ActiveAgreementsSection({
                         <button
                           type="button"
                           onClick={() => onOpenExtension(agreement)}
-                          className="px-2.5 py-1 rounded-lg bg-[#EAF4FD] hover:bg-[#D7EAF7] text-[#0057C8] text-xs font-bold border border-[#D7EAF7] transition-colors"
+                          className="px-2.5 py-1 rounded-lg bg-brand-surface-blue hover:bg-brand-border-soft text-brand-primary text-xs font-bold border border-brand-border-soft transition-colors"
                         >
                           تمديد
                         </button>
                         <button
                           type="button"
                           onClick={() => onOpenReturn(agreement)}
-                          className="px-2.5 py-1 rounded-lg bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold transition-colors shadow-xs"
+                          className="px-2.5 py-1 rounded-lg bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold transition-colors shadow-xs"
                         >
                           تأكيد الإرجاع
                         </button>
                       </>
                     )}
                     {agreement.status === "مكتملة" && (
-                      <span className="text-[11px] text-[#66788A] font-medium">
+                      <span className="text-[11px] text-brand-muted font-medium">
                         تم استرداد التأمين ✓
                       </span>
                     )}

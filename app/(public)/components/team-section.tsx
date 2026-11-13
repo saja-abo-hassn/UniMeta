@@ -2,56 +2,47 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { coreTeamMembers } from "@/src/data/team";
-import { useScrollReveal } from "@/src/hooks/use-landing-effects";
 
 export function TeamSection() {
-  const { elementRef, isVisible } = useScrollReveal<HTMLDivElement>(0.05);
-
   return (
     <section
       id="team"
-      ref={elementRef}
-      className="py-14 sm:py-20 bg-gradient-to-b from-[#F0F6FA] via-[#E8F4FC]/50 to-[#F0F6FA] border-t border-[#D0E8F9]"
+      className="py-14 sm:py-20 bg-gradient-to-b from-[#F0F6FA] via-[#E8F4FC]/50 to-[#F0F6FA] border-t border-brand-border-soft"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-xs font-bold text-[#0057C8] bg-white px-3.5 py-1 rounded-full border border-[#BEE3F8] inline-block mb-3 shadow-2xs">
+          <span className="text-xs font-bold text-brand-primary bg-white px-3.5 py-1 rounded-full border border-[#BEE3F8] inline-block mb-3 shadow-2xs">
             فريق العمل
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0B192C] tracking-tight">
             فريق العمل والمساهمون في المشروع
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 mt-2">
+          <p className="text-xs sm:text-sm text-brand-muted mt-2">
             الكوادر الطلابية والهندسية وراء بناء وتطوير منصة UniMeta الجامعية.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {coreTeamMembers.map((member, idx) => (
+          {coreTeamMembers.map((member) => (
             <div
               key={member.name}
-              style={{
-                animationDelay: isVisible ? `${idx * 250}ms` : "0ms",
-              }}
-              className={`card-hover-effect h-full flex flex-col justify-between items-center text-center p-7 bg-white/95 rounded-2xl border border-[#D0E8F9] hover:border-[#4DB7F2] shadow-xs group ${
-                isVisible ? "card-entrance opacity-100" : "opacity-0"
-              }`}
+              className="card-hover-effect h-full flex flex-col justify-between items-center text-center p-7 bg-white/95 rounded-2xl border border-brand-border-soft hover:border-brand-secondary shadow-xs group"
             >
               <div className="flex flex-col items-center w-full">
                 <div className="relative mb-4">
                   {member.image ? (
-                    <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-xs ring-2 ring-[#4DB7F2]/40 bg-slate-100">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-xs ring-2 ring-brand-secondary/40 bg-slate-100">
                       <Image
                         src={member.image}
                         alt={member.name}
                         width={80}
                         height={80}
-                        priority
+                        sizes="80px"
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   ) : (
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#0057C8] to-[#4DB7F2] text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform duration-300">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform duration-300">
                       <svg className="w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
@@ -59,7 +50,7 @@ export function TeamSection() {
                   )}
 
                   {member.isLead && (
-                    <div className="absolute -bottom-1 -end-1 w-6 h-6 rounded-full bg-[#0057C8] text-white flex items-center justify-center shadow-xs">
+                    <div className="absolute -bottom-1 -end-1 w-6 h-6 rounded-full bg-brand-primary text-white flex items-center justify-center shadow-xs">
                       <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                       </svg>
@@ -72,26 +63,26 @@ export function TeamSection() {
                 </h3>
 
                 <div className="flex flex-col items-center mt-2 mb-3">
-                  <span className="font-bold text-xs sm:text-sm text-[#0057C8] tracking-wide">
+                  <span className="font-bold text-xs sm:text-sm text-brand-primary tracking-wide">
                     {member.roleEn}
                   </span>
-                  <span className="text-[11px] text-slate-500 font-medium mt-0.5">
+                  <span className="text-[11px] text-brand-muted font-medium mt-0.5">
                     {member.roleAr}
                   </span>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xs mt-1">
+                <p className="text-xs sm:text-sm text-brand-muted leading-relaxed max-w-xs mt-1">
                   {member.desc}
                 </p>
 
                 {member.socials && (
-                  <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-[#D0E8F9]/70 w-full">
+                  <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-brand-border-soft/70 w-full">
                     {member.socials.linkedin && (
                       <a
                         href={member.socials.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#0057C8] hover:bg-[#0057C8] hover:text-white transition-all flex items-center justify-center shadow-xs"
+                        className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-brand-primary hover:bg-brand-primary hover:text-white transition-all flex items-center justify-center shadow-xs"
                         aria-label={`LinkedIn - ${member.name}`}
                         title="LinkedIn"
                       >
@@ -105,7 +96,7 @@ export function TeamSection() {
                         href={member.socials.whatsapp}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#0057C8] hover:bg-[#0057C8] hover:text-white transition-all flex items-center justify-center shadow-xs"
+                        className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-brand-primary hover:bg-brand-primary hover:text-white transition-all flex items-center justify-center shadow-xs"
                         aria-label={`WhatsApp - ${member.name}`}
                         title="WhatsApp"
                       >
@@ -119,7 +110,7 @@ export function TeamSection() {
                         href={member.socials.instagram}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#0057C8] hover:bg-[#0057C8] hover:text-white transition-all flex items-center justify-center shadow-xs"
+                        className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-brand-primary hover:bg-brand-primary hover:text-white transition-all flex items-center justify-center shadow-xs"
                         aria-label={`Instagram - ${member.name}`}
                         title="Instagram"
                       >
@@ -139,7 +130,7 @@ export function TeamSection() {
           <Link href="/register">
             <button
               type="button"
-              className="px-8 py-3.5 rounded-xl text-sm font-semibold bg-[#0057C8] hover:bg-[#0045A5] text-white shadow-md hover:shadow-lg transition-all focus-ring cursor-pointer"
+              className="px-8 py-3.5 rounded-xl text-sm font-semibold bg-brand-primary hover:bg-brand-primary-hover text-white shadow-md hover:shadow-lg transition-all focus-ring cursor-pointer"
             >
               أنشئ حسابك الآن &larr;
             </button>

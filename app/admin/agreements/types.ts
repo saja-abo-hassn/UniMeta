@@ -21,8 +21,8 @@ export const STATUS_CONFIG: Record<
   },
   "طلب تعديل": {
     label: "بانتظار تعديل الأطراف",
-    badge: "bg-blue-50 text-blue-700 border-blue-200",
-    dot: "bg-blue-500",
+    badge: "bg-amber-50 text-amber-700 border-amber-200",
+    dot: "bg-brand-primary",
   },
 };
 

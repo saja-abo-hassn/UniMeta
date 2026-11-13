@@ -23,10 +23,10 @@ export function CoursesTable({
   setEditingCourse,
 }: CoursesTableProps) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-[#D7EAF7]">
+    <div className="overflow-x-auto rounded-2xl border border-brand-border-soft">
       <table className="w-full text-start text-xs sm:text-sm">
         <thead>
-          <tr className="bg-[#F8FBFE] border-b border-[#D7EAF7] text-[#66788A] font-semibold">
+          <tr className="bg-brand-surface-muted border-b border-brand-border-soft text-brand-muted font-semibold">
             <th className="py-3 px-3.5 text-start w-14">إنجاز</th>
             <th className="py-3 px-3.5 text-start">رمز المادة</th>
             <th className="py-3 px-3.5 text-start">اسم المادة</th>
@@ -38,7 +38,7 @@ export function CoursesTable({
             <th className="py-3 px-3.5 text-center">إجراءات</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#D7EAF7]/60">
+        <tbody className="divide-y divide-brand-border-soft/60">
           {courses.map((course) => {
             const grade = courseGrades[course.code];
             const isCompleted =
@@ -53,7 +53,7 @@ export function CoursesTable({
               <tr
                 key={course.code}
                 className={`transition-colors ${
-                  isCompleted ? "bg-[#F0F7FD]/60 hover:bg-[#EAF4FD]" : "hover:bg-[#F8FBFE]"
+                  isCompleted ? "bg-brand-surface-soft/60 hover:bg-brand-surface-blue" : "hover:bg-brand-surface-muted"
                 }`}
               >
                 <td className="py-3 px-3.5">
@@ -61,25 +61,25 @@ export function CoursesTable({
                     type="checkbox"
                     checked={Boolean(isCompleted)}
                     onChange={() => toggleCourseCompletion(course.code)}
-                    className="w-4 h-4 rounded text-[#0057C8] border-[#D7EAF7] focus:ring-[#0057C8] cursor-pointer"
+                    className="w-4 h-4 rounded text-brand-primary border-brand-border-soft focus:ring-brand-primary cursor-pointer"
                     aria-label={`تحديد ${course.name} كمنجزة`}
                   />
                 </td>
 
-                <td className="py-3 px-3.5 font-mono font-bold text-[#0057C8]" dir="ltr">
+                <td className="py-3 px-3.5 font-mono font-bold text-brand-primary" dir="ltr">
                   <span>{course.code}</span>
                   {isCustom && (
-                    <span className="ms-1.5 text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-bold">
+                    <span className="ms-1.5 text-[9px] px-1.5 py-0.2 rounded bg-brand-surface-blue text-brand-primary font-bold">
                       مضافة
                     </span>
                   )}
                 </td>
 
-                <td className="py-3 px-3.5 font-bold text-[#16324A]">
+                <td className="py-3 px-3.5 font-bold text-brand-ink">
                   {course.name}
                 </td>
 
-                <td className="py-3 px-3.5 font-bold text-[#16324A]">
+                <td className="py-3 px-3.5 font-bold text-brand-ink">
                   <span className="inline-flex items-center gap-1 font-mono">
                     {course.credits} س
                     {isOverridden && courseOverrides[course.code]?.credits !== undefined && (
@@ -92,7 +92,7 @@ export function CoursesTable({
 
                 <td className="py-3 px-3.5 font-mono">
                   {typeof grade === "number" && !isNaN(grade) ? (
-                    <span className="font-bold text-[#0057C8] bg-white px-2 py-0.5 rounded-lg border border-[#D7EAF7]">
+                    <span className="font-bold text-brand-primary bg-white px-2 py-0.5 rounded-lg border border-brand-border-soft">
                       {grade}%
                     </span>
                   ) : (
@@ -106,13 +106,13 @@ export function CoursesTable({
                   </span>
                 </td>
 
-                <td className="py-3 px-3.5 text-xs text-[#66788A]">
+                <td className="py-3 px-3.5 text-xs text-brand-muted">
                   {course.prerequisites && course.prerequisites.length > 0 ? (
-                    <span className="font-mono text-[11px] text-[#2D78B7]">
+                    <span className="font-mono text-[11px] text-brand-hover-medium">
                       {course.prerequisites.join(", ")}
                     </span>
                   ) : (
-                    <span className="text-slate-400">-</span>
+                    <span className="text-brand-subtle">-</span>
                   )}
                 </td>
 
@@ -123,7 +123,7 @@ export function CoursesTable({
                       <span>منجزة</span>
                     </span>
                   ) : (
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-[#66788A] border border-slate-200">
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-brand-muted border border-brand-border-soft">
                       متبقية
                     </span>
                   )}
@@ -144,7 +144,7 @@ export function CoursesTable({
                         })
                       }
                       title="تعديل علامة المادة أو ساعاتها أو حالتها"
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold text-[#0057C8] bg-white hover:bg-[#EAF4FD] border border-[#D7EAF7] transition-all flex items-center gap-1"
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold text-brand-primary bg-white hover:bg-brand-surface-blue border border-brand-border-soft transition-all flex items-center gap-1"
                     >
                       <span>تعديل</span>
                       <span className="text-[10px]">✏️</span>

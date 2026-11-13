@@ -19,21 +19,21 @@ export function MaterialsTable({
 }: MaterialsTableProps) {
   if (materials.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-[#D7EAF7] overflow-hidden shadow-xs">
+      <div className="bg-white rounded-2xl border border-brand-border-soft overflow-hidden shadow-xs">
         <div className="p-12 text-center space-y-3">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EAF4FD] text-[#0057C8] flex items-center justify-center text-2xl font-bold">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-surface-blue text-brand-primary flex items-center justify-center text-2xl font-bold">
             📁
           </div>
-          <h3 className="text-base font-bold text-[#16324A]">
+          <h3 className="text-base font-bold text-brand-ink">
             لا توجد ملفات تطابق الفلترة الحالية
           </h3>
-          <p className="text-xs text-[#66788A] max-w-sm mx-auto">
+          <p className="text-xs text-brand-muted max-w-sm mx-auto">
             لم يتم العثور على محتوى في هذا القسم. يمكنك رفع كتاب، ملخص، نموذج امتحان، أو فيديو لأي مادة دراسية.
           </p>
           <button
             type="button"
             onClick={onOpenAdd}
-            className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0057C8] text-white text-xs font-bold hover:bg-[#2D78B7] transition-colors"
+            className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-brand-hover-medium transition-colors"
           >
             + رفع أول ملف الآن
           </button>
@@ -43,11 +43,11 @@ export function MaterialsTable({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#D7EAF7] overflow-hidden shadow-xs">
+    <div className="bg-white rounded-2xl border border-brand-border-soft overflow-hidden shadow-xs">
       <div className="overflow-x-auto">
         <table className="w-full text-start text-xs sm:text-sm">
           <thead>
-            <tr className="bg-[#F8FBFE] border-b border-[#D7EAF7] text-[#66788A] font-semibold">
+            <tr className="bg-brand-surface-muted border-b border-brand-border-soft text-brand-muted font-semibold">
               <th className="py-3 px-3.5 text-start">المادة الدراسية</th>
               <th className="py-3 px-3.5 text-start">عنوان الملف والملاحظات</th>
               <th className="py-3 px-3.5 text-start">القسم (الـ 4 أقسام)</th>
@@ -58,32 +58,32 @@ export function MaterialsTable({
               <th className="py-3 px-3.5 text-center">الإجراءات</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#D7EAF7]/60">
+          <tbody className="divide-y divide-brand-border-soft/60">
             {materials.map((item) => {
               const normCat = normalizeCategory(item.category);
               const catMeta = CATEGORY_MAP[normCat];
               const statusBadge = STATUS_BADGES[item.status] || STATUS_BADGES["منشور"];
 
               return (
-                <tr key={item.id} className="hover:bg-[#F8FBFE] transition-colors">
+                <tr key={item.id} className="hover:bg-brand-surface-muted transition-colors">
                   <td className="py-3 px-3.5">
                     <div className="flex flex-col">
-                      <span className="text-xs text-[#16324A] font-bold">
+                      <span className="text-xs text-brand-ink font-bold">
                         {item.courseName || "مادة دراسية"}
                       </span>
                       {item.courseCode && (
-                        <span className="font-mono text-[11px] text-[#0057C8] font-semibold" dir="ltr">
+                        <span className="font-mono text-[11px] text-brand-primary font-semibold" dir="ltr">
                           {item.courseCode}
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="py-3 px-3.5">
-                    <div className="font-bold text-[#16324A] max-w-xs line-clamp-1">
+                    <div className="font-bold text-brand-ink max-w-xs line-clamp-1">
                       {item.title}
                     </div>
                     {item.description && (
-                      <span className="text-[11px] text-[#66788A] line-clamp-1">
+                      <span className="text-[11px] text-brand-muted line-clamp-1">
                         {item.description}
                       </span>
                     )}
@@ -94,16 +94,16 @@ export function MaterialsTable({
                       <span>{catMeta.label}</span>
                     </span>
                   </td>
-                  <td className="py-3 px-3.5 font-mono text-xs font-bold text-[#16324A]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#F0F7FD] border border-[#D7EAF7] text-[#0057C8]">
+                  <td className="py-3 px-3.5 font-mono text-xs font-bold text-brand-ink">
+                    <span className="px-2 py-0.5 rounded-md bg-brand-surface-soft border border-brand-border-soft text-brand-primary">
                       {item.fileType}
                     </span>
                   </td>
                   <td className="py-3 px-3.5">
-                    <div className="flex items-center gap-1.5 text-xs text-[#66788A]">
+                    <div className="flex items-center gap-1.5 text-xs text-brand-muted">
                       <span>{item.fileSize}</span>
                       <span>•</span>
-                      <span className="text-[#0057C8] font-bold">{item.downloads} تحميل</span>
+                      <span className="text-brand-primary font-bold">{item.downloads} تحميل</span>
                     </div>
                   </td>
                   <td className="py-3 px-3.5">
@@ -111,7 +111,7 @@ export function MaterialsTable({
                       {statusBadge.label}
                     </span>
                   </td>
-                  <td className="py-3 px-3.5 text-xs font-mono text-[#66788A]">
+                  <td className="py-3 px-3.5 text-xs font-mono text-brand-muted">
                     {item.date}
                   </td>
                   <td className="py-3 px-3.5 text-center">
@@ -141,7 +141,7 @@ export function MaterialsTable({
                           onClick={() => onToggleStatus(item.id, item.status === "منشور" ? "مسودة" : "منشور")}
                           className={`p-1.5 rounded-lg border text-xs transition-colors ${
                             item.status === "منشور"
-                              ? "bg-slate-50 text-[#66788A] border-slate-200 hover:text-amber-600"
+                              ? "bg-brand-surface-muted text-brand-muted border-brand-border-soft hover:text-amber-600"
                               : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
                           }`}
                           title={item.status === "منشور" ? "حجب وتحويل لمسودة" : "نشر للطلاب مباشرة"}
@@ -154,7 +154,7 @@ export function MaterialsTable({
                       <button
                         type="button"
                         onClick={() => onOpenEdit(item)}
-                        className="p-1.5 rounded-lg border border-[#D7EAF7] bg-white text-[#0057C8] hover:bg-[#EAF4FD] transition-colors"
+                        className="p-1.5 rounded-lg border border-brand-border-soft bg-white text-brand-primary hover:bg-brand-surface-blue transition-colors"
                         title="تعديل المحتوى"
                         aria-label="تعديل المحتوى"
                       >

@@ -23,11 +23,11 @@ export function MetricSummaryCards() {
     >
       {/* 1. GPA Card (100-point scale) */}
       <div
-        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs relative overflow-hidden"
+        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs relative overflow-hidden"
         style={{ animationDelay: "100ms" }}
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-[#66788A]">
+          <span className="text-xs font-semibold text-brand-muted">
             المعدل التراكمي
           </span>
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${gpaRating.color}`}>
@@ -35,15 +35,15 @@ export function MetricSummaryCards() {
           </span>
         </div>
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#0057C8]">
+          <span className="text-2xl sm:text-3xl font-extrabold text-brand-primary">
             {isLoaded && hasPlanSelected && cumulativeGpa > 0 ? cumulativeGpa.toFixed(2) : "—"}
           </span>
-          <span className="text-xs text-[#66788A] font-medium" dir="ltr">
+          <span className="text-xs text-brand-muted font-medium" dir="ltr">
             / 100
           </span>
         </div>
-        <div className="mt-2 pt-2 border-t border-[#D7EAF7]/60 flex items-center gap-1.5 text-[11px] text-[#2D78B7]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4DB7F2]" />
+        <div className="mt-2 pt-2 border-t border-brand-border-soft/60 flex items-center gap-1.5 text-[11px] text-brand-hover-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary" />
           <span>
             {isLoaded && hasPlanSelected && cumulativeGpa > 0
               ? `${gpaRating.label} · استمر بهذا المستوى`
@@ -54,74 +54,74 @@ export function MetricSummaryCards() {
 
       {/* 2. Completed Hours Card */}
       <div
-        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs relative overflow-hidden"
+        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs relative overflow-hidden"
         style={{ animationDelay: "200ms" }}
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-[#66788A]">
+          <span className="text-xs font-semibold text-brand-muted">
             الساعات المنجزة
           </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F0F7FD] text-[#66788A]">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-surface-soft text-brand-muted">
             ساعات معتمدة
           </span>
         </div>
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#16324A]" dir="ltr">
+          <span className="text-2xl sm:text-3xl font-extrabold text-brand-ink" dir="ltr">
             {isLoaded && hasPlanSelected ? completedCredits : "—"}
           </span>
-          <span className="text-xs text-[#66788A] font-medium" dir="ltr">
+          <span className="text-xs text-brand-muted font-medium" dir="ltr">
             / {isLoaded && hasPlanSelected ? `${totalCredits} ساعة` : "—"}
           </span>
         </div>
-        <div className="mt-2 pt-2 border-t border-[#D7EAF7]/60 text-[11px] text-[#66788A]">
+        <div className="mt-2 pt-2 border-t border-brand-border-soft/60 text-[11px] text-brand-muted">
           وفق الخطة الأكاديمية المعتمدة
         </div>
       </div>
 
       {/* 3. Remaining Hours Card */}
       <div
-        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs relative overflow-hidden"
+        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs relative overflow-hidden"
         style={{ animationDelay: "300ms" }}
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-[#66788A]">
+          <span className="text-xs font-semibold text-brand-muted">
             الساعات المتبقية
           </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EAF4FD] text-[#0057C8]">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-surface-blue text-brand-primary">
             {isLoaded && hasPlanSelected ? `${completionPercentage}% مكتمل` : "—"}
           </span>
         </div>
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#16324A]">
+          <span className="text-2xl sm:text-3xl font-extrabold text-brand-ink">
             {isLoaded && hasPlanSelected ? remainingCredits : "—"}
           </span>
-          <span className="text-xs text-[#66788A] font-medium">ساعة</span>
+          <span className="text-xs text-brand-muted font-medium">ساعة</span>
         </div>
-        <div className="mt-2 pt-2 border-t border-[#D7EAF7]/60 text-[11px] text-[#66788A]">
+        <div className="mt-2 pt-2 border-t border-brand-border-soft/60 text-[11px] text-brand-muted">
           وفق الخطة الأكاديمية الحالية
         </div>
       </div>
 
       {/* 4. Active Tasks Card */}
       <div
-        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs relative overflow-hidden"
+        className="card-entrance card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs relative overflow-hidden"
         style={{ animationDelay: "400ms" }}
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-[#66788A]">
+          <span className="text-xs font-semibold text-brand-muted">
             المهام الدراسية
           </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-surface-blue text-brand-primary border border-brand-border-soft">
             نشطة
           </span>
         </div>
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#16324A]">
+          <span className="text-2xl sm:text-3xl font-extrabold text-brand-ink">
             2
           </span>
-          <span className="text-xs text-[#66788A] font-medium">مهام متبقية</span>
+          <span className="text-xs text-brand-muted font-medium">مهام متبقية</span>
         </div>
-        <div className="mt-2 pt-2 border-t border-[#D7EAF7]/60 text-[11px] text-[#66788A]">
+        <div className="mt-2 pt-2 border-t border-brand-border-soft/60 text-[11px] text-brand-muted">
           2 مهام غير مكتملة هذا الأسبوع
         </div>
       </div>

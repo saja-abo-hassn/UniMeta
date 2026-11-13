@@ -43,7 +43,7 @@ export function NotificationBell() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2.5 rounded-xl border border-[#D7EAF7] bg-white hover:bg-[#F4FAFF] text-[#16324A] hover:text-[#0057C8] transition-colors focus-ring"
+        className="relative p-2.5 rounded-xl border border-brand-border-soft bg-white hover:bg-[#F4FAFF] text-brand-ink hover:text-brand-primary transition-colors focus-ring"
         aria-label="إشعارات الإدارة"
         aria-expanded={isOpen}
       >
@@ -65,12 +65,12 @@ export function NotificationBell() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute start-0 sm:start-auto sm:end-0 mt-2 w-80 sm:w-96 rounded-3xl bg-white border border-[#D7EAF7] shadow-xl z-50 overflow-hidden animate-scale-up">
+        <div className="absolute start-0 sm:start-auto sm:end-0 mt-2 w-80 sm:w-96 rounded-3xl bg-white border border-brand-border-soft shadow-xl z-50 overflow-hidden animate-scale-up">
           {/* Header */}
-          <div className="p-4 border-b border-[#D7EAF7] bg-[#F8FBFE] flex items-center justify-between">
+          <div className="p-4 border-b border-brand-border-soft bg-brand-surface-muted flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#0057C8]" />
-              <h3 className="font-extrabold text-xs sm:text-sm text-[#16324A]">
+              <span className="w-2 h-2 rounded-full bg-brand-primary" />
+              <h3 className="font-extrabold text-xs sm:text-sm text-brand-ink">
                 إشعارات لوحة التحكم
               </h3>
             </div>
@@ -78,7 +78,7 @@ export function NotificationBell() {
               <button
                 type="button"
                 onClick={markAllNotificationsAsRead}
-                className="text-[11px] font-bold text-[#0057C8] hover:underline"
+                className="text-[11px] font-bold text-brand-primary hover:underline"
               >
                 تعليم الكل كمقروء
               </button>
@@ -86,9 +86,9 @@ export function NotificationBell() {
           </div>
 
           {/* List */}
-          <div className="max-h-80 overflow-y-auto divide-y divide-[#D7EAF7]/50">
+          <div className="max-h-80 overflow-y-auto divide-y divide-brand-border-soft/50">
             {visibleNotifications.length === 0 ? (
-              <div className="p-8 text-center text-xs text-[#66788A]">
+              <div className="p-8 text-center text-xs text-brand-muted">
                 لا توجد إشعارات جديدة حالياً.
               </div>
             ) : (
@@ -97,27 +97,27 @@ export function NotificationBell() {
                   key={notif.id}
                   onClick={() => markNotificationAsRead(notif.id)}
                   className={`p-3.5 hover:bg-[#F4FAFF] transition-colors cursor-pointer space-y-1 ${
-                    !notif.read ? "bg-[#F0F7FD]/70" : ""
+                    !notif.read ? "bg-brand-surface-soft/70" : ""
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <span className="font-bold text-xs text-[#16324A] leading-tight">
+                    <span className="font-bold text-xs text-brand-ink leading-tight">
                       {notif.title}
                     </span>
                     {!notif.read && (
-                      <span className="w-2 h-2 rounded-full bg-[#0057C8] shrink-0 mt-1" />
+                      <span className="w-2 h-2 rounded-full bg-brand-primary shrink-0 mt-1" />
                     )}
                   </div>
-                  <p className="text-[11px] text-[#66788A] leading-relaxed line-clamp-2">
+                  <p className="text-[11px] text-brand-muted leading-relaxed line-clamp-2">
                     {notif.message}
                   </p>
-                  <div className="flex items-center justify-between pt-1 text-[10px] text-[#66788A]">
+                  <div className="flex items-center justify-between pt-1 text-[10px] text-brand-muted">
                     <span>{notif.createdAt}</span>
                     {notif.link && (
                       <Link
                         href={notif.link}
                         onClick={() => setIsOpen(false)}
-                        className="text-[#0057C8] font-bold hover:underline"
+                        className="text-brand-primary font-bold hover:underline"
                       >
                         عرض التفاصيل ←
                       </Link>
@@ -129,11 +129,11 @@ export function NotificationBell() {
           </div>
 
           {/* Footer Link */}
-          <div className="p-3 border-t border-[#D7EAF7] bg-[#F8FBFE] text-center">
+          <div className="p-3 border-t border-brand-border-soft bg-brand-surface-muted text-center">
             <Link
               href="/admin/notifications"
               onClick={() => setIsOpen(false)}
-              className="text-xs font-bold text-[#0057C8] hover:underline"
+              className="text-xs font-bold text-brand-primary hover:underline"
             >
               عرض كافة الإشعارات الإدارية ({visibleNotifications.length})
             </Link>

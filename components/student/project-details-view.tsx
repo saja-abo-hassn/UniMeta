@@ -52,25 +52,25 @@ export function ProjectDetailsView({ id }: { id: string }) {
       <div className="flex items-center justify-between">
         <Link
           href="/student/projects"
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-[#F0F7FD] border border-[#D7EAF7] text-[#0057C8] text-xs font-bold transition-colors shadow-2xs"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-brand-surface-soft border border-brand-border-soft text-brand-primary text-xs font-bold transition-colors shadow-2xs"
         >
           <span>&rarr;</span>
           <span>العودة لكافة مشاريع التخرج</span>
         </Link>
 
-        <span className="text-xs text-[#66788A] font-semibold">
+        <span className="text-xs text-brand-muted font-semibold">
           العام الأكاديمي: {project.academicYear}
         </span>
       </div>
 
       {/* Main Project Hero Card */}
-      <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-5">
+      <section className="p-6 sm:p-8 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-xs px-3 py-1 rounded-full bg-[#EAF4FD] text-[#0057C8] border border-[#D7EAF7]">
+            <span className="font-bold text-xs px-3 py-1 rounded-full bg-brand-surface-blue text-brand-primary border border-brand-border-soft">
               {project.major}
             </span>
-            <span className="text-xs text-[#66788A] font-semibold">
+            <span className="text-xs text-brand-muted font-semibold">
               {project.department}
             </span>
           </div>
@@ -79,7 +79,7 @@ export function ProjectDetailsView({ id }: { id: string }) {
             className={`text-xs font-bold px-3 py-1 rounded-full ${
               isLookingForMembers
                 ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                : "bg-slate-100 text-slate-600 border border-slate-200"
+                : "bg-slate-100 text-brand-muted border border-brand-border-soft"
             }`}
           >
             {project.status}
@@ -87,31 +87,31 @@ export function ProjectDetailsView({ id }: { id: string }) {
         </div>
 
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#16324A] leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-ink leading-tight">
             {project.title}
           </h1>
-          <p className="text-xs sm:text-sm text-[#66788A] mt-2 leading-relaxed">
+          <p className="text-xs sm:text-sm text-brand-muted mt-2 leading-relaxed">
             {project.summary}
           </p>
         </div>
 
         {/* Project Meta Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-[#D7EAF7]/60 text-xs">
-          <div className="p-3 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7]">
-            <span className="text-[#66788A] block mb-0.5">المشرف الأكاديمي:</span>
-            <span className="font-bold text-[#16324A]">{project.supervisor}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-brand-border-soft/60 text-xs">
+          <div className="p-3 rounded-2xl bg-brand-surface-muted border border-brand-border-soft">
+            <span className="text-brand-muted block mb-0.5">المشرف الأكاديمي:</span>
+            <span className="font-bold text-brand-ink">{project.supervisor}</span>
           </div>
-          <div className="p-3 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7]">
-            <span className="text-[#66788A] block mb-0.5">قائد الفريق:</span>
-            <span className="font-bold text-[#0057C8]">{project.leader}</span>
+          <div className="p-3 rounded-2xl bg-brand-surface-muted border border-brand-border-soft">
+            <span className="text-brand-muted block mb-0.5">قائد الفريق:</span>
+            <span className="font-bold text-brand-primary">{project.leader}</span>
           </div>
-          <div className="p-3 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7]">
-            <span className="text-[#66788A] block mb-0.5">المرحلة الحالية:</span>
-            <span className="font-bold text-[#2D78B7]">{project.stage}</span>
+          <div className="p-3 rounded-2xl bg-brand-surface-muted border border-brand-border-soft">
+            <span className="text-brand-muted block mb-0.5">المرحلة الحالية:</span>
+            <span className="font-bold text-brand-hover-medium">{project.stage}</span>
           </div>
-          <div className="p-3 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7]">
-            <span className="text-[#66788A] block mb-0.5">تاريخ التسليم المتوقع:</span>
-            <span className="font-bold font-mono text-[#16324A]" dir="ltr">
+          <div className="p-3 rounded-2xl bg-brand-surface-muted border border-brand-border-soft">
+            <span className="text-brand-muted block mb-0.5">تاريخ التسليم المتوقع:</span>
+            <span className="font-bold font-mono text-brand-ink" dir="ltr">
               {project.submissionDate}
             </span>
           </div>
@@ -123,26 +123,26 @@ export function ProjectDetailsView({ id }: { id: string }) {
         {/* Left Column (2 cols): Problem statement & Objectives */}
         <div className="lg:col-span-2 space-y-6">
           {/* Problem Statement Card */}
-          <section className="p-6 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-3">
-            <h2 className="text-base font-bold text-[#16324A] flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#0057C8]" />
+          <section className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-3">
+            <h2 className="text-base font-bold text-brand-ink flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-primary" />
               <span>بيان المشكلة (Problem Statement)</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#66788A] leading-relaxed">
+            <p className="text-xs sm:text-sm text-brand-muted leading-relaxed">
               {project.problemStatement}
             </p>
           </section>
 
           {/* Objectives Card */}
-          <section className="p-6 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-3">
-            <h2 className="text-base font-bold text-[#16324A] flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#4DB7F2]" />
+          <section className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-3">
+            <h2 className="text-base font-bold text-brand-ink flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-secondary" />
               <span>أهداف المشروع (Project Objectives)</span>
             </h2>
-            <ul className="space-y-2 text-xs sm:text-sm text-[#16324A]">
+            <ul className="space-y-2 text-xs sm:text-sm text-brand-ink">
               {project.objectives.map((obj, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-[#EAF4FD] text-[#0057C8] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="w-5 h-5 rounded-full bg-brand-surface-blue text-brand-primary font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed">{obj}</span>
@@ -152,9 +152,9 @@ export function ProjectDetailsView({ id }: { id: string }) {
           </section>
 
           {/* Milestones Timeline */}
-          <section className="p-6 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-[#16324A] flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#2D78B7]" />
+          <section className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-4">
+            <h2 className="text-base font-bold text-brand-ink flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-hover-medium" />
               <span>المراحل الزمنية ومواعيد التسليم (Milestones)</span>
             </h2>
 
@@ -162,7 +162,7 @@ export function ProjectDetailsView({ id }: { id: string }) {
               {project.milestones.map((m, idx) => (
                 <div
                   key={idx}
-                  className="p-3.5 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7] flex items-center justify-between gap-3 text-xs"
+                  className="p-3.5 rounded-2xl bg-brand-surface-muted border border-brand-border-soft flex items-center justify-between gap-3 text-xs"
                 >
                   <div className="flex items-center gap-3">
                     <span
@@ -170,22 +170,22 @@ export function ProjectDetailsView({ id }: { id: string }) {
                         m.status === "completed"
                           ? "bg-emerald-500"
                           : m.status === "in_progress"
-                          ? "bg-[#0057C8] animate-pulse"
+                          ? "bg-brand-primary animate-pulse"
                           : "bg-slate-300"
                       }`}
                     />
-                    <span className="font-bold text-[#16324A]">{m.title}</span>
+                    <span className="font-bold text-brand-ink">{m.title}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 font-mono text-[11px] text-[#66788A]" dir="ltr">
+                  <div className="flex items-center gap-2 font-mono text-[11px] text-brand-muted" dir="ltr">
                     <span>{m.date}</span>
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-sans font-bold ${
                         m.status === "completed"
                           ? "bg-emerald-50 text-emerald-700"
                           : m.status === "in_progress"
-                          ? "bg-[#EAF4FD] text-[#0057C8]"
-                          : "bg-slate-100 text-slate-500"
+                          ? "bg-brand-surface-blue text-brand-primary"
+                          : "bg-slate-100 text-brand-muted"
                       }`}
                     >
                       {m.status === "completed" ? "منجز" : m.status === "in_progress" ? "جاري" : "قادم"}
@@ -197,13 +197,13 @@ export function ProjectDetailsView({ id }: { id: string }) {
           </section>
 
           {/* Tech Stack */}
-          <section className="p-6 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-3">
-            <h2 className="text-base font-bold text-[#16324A]">التقنيات والأدوات المستخدمة</h2>
+          <section className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-3">
+            <h2 className="text-base font-bold text-brand-ink">التقنيات والأدوات المستخدمة</h2>
             <div className="flex flex-wrap gap-2">
               {project.technologies.map((tech) => (
                 <span
                   key={tech}
-                  className="px-3 py-1.5 rounded-xl bg-[#F0F7FD] border border-[#D7EAF7] text-xs font-mono font-bold text-[#0057C8]"
+                  className="px-3 py-1.5 rounded-xl bg-brand-surface-soft border border-brand-border-soft text-xs font-mono font-bold text-brand-primary"
                 >
                   {tech}
                 </span>
@@ -223,19 +223,19 @@ export function ProjectDetailsView({ id }: { id: string }) {
               </p>
             </div>
           ) : isLookingForMembers ? (
-            <section className="p-6 rounded-3xl bg-gradient-to-br from-[#EAF4FD] to-[#D7EAF7]/50 border border-[#0057C8]/20 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#0057C8]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0057C8]" />
+            <section className="p-6 rounded-3xl bg-gradient-to-br from-brand-surface-blue to-brand-border-soft/50 border border-brand-primary/20 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 text-xs font-bold text-brand-primary">
+                <span className="w-2.5 h-2.5 rounded-full bg-brand-primary" />
                 <span>الفريق يبحث عن شركاء! ({project.neededCount} مقاعد)</span>
               </div>
 
               <div className="space-y-1">
-                <span className="text-xs text-[#66788A] block">الأدوار الشاغرة:</span>
+                <span className="text-xs text-brand-muted block">الأدوار الشاغرة:</span>
                 <div className="flex flex-wrap gap-1.5">
                   {project.neededRoles.map((r) => (
                     <span
                       key={r}
-                      className="px-2.5 py-1 rounded-lg bg-white border border-[#D7EAF7] text-xs font-bold text-[#16324A]"
+                      className="px-2.5 py-1 rounded-lg bg-white border border-brand-border-soft text-xs font-bold text-brand-ink"
                     >
                       {r}
                     </span>
@@ -246,7 +246,7 @@ export function ProjectDetailsView({ id }: { id: string }) {
               <button
                 type="button"
                 onClick={() => setIsApplyModalOpen(true)}
-                className="w-full py-3 rounded-2xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center gap-2"
               >
                 <span>تقديم طلب انضمام للفريق</span>
                 <span>&larr;</span>
@@ -255,8 +255,8 @@ export function ProjectDetailsView({ id }: { id: string }) {
           ) : null}
 
           {/* Members List */}
-          <section className="p-6 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-[#16324A]">
+          <section className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-4">
+            <h2 className="text-base font-bold text-brand-ink">
               أعضاء الفريق الحاليين ({project.members.length})
             </h2>
 
@@ -264,19 +264,19 @@ export function ProjectDetailsView({ id }: { id: string }) {
               {project.members.map((member, idx) => (
                 <div
                   key={idx}
-                  className="p-3.5 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7] flex items-center gap-3"
+                  className="p-3.5 rounded-2xl bg-brand-surface-muted border border-brand-border-soft flex items-center gap-3"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#0057C8] text-white font-bold text-xs flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-brand-primary text-white font-bold text-xs flex items-center justify-center shrink-0">
                     {member.initials}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <span className="font-bold text-xs text-[#16324A] block truncate">
+                    <span className="font-bold text-xs text-brand-ink block truncate">
                       {member.name}
                     </span>
-                    <span className="text-[11px] text-[#2D78B7] block truncate">
+                    <span className="text-[11px] text-brand-hover-medium block truncate">
                       {member.role}
                     </span>
-                    <span className="text-[10px] text-[#66788A] block">
+                    <span className="text-[10px] text-brand-muted block">
                       {member.major}
                     </span>
                   </div>
@@ -303,7 +303,7 @@ export function ProjectDetailsView({ id }: { id: string }) {
           <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
             {/* Mandatory Phase Selection */}
             <div className="space-y-1.5">
-              <label className="font-bold text-[#16324A] block">
+              <label className="font-bold text-brand-ink block">
                 حدد المرحلة التي تدرسها حالياً <span className="text-red-500">* (إلزامي)</span>:
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -317,8 +317,8 @@ export function ProjectDetailsView({ id }: { id: string }) {
                     }}
                     className={`py-2 px-2.5 rounded-xl border text-center font-bold text-xs transition-all cursor-pointer ${
                       applicantStage === stage
-                        ? "bg-[#0057C8] text-white border-[#0057C8] shadow-xs"
-                        : "bg-[#F8FBFE] border-[#D7EAF7] text-[#16324A] hover:bg-[#F0F7FD]"
+                        ? "bg-brand-primary text-white border-brand-primary shadow-xs"
+                        : "bg-brand-surface-muted border-brand-border-soft text-brand-ink hover:bg-brand-surface-soft"
                     }`}
                   >
                     {stage}
@@ -333,30 +333,30 @@ export function ProjectDetailsView({ id }: { id: string }) {
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">الدور المطلوب:</label>
+              <label className="font-bold text-brand-ink block">الدور المطلوب:</label>
               <input
                 type="text"
                 required
                 value={applicantRole}
                 onChange={(e) => setApplicantRole(e.target.value)}
                 placeholder="مثال: مطور خوارزميات الذكاء الاصطناعي"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">رسالتك لقائد الفريق:</label>
+              <label className="font-bold text-brand-ink block">رسالتك لقائد الفريق:</label>
               <textarea
                 rows={3}
                 required
                 value={applicantMessage}
                 onChange={(e) => setApplicantMessage(e.target.value)}
                 placeholder="عرف بنفسك وبمهاراتك وخبراتك السابقة في لغات البرمجة..."
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               />
             </div>
 
-            <div className="p-3 rounded-2xl bg-[#FFF9F2] border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
+            <div className="p-3 rounded-2xl bg-[#FFF9F2] border border-brand-border-soft text-amber-900 text-[11px] leading-relaxed">
               <strong>تعليمات القبول:</strong> دور الطالب يقتصر على تقديم الطلب، بينما القبول والرفض واعتماد الأعضاء حق حصري لمشرف المشروع وصاحب المشروع.
             </div>
           </Modal.Body>
@@ -365,13 +365,13 @@ export function ProjectDetailsView({ id }: { id: string }) {
             <button
               type="button"
               onClick={() => setIsApplyModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-[#16324A] font-semibold hover:bg-[#F8FBFE] cursor-pointer"
+              className="px-4 py-2 rounded-xl border border-brand-border-soft text-brand-ink font-semibold hover:bg-brand-surface-muted cursor-pointer"
             >
               إلغاء
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#0057C8] text-white font-bold shadow-xs hover:bg-[#2D78B7] cursor-pointer"
+              className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
             >
               إرسال الطلب الآن
             </button>

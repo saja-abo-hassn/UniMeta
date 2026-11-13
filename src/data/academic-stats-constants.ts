@@ -40,7 +40,7 @@ export const defaultFallbackContext: AcademicStatsValue = {
   completionPercentage: Math.round((21 / defaultFallbackPlan.totalCredits) * 100),
   cumulativeGpa: 87.29,
   gpaFormatted: "87.29",
-  gpaRating: { label: "جيد جداً", color: "text-[#2D78B7] bg-[#F0F7FD] border-[#D7EAF7]" },
+  gpaRating: { label: "جيد جداً", color: "text-brand-hover-medium bg-brand-surface-soft border-brand-border-soft" },
 
   selectPlan: () => {},
   setHasPlanSelected: () => {},

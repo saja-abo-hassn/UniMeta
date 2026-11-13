@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AppProviders } from "@/components/providers/app-providers";
 
 export const metadata: Metadata = {
   title: "حساب الرسوم والساعات المعتمدة | UniMeta",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function FeeCalculatorLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return children;
+  return <AppProviders>{children}</AppProviders>;
 }

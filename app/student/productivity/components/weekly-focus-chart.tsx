@@ -8,17 +8,17 @@ interface WeeklyFocusChartProps {
 
 export function WeeklyFocusChart({ stats, maxWeeklyMinutes }: WeeklyFocusChartProps) {
   return (
-    <div className="card-hover-effect p-6 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-[#D7EAF7]">
+    <div className="card-hover-effect p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-brand-border-soft">
         <div>
-          <h3 className="text-base font-black text-[#16324A]">
+          <h3 className="text-base font-black text-brand-ink">
             سجل التركيز الأسبوعي
           </h3>
-          <span className="text-xs text-[#66788A]">
+          <span className="text-xs text-brand-muted">
             توزيع دقائق التركيز على مدار أيام الأسبوع
           </span>
         </div>
-        <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#EAF4FD] text-[#0057C8]">
+        <span className="text-xs font-bold px-3 py-1 rounded-full bg-brand-surface-blue text-brand-primary">
           مجموع الأسبوع: {stats.totalFocusMinutes} دقيقة
         </span>
       </div>
@@ -33,21 +33,21 @@ export function WeeklyFocusChart({ stats, maxWeeklyMinutes }: WeeklyFocusChartPr
 
           return (
             <div key={item.dayName} className="flex flex-col items-center justify-end h-full gap-2">
-              <span className="text-[10px] text-[#66788A] font-mono">{item.minutes}د</span>
-              <div className="w-full max-w-[36px] bg-[#F0F7FD] rounded-xl h-28 relative flex items-end overflow-hidden p-0.5">
+              <span className="text-[10px] text-brand-muted font-mono">{item.minutes}د</span>
+              <div className="w-full max-w-[36px] bg-brand-surface-soft rounded-xl h-28 relative flex items-end overflow-hidden p-0.5">
                 <div
                   style={{ height: `${heightPercent}%` }}
                   className={`w-full rounded-lg transition-all duration-500 ${
                     isToday
-                      ? "bg-gradient-to-t from-[#0057C8] to-[#4DB7F2]"
-                      : "bg-[#2D78B7]/80 hover:bg-[#0057C8]"
+                      ? "bg-gradient-to-t from-brand-primary to-brand-secondary"
+                      : "bg-brand-hover-medium/80 hover:bg-brand-primary"
                   }`}
                   title={`${item.dayName}: ${item.sessions} جلسات (${item.minutes} دقيقة)`}
                 />
               </div>
               <span
                 className={`text-[11px] font-bold ${
-                  isToday ? "text-[#0057C8]" : "text-[#66788A]"
+                  isToday ? "text-brand-primary" : "text-brand-muted"
                 }`}
               >
                 {item.dayShort}
