@@ -139,7 +139,7 @@ export default function FeeCalculatorPage() {
                     const val = parseFloat(e.target.value);
                     setRatePerHour(isNaN(val) ? 0 : Math.max(0, val));
                   }}
-                className="w-full h-11 px-4 pe-12 rounded-xl border border-brand-border-soft text-xs sm:text-sm font-bold text-brand-primary focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/20"
+                className="w-full h-11 px-4 ps-12 rounded-xl border border-brand-border-soft text-xs sm:text-sm font-bold text-brand-primary focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/20"
                 />
                 <span className="absolute end-3 top-3 text-xs font-bold text-brand-muted pointer-events-none" dir="ltr">
                   د.أ
@@ -164,7 +164,7 @@ export default function FeeCalculatorPage() {
                     const val = parseFloat(e.target.value);
                     setAdditionalFeePercent(isNaN(val) ? 0 : Math.max(0, val));
                   }}
-                  className="w-full h-11 px-4 pe-8 rounded-xl border border-brand-border-soft text-xs sm:text-sm font-bold text-brand-ink focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/20"
+                  className="w-full h-11 px-4 ps-8 rounded-xl border border-brand-border-soft text-xs sm:text-sm font-bold text-brand-ink focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/20"
                 />
                 <span className="absolute end-3 top-3 text-xs font-bold text-brand-muted pointer-events-none" dir="ltr">
                   %
