@@ -111,6 +111,9 @@ function IdentityChat({initiallyOpen}:{initiallyOpen:boolean}) {
               messages={messages}
               isTyping={isTyping}
               messagesEndRef={messagesEndRef}
+              isAuthenticated={!!user}
+              suggestionsDisabled={isTyping || historyBusy}
+              onSuggestion={(question) => handleSend(undefined, question)}
             />
 
             <footer className="p-3.5 border-t border-brand-border-soft bg-[#F8FAFC] rounded-b-3xl">

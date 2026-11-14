@@ -153,9 +153,9 @@ export function useUniMetaChat(initiallyOpen = false) {
     }
   };
 
-  const handleSend = (e?: React.FormEvent) => {
+  const handleSend = (e?: React.FormEvent, suggestedQuestion?: string) => {
     if (e) e.preventDefault();
-    const query = inputVal.trim();
+    const query = (suggestedQuestion ?? inputVal).trim();
     if (!query || isTyping || historyBusy) return;
     if(!apiClient.isUsingMock()&&!user){
       setIsTyping(true);setError("");clearAllTimers();dispatchMascot({type:"SEND_MESSAGE"});
