@@ -22,16 +22,17 @@ export function VerifyEmailForm() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Timer & countdown state
-  const [countdown, setCountdown] = useState<number>(60);
+  const [countdown, setCountdown] = useState<number>(searchParams.get("pending") === "1" ? 0 : 60);
   const [isResending, setIsResending] = useState<boolean>(false);
 
   // Status & feedback banners
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(
-    "تم إرسال رمز التحقق إلى بريدك. لأغراض التجربة، يمكنك العثور عليه في Console (F12)."
+    "أدخل رمز التحقق المكوّن من 6 أرقام من بريدك الإلكتروني. افحص الرسائل غير المرغوب فيها أيضًا. يمكنك طلب رمز جديد إذا لم يصلك."
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const submittingRef = useRef(false);
   const [, startTransition] = useTransition();
 
   // Auto-focus first input on mount
@@ -118,6 +119,7 @@ export function VerifyEmailForm() {
 
   // Submit verification code
   const submitCode = async (codeToSubmit?: string) => {
+    if (submittingRef.current) return;
     const fullCode = codeToSubmit || digits.join("");
     if (fullCode.length !== 6) {
       setErrorMessage("يرجى إدخال رمز التحقق كاملاً المكوّن من 6 أرقام.");
@@ -130,6 +132,7 @@ export function VerifyEmailForm() {
       return;
     }
 
+    submittingRef.current = true;
     setIsSubmitting(true);
     setErrorMessage(null);
     setSuccessMessage(null);
@@ -140,7 +143,7 @@ export function VerifyEmailForm() {
 
       if (!response.errors && response.status === 200 && !response.data?.token) {
         setSuccessMessage(response.message);
-        router.push(`/login?email=${encodeURIComponent(email.trim())}`);
+        router.push(`/login?email=${encodeURIComponent(email.trim())}&activated=1`);
         return;
       }
 
@@ -157,6 +160,8 @@ export function VerifyEmailForm() {
     } catch {
       setIsSubmitting(false);
       setErrorMessage("حدث خطأ أثناء التحقق من الرمز، يرجى المحاولة لاحقاً.");
+    } finally {
+      submittingRef.current = false;
     }
   };
 
@@ -181,7 +186,7 @@ export function VerifyEmailForm() {
       if (!response.errors && response.data) {
         setCountdown(60);
         setDigits(["", "", "", "", "", ""]);
-        setInfoMessage("تم توليد وإرسال رمز تحقق جديد بنجاح! تفقّد الـ Console (F12).");
+        setInfoMessage("إذا كان الحساب بانتظار التفعيل، فستصلك رسالة برمز تحقق جديد. افحص الوارد والرسائل غير المرغوب فيها.");
         inputRefs.current[0]?.focus();
       } else {
         setErrorMessage(response.message || "تعذر إعادة إرسال الرمز في الوقت الحالي.");
@@ -193,20 +198,31 @@ export function VerifyEmailForm() {
   };
 
   // Save edited email
-  const handleSaveEmail = (e: React.FormEvent) => {
+  const handleSaveEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isResending) return;
     if (!tempEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempEmail.trim())) {
       setErrorMessage("يرجى إدخال بريد إلكتروني صحيح.");
       return;
     }
-    setEmail(tempEmail.trim());
-    setIsEditingEmail(false);
     setErrorMessage(null);
-    // Request code for newly entered email
-    resendVerificationCode(tempEmail.trim()).then(() => {
+    setIsResending(true);
+    try {
+      const response = await resendVerificationCode(tempEmail.trim());
+      if (response.errors || !response.data) {
+        setErrorMessage(response.message || "تعذر إرسال رمز التحقق. حاول مجددًا.");
+        return;
+      }
+      setEmail(tempEmail.trim());
+      setIsEditingEmail(false);
+      setDigits(["", "", "", "", "", ""]);
       setCountdown(60);
-      setInfoMessage("تم إرسال رمز التحقق إلى البريد المعدّل (تفقّد الـ Console).");
-    });
+      setInfoMessage("إذا كان البريد مرتبطًا بحساب بانتظار التفعيل، فستصلك رسالة برمز التحقق.");
+    } catch {
+      setErrorMessage("تعذر الاتصال بالخادم لإرسال الرمز.");
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
@@ -281,6 +297,7 @@ export function VerifyEmailForm() {
             />
             <button
               type="submit"
+              disabled={isResending}
               className="h-9 px-3.5 text-xs font-semibold bg-brand-primary text-white rounded-lg hover:bg-[#0046A0] transition-colors shadow-xs"
             >
               حفظ وإرسال
@@ -296,14 +313,14 @@ export function VerifyEmailForm() {
         )}
       </div>
 
-      {/* Info Notice (Console Preview Banner) */}
+      {/* Verification instructions */}
       {infoMessage && (
         <div className="p-3 rounded-xl bg-brand-surface-blue/80 border border-brand-border-soft/70 text-brand-ink text-xs flex items-start gap-2.5 shadow-2xs">
           <svg className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div className="leading-relaxed">
-            <span className="font-bold block text-brand-dark mb-0.5">وضع التطوير (Dev Mode):</span>
+            <span className="font-bold block text-brand-dark mb-0.5">تفعيل الحساب:</span>
             {infoMessage}
           </div>
         </div>

@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     const response = await authService.login(credentials);
-    if (response.data?.user) {
+    if (response.data?.token && response.data.user && !response.errors && !response.data.requiresVerification) {
       authService.cacheCurrentUser(response.data.user);
       setUser(response.data.user);
     }

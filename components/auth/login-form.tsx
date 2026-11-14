@@ -67,9 +67,9 @@ export function LoginForm() {
 
       if (response.data?.requiresVerification || response.errors?.requiresVerification) {
         const userEmail = response.data?.user?.email || (identifier.includes("@") ? identifier.trim() : "");
-        setErrorMessage("حسابك غير مؤكّد بعد. تم إرسال رمز تحقق، جاري توجيهك لصفحة التأكيد...");
+        setErrorMessage("حسابك بانتظار التفعيل. أدخل رمز التحقق المرسل إلى بريدك أو اطلب رمزًا جديدًا من صفحة التأكيد.");
         setTimeout(() => {
-          router.push(`/verify-email?email=${encodeURIComponent(userEmail)}`);
+          router.push(`/verify-email?email=${encodeURIComponent(userEmail)}&pending=1`);
         }, 700);
         return;
       }

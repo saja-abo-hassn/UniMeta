@@ -63,8 +63,8 @@ export function RegisterForm() {
 
     if (!formData.password) {
       nextErrors.password = "يرجى إدخال كلمة المرور.";
-    } else if (formData.password.length < 6) {
-      nextErrors.password = "يجب ألا تقل كلمة المرور عن 6 خانات.";
+    } else if (formData.password.length < 8) {
+      nextErrors.password = "يجب ألا تقل كلمة المرور عن 8 خانات.";
     }
 
     if (!formData.confirmPassword) {

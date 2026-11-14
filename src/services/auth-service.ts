@@ -53,7 +53,10 @@ class AuthService {
         identifier: credentials.identifier,
         password: credentials.password,
       });
-      if(response.data){const profile=await apiClient.get<BackendUser>("/users/me/profile");return {...response,data:{...response.data,user:toUser(profile.data??response.data.user)}};}
+      if (response.code === "EMAIL_VERIFICATION_REQUIRED" && response.data?.user) {
+        return { ...response, data: { token: "", user: toUser(response.data.user), requiresVerification: true } };
+      }
+      if (response.data?.token && !response.errors) {const profile=await apiClient.get<BackendUser>("/users/me/profile");return {...response,data:{...response.data,user:toUser(profile.data??response.data.user)}};}
       return { ...response, data: null };
     }
 
@@ -149,7 +152,7 @@ class AuthService {
         email: matchedUser.email,
         studentId: matchedUser.studentId,
         faculty: matchedMod?.assignedDepartment || matchedUser.faculty,
-        role: (matchedMod ? matchedMod.role : matchedUser.role) as any,
+        role: (matchedMod ? matchedMod.role : matchedUser.role) as AuthSessionData["user"]["role"],
         title: matchedMod?.title || null,
         emailVerified: true,
       },
@@ -180,8 +183,11 @@ class AuthService {
         student_id: data.studentId || undefined, faculty: data.faculty || undefined,
       });
       if (!response.data || response.errors) return { ...response, data: null };
-      const session = await this.login({ identifier: data.email, password: data.password });
-      return session.data ? session : { ...session, message: `تم إنشاء حسابك. سجّل الدخول للمتابعة. ${session.message}` };
+      return {
+        ...response,
+        data: { token: "", user: toUser(response.data), requiresVerification: true },
+        message: "تم إنشاء حسابك وإرسال رمز التحقق إلى بريدك الإلكتروني. فعّل حسابك للمتابعة.",
+      };
     }
 
     // Mock Backend Handler:
