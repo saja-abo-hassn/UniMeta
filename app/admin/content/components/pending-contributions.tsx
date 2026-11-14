@@ -16,7 +16,7 @@ export function PendingContributions({
   if (materials.length === 0) return null;
 
   return (
-    <section className="bg-gradient-to-r from-amber-500/10 via-amber-50 to-white rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-xs space-y-4">
+    <section className="bg-gradient-to-r from-amber-500/10 via-amber-50 to-white rounded-3xl border border-brand-border-soft/80 p-5 sm:p-6 shadow-xs space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-xs">
@@ -24,14 +24,14 @@ export function PendingContributions({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base sm:text-lg font-black text-[#16324A]">
+              <h2 className="text-base sm:text-lg font-black text-brand-ink">
                 مساهمات الطلاب بانتظار المراجعة
               </h2>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-500 text-white">
                 {materials.length} بانتظار القرار
               </span>
             </div>
-            <p className="text-xs text-[#66788A] mt-0.5">
+            <p className="text-xs text-brand-muted mt-0.5">
               ملفات قام الطلاب برفعها للمكتبة الرقمية، يرجى مراجعتها والموافقة عليها لتظهر للجميع أو رفضها.
             </p>
           </div>
@@ -47,15 +47,15 @@ export function PendingContributions({
           return (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-amber-200 p-4 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-3"
+              className="bg-white rounded-2xl border border-brand-border-soft p-4 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-3"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-7 h-7 rounded-xl bg-[#EAF4FD] text-[#0057C8] flex items-center justify-center text-xs font-bold shrink-0">
+                    <span className="w-7 h-7 rounded-xl bg-brand-surface-blue text-brand-primary flex items-center justify-center text-xs font-bold shrink-0">
                       👤
                     </span>
-                    <span className="text-xs font-bold text-[#16324A] truncate">
+                    <span className="text-xs font-bold text-brand-ink truncate">
                       {student}
                     </span>
                   </div>
@@ -66,16 +66,16 @@ export function PendingContributions({
                 </div>
 
                 <div>
-                  <h3 className="text-xs sm:text-sm font-black text-[#16324A] line-clamp-1">
+                  <h3 className="text-xs sm:text-sm font-black text-brand-ink line-clamp-1">
                     {item.title}
                   </h3>
-                  <div className="flex items-center gap-2 text-xs text-[#66788A] mt-0.5">
-                    <span className="font-bold text-[#0057C8]">{item.courseName}</span>
+                  <div className="flex items-center gap-2 text-xs text-brand-muted mt-0.5">
+                    <span className="font-bold text-brand-primary">{item.courseName}</span>
                     <span>({item.courseCode})</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-[11px] text-[#66788A] bg-[#F8FBFE] p-2 rounded-xl border border-[#D7EAF7]">
+                <div className="flex items-center gap-2 text-[11px] text-brand-muted bg-brand-surface-muted p-2 rounded-xl border border-brand-border-soft">
                   <span>📄 {item.fileName || `${item.title}.${item.fileType.toLowerCase()}`}</span>
                   <span>•</span>
                   <span className="font-mono">{item.fileType}</span>
@@ -86,7 +86,7 @@ export function PendingContributions({
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D7EAF7]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-brand-border-soft">
                 <button
                   type="button"
                   onClick={() => onReject(item.id)}

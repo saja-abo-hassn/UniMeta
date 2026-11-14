@@ -79,19 +79,19 @@ export function NotificationsDropdown() {
   const getTypeBadge = (type: NotificationType) => {
     switch (type) {
       case "rent":
-        return { label: "استئجار", color: "bg-amber-50 text-amber-700 border-amber-200" };
+        return { label: "استئجار", color: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" };
       case "exchange":
         return { label: "تبادل", color: "bg-emerald-50 text-emerald-700 border-emerald-200" };
       case "agreement":
-        return { label: "اتفاقية", color: "bg-[#EAF4FD] text-[#0057C8] border-[#D7EAF7]" };
+        return { label: "اتفاقية", color: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" };
       case "pomodoro":
-        return { label: "بومودورو", color: "bg-purple-50 text-purple-700 border-purple-200" };
+        return { label: "بومودورو", color: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" };
       case "project":
-        return { label: "مشروع تخرج", color: "bg-blue-50 text-[#0057C8] border-blue-200" };
+        return { label: "مشروع تخرج", color: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" };
       case "library":
         return { label: "المكتبة", color: "bg-cyan-50 text-cyan-700 border-cyan-200" };
       default:
-        return { label: "عام", color: "bg-slate-50 text-slate-700 border-slate-200" };
+        return { label: "عام", color: "bg-brand-surface-muted text-brand-ink border-brand-border-soft" };
     }
   };
 
@@ -101,7 +101,7 @@ export function NotificationsDropdown() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2.5 rounded-2xl border border-[#D7EAF7] bg-white hover:bg-[#F0F7FD] hover:border-[#4DB7F2] text-[#16324A] hover:text-[#0057C8] transition-all focus-ring shadow-2xs"
+        className="relative p-2.5 rounded-2xl border border-brand-border-soft bg-white hover:bg-brand-surface-soft hover:border-brand-secondary text-brand-ink hover:text-brand-primary transition-all focus-ring shadow-2xs"
         aria-label="الإشعارات والتنبيهات"
         aria-expanded={isOpen}
       >
@@ -116,7 +116,7 @@ export function NotificationsDropdown() {
 
         {/* Unread Counter Badge */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -end-1 flex items-center justify-center min-w-4.5 h-4.5 px-1 rounded-full bg-[#0057C8] text-white text-[10px] font-bold shadow-xs animate-pulse">
+          <span className="absolute -top-1 -end-1 flex items-center justify-center min-w-4.5 h-4.5 px-1 rounded-full bg-brand-primary text-white text-[10px] font-bold shadow-xs animate-pulse">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -125,21 +125,21 @@ export function NotificationsDropdown() {
       {/* Dropdown Panel */}
       {isOpen && (
         <div
-          className="absolute start-0 sm:start-auto sm:end-0 mt-2.5 w-[330px] sm:w-[390px] max-w-[92vw] bg-white rounded-3xl border border-[#D7EAF7] shadow-xl z-50 overflow-hidden animate-fade-in"
+          className="absolute start-0 sm:start-auto sm:end-0 mt-2.5 w-[330px] sm:w-[390px] max-w-[92vw] bg-white rounded-3xl border border-brand-border-soft shadow-xl z-50 overflow-hidden animate-fade-in"
           dir="rtl"
         >
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-[#F4FAFF] to-white border-b border-[#D7EAF7] flex items-center justify-between gap-2">
+          <div className="p-4 bg-gradient-to-r from-[#F4FAFF] to-white border-b border-brand-border-soft flex items-center justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-sm text-[#16324A]">مركز الإشعارات</h3>
+                <h3 className="font-bold text-sm text-brand-ink">مركز الإشعارات</h3>
                 {unreadCount > 0 && (
-                  <span className="px-2 py-0.5 rounded-full bg-[#0057C8] text-white text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded-full bg-brand-primary text-white text-[10px] font-bold">
                     {unreadCount} جديد
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-[#66788A] mt-0.5">
+              <p className="text-[11px] text-brand-muted mt-0.5">
                 تنبيهات الاستئجار، التبادل، الاتفاقيات، وبومودورو
               </p>
             </div>
@@ -149,7 +149,7 @@ export function NotificationsDropdown() {
                 <button
                   type="button"
                   onClick={markAllAsRead}
-                  className="px-2.5 py-1 rounded-xl bg-white hover:bg-[#EAF4FD] border border-[#D7EAF7] text-[#0057C8] text-[11px] font-bold transition-colors"
+                  className="px-2.5 py-1 rounded-xl bg-white hover:bg-brand-surface-blue border border-brand-border-soft text-brand-primary text-[11px] font-bold transition-colors"
                 >
                   قراءة الكل
                 </button>
@@ -158,14 +158,14 @@ export function NotificationsDropdown() {
           </div>
 
           {/* Quick Filters */}
-          <div className="px-3 py-2 bg-[#F8FBFE] border-b border-[#D7EAF7]/60 flex items-center gap-1.5 overflow-x-auto text-[11px]">
+          <div className="px-3 py-2 bg-brand-surface-muted border-b border-brand-border-soft/60 flex items-center gap-1.5 overflow-x-auto text-[11px]">
             <button
               type="button"
               onClick={() => setFilterType("all")}
               className={`px-2.5 py-1 rounded-lg font-semibold whitespace-nowrap transition-colors ${
                 filterType === "all"
-                  ? "bg-[#0057C8] text-white shadow-xs"
-                  : "text-[#66788A] hover:bg-white hover:text-[#16324A]"
+                  ? "bg-brand-primary text-white shadow-xs"
+                  : "text-brand-muted hover:bg-white hover:text-brand-ink"
               }`}
             >
               الكل ({notifications.length})
@@ -175,8 +175,8 @@ export function NotificationsDropdown() {
               onClick={() => setFilterType("rent")}
               className={`px-2.5 py-1 rounded-lg font-semibold whitespace-nowrap transition-colors ${
                 filterType === "rent"
-                  ? "bg-[#0057C8] text-white shadow-xs"
-                  : "text-[#66788A] hover:bg-white hover:text-[#16324A]"
+                  ? "bg-brand-primary text-white shadow-xs"
+                  : "text-brand-muted hover:bg-white hover:text-brand-ink"
               }`}
             >
               استئجار
@@ -186,8 +186,8 @@ export function NotificationsDropdown() {
               onClick={() => setFilterType("exchange")}
               className={`px-2.5 py-1 rounded-lg font-semibold whitespace-nowrap transition-colors ${
                 filterType === "exchange"
-                  ? "bg-[#0057C8] text-white shadow-xs"
-                  : "text-[#66788A] hover:bg-white hover:text-[#16324A]"
+                  ? "bg-brand-primary text-white shadow-xs"
+                  : "text-brand-muted hover:bg-white hover:text-brand-ink"
               }`}
             >
               تبادل
@@ -197,8 +197,8 @@ export function NotificationsDropdown() {
               onClick={() => setFilterType("agreement")}
               className={`px-2.5 py-1 rounded-lg font-semibold whitespace-nowrap transition-colors ${
                 filterType === "agreement"
-                  ? "bg-[#0057C8] text-white shadow-xs"
-                  : "text-[#66788A] hover:bg-white hover:text-[#16324A]"
+                  ? "bg-brand-primary text-white shadow-xs"
+                  : "text-brand-muted hover:bg-white hover:text-brand-ink"
               }`}
             >
               اتفاقياتي
@@ -208,8 +208,8 @@ export function NotificationsDropdown() {
               onClick={() => setFilterType("pomodoro")}
               className={`px-2.5 py-1 rounded-lg font-semibold whitespace-nowrap transition-colors ${
                 filterType === "pomodoro"
-                  ? "bg-[#0057C8] text-white shadow-xs"
-                  : "text-[#66788A] hover:bg-white hover:text-[#16324A]"
+                  ? "bg-brand-primary text-white shadow-xs"
+                  : "text-brand-muted hover:bg-white hover:text-brand-ink"
               }`}
             >
               بومودورو
@@ -217,10 +217,10 @@ export function NotificationsDropdown() {
           </div>
 
           {/* Notifications List */}
-          <div className="max-h-[380px] overflow-y-auto divide-y divide-[#D7EAF7]/50">
+          <div className="max-h-[380px] overflow-y-auto divide-y divide-brand-border-soft/50">
             {filteredNotifications.length === 0 ? (
               <div className="p-8 text-center space-y-2">
-                <div className="w-12 h-12 mx-auto rounded-full bg-[#EAF4FD] text-[#0057C8] flex items-center justify-center">
+                <div className="w-12 h-12 mx-auto rounded-full bg-brand-surface-blue text-brand-primary flex items-center justify-center">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -230,8 +230,8 @@ export function NotificationsDropdown() {
                     />
                   </svg>
                 </div>
-                <p className="text-xs font-bold text-[#16324A]">لا توجد إشعارات حالياً</p>
-                <p className="text-[11px] text-[#66788A]">
+                <p className="text-xs font-bold text-brand-ink">لا توجد إشعارات حالياً</p>
+                <p className="text-[11px] text-brand-muted">
                   ستصلك تنبيهات فورية عند ورود طلبات استئجار، تبادل، أو انتهاء جلسات التركيز.
                 </p>
               </div>
@@ -244,22 +244,22 @@ export function NotificationsDropdown() {
                     onClick={() => handleNotificationClick(n.id, n.link, n.type)}
                     className={`p-3.5 transition-colors cursor-pointer flex gap-3 text-start ${
                       !n.read
-                        ? "bg-[#F0F7FD]/70 hover:bg-[#EAF4FD]"
-                        : "bg-white hover:bg-[#F8FBFE]"
+                        ? "bg-brand-surface-soft/70 hover:bg-brand-surface-blue"
+                        : "bg-white hover:bg-brand-surface-muted"
                     }`}
                   >
                     {/* Unread dot indicator */}
                     <div className="pt-1.5 shrink-0">
                       <span
                         className={`block w-2 h-2 rounded-full ${
-                          !n.read ? "bg-[#0057C8]" : "bg-transparent"
+                          !n.read ? "bg-brand-primary" : "bg-transparent"
                         }`}
                       />
                     </div>
 
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-xs text-[#16324A] truncate">
+                        <span className="font-bold text-xs text-brand-ink truncate">
                           {n.title}
                         </span>
                         <span
@@ -269,16 +269,16 @@ export function NotificationsDropdown() {
                         </span>
                       </div>
 
-                      <p className="text-[11px] text-[#66788A] leading-relaxed line-clamp-2">
+                      <p className="text-[11px] text-brand-muted leading-relaxed line-clamp-2">
                         {n.message}
                       </p>
 
                       <div className="flex items-center justify-between pt-1">
-                        <span className="text-[10px] text-[#2D78B7]">
+                        <span className="text-[10px] text-brand-hover-medium">
                           {formatRelativeTime(n.createdAt, nowMs)}
                         </span>
                         {n.link && (
-                          <span className="text-[10px] text-[#0057C8] font-bold hover:underline">
+                          <span className="text-[10px] text-brand-primary font-bold hover:underline">
                             عرض التفاصيل &larr;
                           </span>
                         )}
@@ -291,11 +291,11 @@ export function NotificationsDropdown() {
           </div>
 
           {/* Footer */}
-          <div className="p-3 bg-[#F8FBFE] border-t border-[#D7EAF7] flex items-center justify-between text-[11px]">
+          <div className="p-3 bg-brand-surface-muted border-t border-brand-border-soft flex items-center justify-between text-[11px]">
             <button
               type="button"
               onClick={requestBrowserPermission}
-              className="text-[#0057C8] hover:underline font-semibold"
+              className="text-brand-primary hover:underline font-semibold"
             >
               🔔 تفعيل تنبيهات المتصفح
             </button>

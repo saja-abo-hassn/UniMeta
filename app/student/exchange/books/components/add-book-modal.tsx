@@ -113,7 +113,7 @@ export function AddBookModal({
 
         <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">
+            <label className="font-bold text-brand-ink block">
               عنوان الكتاب / المرجع: <span className="text-red-500">*</span>
             </label>
             <input
@@ -122,35 +122,35 @@ export function AddBookModal({
               value={localTitle}
               onChange={(e) => setLocalTitle(e.target.value)}
               placeholder="مثال: Operating System Concepts"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">رمز أو اسم المساق:</label>
+              <label className="font-bold text-brand-ink block">رمز أو اسم المساق:</label>
               <input
                 type="text"
                 value={localCourseCode}
                 onChange={(e) => setLocalCourseCode(e.target.value)}
                 placeholder="مثال: CS331 أو أنظمة تشغيل"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
               />
             </div>
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">المؤلف أو الطبعة:</label>
+              <label className="font-bold text-brand-ink block">المؤلف أو الطبعة:</label>
               <input
                 type="text"
                 value={localAuthor}
                 onChange={(e) => setLocalAuthor(e.target.value)}
                 placeholder="مثال: Silberschatz - 10th Ed"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">نوع العرض:</label>
+            <label className="font-bold text-brand-ink block">نوع العرض:</label>
             <div className="grid grid-cols-3 gap-2">
               {(["بيع", "استئجار", "تبادل"] as BookListingType[]).map((t) => (
                 <button
@@ -159,8 +159,8 @@ export function AddBookModal({
                   onClick={() => setLocalType(t)}
                   className={`py-2 px-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                     localType === t
-                      ? "bg-[#0057C8] text-white border-[#0057C8] shadow-xs"
-                      : "bg-[#F8FBFE] text-[#16324A] border-[#D7EAF7] hover:border-[#0057C8]"
+                      ? "bg-brand-primary text-white border-brand-primary shadow-xs"
+                      : "bg-brand-surface-muted text-brand-ink border-brand-border-soft hover:border-brand-primary"
                   }`}
                 >
                   {t}
@@ -172,49 +172,49 @@ export function AddBookModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {localType !== "تبادل" && (
               <div className="space-y-1">
-                <label className="font-bold text-[#16324A] block">السعر / بدل الاستخدام (شيكل):</label>
+                <label className="font-bold text-brand-ink block">السعر / بدل الاستخدام (شيكل):</label>
                 <input
                   type="number"
                   min={0}
                   value={localPrice}
                   onChange={(e) => setLocalPrice(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
                 />
               </div>
             )}
 
             {localType === "استئجار" && (
               <div className="space-y-1">
-                <label className="font-bold text-[#16324A] block">المدة المقترحة:</label>
+                <label className="font-bold text-brand-ink block">المدة المقترحة:</label>
                 <input
                   type="text"
                   value={localRentalPeriod}
                   onChange={(e) => setLocalRentalPeriod(e.target.value)}
                   placeholder="مثال: فصل دراسي كامل"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
                 />
               </div>
             )}
 
             {localType === "تبادل" && (
               <div className="space-y-1 sm:col-span-2">
-                <label className="font-bold text-[#16324A] block">المادة أو الكتاب المطلوب بالمقابل:</label>
+                <label className="font-bold text-brand-ink block">المادة أو الكتاب المطلوب بالمقابل:</label>
                 <input
                   type="text"
                   value={localExchangeTarget}
                   onChange={(e) => setLocalExchangeTarget(e.target.value)}
                   placeholder="مثال: كتاب هندسة البرمجيات أو ملخصات الذكاء الاصطناعي"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
                 />
               </div>
             )}
 
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">حالة النسخة:</label>
+              <label className="font-bold text-brand-ink block">حالة النسخة:</label>
               <select
                 value={localCondition}
                 onChange={(e) => setLocalCondition(e.target.value as ExchangeBook["condition"])}
-                className="w-full px-3 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
               >
                 <option value="ممتازة">حالة ممتازة</option>
                 <option value="جيدة جداً">حالة جيدة جداً</option>
@@ -224,13 +224,13 @@ export function AddBookModal({
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">ملاحظات إضافية:</label>
+            <label className="font-bold text-brand-ink block">ملاحظات إضافية:</label>
             <textarea
               rows={3}
               value={localNotes}
               onChange={(e) => setLocalNotes(e.target.value)}
               placeholder="هل توجد تلخيصات أو حلول أسئلة سابقة داخل المرجع؟"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8] resize-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary resize-none"
             />
           </div>
         </Modal.Body>
@@ -239,13 +239,13 @@ export function AddBookModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl border border-[#D7EAF7] text-[#16324A] font-semibold hover:bg-[#F8FBFE] transition-colors cursor-pointer"
+            className="px-4 py-2.5 rounded-xl border border-brand-border-soft text-brand-ink font-semibold hover:bg-brand-surface-muted transition-colors cursor-pointer"
           >
             إلغاء
           </button>
           <button
             type="submit"
-            className="px-6 py-2.5 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white font-bold shadow-xs transition-all cursor-pointer"
+            className="px-6 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white font-bold shadow-xs transition-all cursor-pointer"
           >
             نشر الكتاب الآن
           </button>

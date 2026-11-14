@@ -10,8 +10,8 @@ import {
   MASCOT_PRELOAD_IMAGES,
 } from "../types";
 
-export function useUniMetaChat() {
-  const [isOpen, setIsOpen] = useState(false);
+export function useUniMetaChat(initiallyOpen = false) {
+  const [isOpen, setIsOpen] = useState(initiallyOpen);
   const [mascotState, dispatchMascot] = useReducer(mascotReducer, "idle");
   const [displayedState, setDisplayedState] = useState<MascotState>("greeting");
   const [isTransitioning, setIsTransitioning] = useState(false);

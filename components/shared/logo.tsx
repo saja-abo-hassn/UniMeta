@@ -48,7 +48,7 @@ export function Logo({
           </span>
           <span
             className={`text-[10px] font-medium tracking-wide mt-1 ${
-              variant === "dark" ? "text-blue-100/90" : "text-slate-500"
+              variant === "dark" ? "text-brand-light/90" : "text-brand-muted"
             }`}
           >
             {subtitle}

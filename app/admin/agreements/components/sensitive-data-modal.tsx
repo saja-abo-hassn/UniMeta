@@ -34,9 +34,9 @@ export function SensitiveDataModal({
           🔒
         </div>
         <div className="text-center space-y-1">
-          <p className="text-xs text-[#66788A] leading-relaxed">
+          <p className="text-xs text-brand-muted leading-relaxed">
             أنت على وشك كشف رقم الهوية الوطنية ورقم الهاتف للطالب{" "}
-            <strong className="text-[#16324A]">{unmaskTarget.student.name}</strong> ({unmaskTarget.student.studentId}).
+            <strong className="text-brand-ink">{unmaskTarget.student.name}</strong> ({unmaskTarget.student.studentId}).
           </p>
         </div>
 
@@ -51,14 +51,14 @@ export function SensitiveDataModal({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+          className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
         >
           إلغاء التراجع
         </button>
         <button
           type="button"
           onClick={onConfirm}
-          className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+          className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
         >
           أوافق، اكشف وسجّل
         </button>

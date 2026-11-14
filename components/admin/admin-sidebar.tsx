@@ -170,9 +170,9 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   };
 
   const content = (
-    <div className="flex flex-col h-full bg-white text-[#16324A] border-e border-[#D7EAF7]">
+    <div className="flex flex-col h-full bg-white text-brand-ink border-e border-brand-border-soft">
       {/* 1. Header & Brand Logo */}
-      <div className="p-5 border-b border-[#D7EAF7] flex items-center justify-between shrink-0">
+      <div className="p-5 border-b border-brand-border-soft flex items-center justify-between shrink-0">
         <Link
           href="/admin"
           className="flex items-center gap-3 group transition-transform duration-200 hover:scale-[1.02]"
@@ -188,10 +188,10 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-base tracking-wider text-[#0057C8]">
+            <span className="font-bold text-base tracking-wider text-brand-primary">
               UniMeta Admin
             </span>
-            <span className="text-[10px] text-[#2D78B7] font-medium -mt-0.5">
+            <span className="text-[10px] text-brand-hover-medium font-medium -mt-0.5">
               لوحة الإدارة والمتابعة
             </span>
           </div>
@@ -201,7 +201,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-lg text-[#66788A] hover:text-[#16324A] hover:bg-[#F0F7FD] transition-colors"
+            className="lg:hidden p-1.5 rounded-lg text-brand-muted hover:text-brand-ink hover:bg-brand-surface-soft transition-colors"
             aria-label="إغلاق القائمة"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,7 +216,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
         <Link
           href="/admin/settings#profile"
           onClick={onClose}
-          className="p-3 rounded-2xl bg-[#F0F7FD] hover:bg-[#E4F1FD] border border-[#D7EAF7] hover:border-[#0057C8]/40 flex items-center gap-3 transition-all cursor-pointer group focus:outline-none focus:ring-2 focus:ring-[#0057C8]/30"
+          className="p-3 rounded-2xl bg-brand-surface-soft hover:bg-[#E4F1FD] border border-brand-border-soft hover:border-brand-primary/40 flex items-center gap-3 transition-all cursor-pointer group focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
           title="الملف الشخصي وإعدادات الحساب"
           aria-label="الملف الشخصي وإعدادات الحساب"
         >
@@ -224,18 +224,18 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
             <img
               src={currentUser.avatarUrl}
               alt={currentUser.name}
-              className="w-9 h-9 rounded-xl object-cover shrink-0 shadow-xs border border-[#D7EAF7]"
+              className="w-9 h-9 rounded-xl object-cover shrink-0 shadow-xs border border-brand-border-soft"
             />
           ) : (
-            <div className="w-9 h-9 rounded-xl bg-[#0057C8] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-brand-primary text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs group-hover:scale-105 transition-transform">
               {getInitials(currentUser.name)}
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <div className="font-bold text-xs text-[#16324A] group-hover:text-[#0057C8] transition-colors truncate">
+            <div className="font-bold text-xs text-brand-ink group-hover:text-brand-primary transition-colors truncate">
               {currentUser.name}
             </div>
-            <div className="text-[10px] text-[#0057C8] font-semibold truncate">
+            <div className="text-[10px] text-brand-primary font-semibold truncate">
               {currentUser.title || (currentUser.role === "super_admin" ? "المسؤول العام" : "مشرف")}
             </div>
           </div>
@@ -244,7 +244,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
 
       {/* Section Eyebrow */}
       <div className="px-5 pt-2 pb-1">
-        <span className="text-[10px] font-bold text-[#66788A] uppercase tracking-wider block">
+        <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider block">
           أقسام الإدارة
         </span>
       </div>
@@ -268,12 +268,12 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
               aria-current={isActive ? "page" : undefined}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-[#EAF4FD] text-[#0057C8] font-bold border-s-4 border-[#0057C8] shadow-xs"
-                  : "text-[#16324A] hover:bg-[#F0F7FD] hover:text-[#0057C8]"
+                  ? "bg-brand-surface-blue text-brand-primary font-bold border-s-4 border-brand-primary shadow-xs"
+                  : "text-brand-ink hover:bg-brand-surface-soft hover:text-brand-primary"
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <span className={isActive ? "text-[#0057C8]" : "text-[#66788A]"}>
+                <span className={isActive ? "text-brand-primary" : "text-brand-muted"}>
                   {renderIcon(item.icon)}
                 </span>
                 <span className="truncate">{item.title}</span>
@@ -281,7 +281,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
               {badge && (
                 <span
                   className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    item.badgeColor || (isActive ? "bg-[#0057C8] text-white" : "bg-[#F0F7FD] text-[#0057C8] border border-[#D7EAF7]")
+                    item.badgeColor || (isActive ? "bg-brand-primary text-white" : "bg-brand-surface-soft text-brand-primary border border-brand-border-soft")
                   }`}
                 >
                   {badge}
@@ -293,10 +293,10 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
       </nav>
 
       {/* 4. Bottom Footer Link to Student Portal & Logout */}
-      <div className="p-4 border-t border-[#D7EAF7] bg-[#F8FBFE] flex flex-col gap-2">
+      <div className="p-4 border-t border-brand-border-soft bg-brand-surface-muted flex flex-col gap-2">
         <Link
           href="/student"
-          className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-[#D7EAF7] hover:border-[#4DB7F2] bg-white text-xs font-semibold text-[#0057C8] hover:bg-[#F0F7FD] transition-colors"
+          className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-brand-border-soft hover:border-brand-secondary bg-white text-xs font-semibold text-brand-primary hover:bg-brand-surface-soft transition-colors"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -306,14 +306,14 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
         <button
           type="button"
           onClick={() => setShowLogoutConfirm(true)}
-          className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-[#D7EAF7] hover:border-red-300 bg-white text-xs font-semibold text-[#66788A] hover:text-red-600 hover:bg-red-50/60 transition-colors w-full cursor-pointer"
+          className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-brand-border-soft hover:border-red-300 bg-white text-xs font-semibold text-brand-muted hover:text-red-600 hover:bg-red-50/60 transition-colors w-full cursor-pointer"
         >
           <svg className="w-3.5 h-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           <span>تسجيل الخروج</span>
         </button>
-        <div className="text-[10px] text-[#66788A] text-center">
+        <div className="text-[10px] text-brand-muted text-center">
           UniMeta Admin Console v2.0 &copy; 2026
         </div>
       </div>
@@ -356,7 +356,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
           </div>
-          <p className="text-xs text-[#66788A] leading-relaxed">
+          <p className="text-xs text-brand-muted leading-relaxed">
             هل تريد تسجيل الخروج؟ سيتعين عليك إدخال بياناتك مجدداً لتسجيل الدخول.
           </p>
         </Modal.Body>
@@ -364,7 +364,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
           <button
             type="button"
             onClick={() => setShowLogoutConfirm(false)}
-            className="flex-1 py-2 rounded-xl border border-[#D7EAF7] text-xs font-semibold text-[#16324A] hover:bg-[#F8FBFE] transition-colors cursor-pointer"
+            className="flex-1 py-2 rounded-xl border border-brand-border-soft text-xs font-semibold text-brand-ink hover:bg-brand-surface-muted transition-colors cursor-pointer"
           >
             إلغاء
           </button>

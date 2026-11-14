@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { UniMetaChat } from "@/components/chat/unimeta-chat";
-import { AppProviders } from "@/components/providers/app-providers";
+import { LazyUniMetaChat } from "@/components/chat/lazy-unimeta-chat";
 
 const notoSansArabic = localFont({
   src: "../public/fonts/NotoSansArabic-Variable.woff2",
@@ -45,10 +44,8 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${notoSansArabic.variable} h-full`}>
       <body className="min-h-full font-sans bg-brand-light text-brand-dark antialiased flex flex-col">
-        <AppProviders>
-          {children}
-          <UniMetaChat />
-        </AppProviders>
+        {children}
+        <LazyUniMetaChat />
       </body>
     </html>
   );

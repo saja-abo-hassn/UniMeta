@@ -32,13 +32,13 @@ export function ContentFilterBar({
   setActiveStatus,
 }: ContentFilterBarProps) {
   return (
-    <section className="p-4 sm:p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs space-y-4">
+    <section className="p-4 sm:p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-4">
       <div>
-        <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#D7EAF7]">
-          <span className="text-xs font-extrabold text-[#16324A]">
+        <div className="flex items-center justify-between pb-2 mb-3 border-b border-brand-border-soft">
+          <span className="text-xs font-extrabold text-brand-ink">
             الأقسام الأكاديمية الأربعة:
           </span>
-          <span className="text-[11px] text-[#66788A] font-semibold">
+          <span className="text-[11px] text-brand-muted font-semibold">
             إجمالي الملفات: {totalMaterialsCount}
           </span>
         </div>
@@ -49,13 +49,13 @@ export function ContentFilterBar({
             onClick={() => setActiveCategory("all")}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
               activeCategory === "all"
-                ? "bg-[#0057C8] text-white shadow-xs"
-                : "bg-[#F8FBFE] text-[#66788A] hover:bg-[#EAF4FD] hover:text-[#0057C8] border border-[#D7EAF7]"
+                ? "bg-brand-primary text-white shadow-xs"
+                : "bg-brand-surface-muted text-brand-muted hover:bg-brand-surface-blue hover:text-brand-primary border border-brand-border-soft"
             }`}
           >
             <span>📁</span>
             <span>جميع الأقسام</span>
-            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${activeCategory === "all" ? "bg-white/20 text-white" : "bg-[#D7EAF7] text-[#16324A]"}`}>
+            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${activeCategory === "all" ? "bg-white/20 text-white" : "bg-brand-border-soft text-brand-ink"}`}>
               {filteredCount}
             </span>
           </button>
@@ -70,13 +70,13 @@ export function ContentFilterBar({
                 onClick={() => setActiveCategory(cat.id)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                   isActive
-                    ? "bg-[#0057C8] text-white shadow-xs"
-                    : "bg-[#F8FBFE] text-[#66788A] hover:bg-[#EAF4FD] hover:text-[#0057C8] border border-[#D7EAF7]"
+                    ? "bg-brand-primary text-white shadow-xs"
+                    : "bg-brand-surface-muted text-brand-muted hover:bg-brand-surface-blue hover:text-brand-primary border border-brand-border-soft"
                 }`}
               >
                 <span>{cat.icon}</span>
                 <span>{cat.label}</span>
-                <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${isActive ? "bg-white/20 text-white" : "bg-[#D7EAF7] text-[#16324A]"}`}>
+                <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${isActive ? "bg-white/20 text-white" : "bg-brand-border-soft text-brand-ink"}`}>
                   {count}
                 </span>
               </button>
@@ -87,7 +87,7 @@ export function ContentFilterBar({
 
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-2">
         <div className="sm:col-span-5 relative">
-          <span className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-[#66788A]">
+          <span className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-brand-muted">
             🔍
           </span>
           <input
@@ -95,13 +95,13 @@ export function ContentFilterBar({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="ابحث باسم المادة، عنوان الملف، أو الرافع..."
-            className="w-full ps-9 pe-3 py-2 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8] focus:bg-white"
+            className="w-full ps-9 pe-3 py-2 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary focus:bg-white"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute inset-y-0 end-0 pe-3 text-xs text-[#66788A] hover:text-[#16324A]"
+              className="absolute inset-y-0 end-0 pe-3 text-xs text-brand-muted hover:text-brand-ink"
             >
               ✕
             </button>
@@ -113,7 +113,7 @@ export function ContentFilterBar({
             value={selectedSubjectFilter}
             onChange={(e) => setSelectedSubjectFilter(e.target.value)}
             aria-label="تصفية حسب المادة الدراسية"
-            className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+            className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
           >
             <option value="all">جميع المواد الدراسية ({existingSubjects.length} مادة)</option>
             {existingSubjects.map((s) => (
@@ -129,7 +129,7 @@ export function ContentFilterBar({
             value={activeStatus}
             onChange={(e) => setActiveStatus(e.target.value as "all" | ContentStatus)}
             aria-label="حالة النشر"
-            className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+            className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
           >
             <option value="all">جميع الحالات</option>
             <option value="منشور">منشور للطلاب</option>

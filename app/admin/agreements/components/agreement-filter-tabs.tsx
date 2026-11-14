@@ -29,14 +29,14 @@ export function AgreementFilterTabs({
   counts,
 }: AgreementFilterTabsProps) {
   return (
-    <section className="p-4 sm:p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs space-y-4">
+    <section className="p-4 sm:p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-4">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7] text-xs font-bold">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-brand-surface-muted border border-brand-border-soft text-xs font-bold">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              activeTab === "all" ? "bg-white text-[#0057C8] shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              activeTab === "all" ? "bg-white text-brand-primary shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             جميع الحالات ({counts.total})
@@ -45,7 +45,7 @@ export function AgreementFilterTabs({
             type="button"
             onClick={() => setActiveTab("قيد الانتظار")}
             className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
-              activeTab === "قيد الانتظار" ? "bg-white text-amber-700 shadow-xs font-bold" : "text-[#66788A] hover:text-[#16324A]"
+              activeTab === "قيد الانتظار" ? "bg-white text-amber-700 shadow-xs font-bold" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             <span>بانتظار القرار</span>
@@ -59,7 +59,7 @@ export function AgreementFilterTabs({
             type="button"
             onClick={() => setActiveTab("موافق عليها")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              activeTab === "موافق عليها" ? "bg-white text-emerald-700 shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              activeTab === "موافق عليها" ? "bg-white text-emerald-700 shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             المعتمدة ({counts.approved})
@@ -68,7 +68,7 @@ export function AgreementFilterTabs({
             type="button"
             onClick={() => setActiveTab("طلب تعديل")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              activeTab === "طلب تعديل" ? "bg-white text-blue-700 shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              activeTab === "طلب تعديل" ? "bg-white text-brand-primary shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             طلب تعديل ({counts.modification})
@@ -77,7 +77,7 @@ export function AgreementFilterTabs({
             type="button"
             onClick={() => setActiveTab("مرفوضة")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              activeTab === "مرفوضة" ? "bg-white text-red-600 shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              activeTab === "مرفوضة" ? "bg-white text-red-600 shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             المرفوضة ({counts.rejected})
@@ -85,11 +85,11 @@ export function AgreementFilterTabs({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#66788A] font-semibold">نوع العهدة:</span>
+          <span className="text-xs text-brand-muted font-semibold">نوع العهدة:</span>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as "all" | "أجهزة" | "كتب ومراجع")}
-            className="px-3 py-1.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+            className="px-3 py-1.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
           >
             <option value="all">الكل (أجهزة وكتب)</option>
             <option value="أجهزة">أجهزة وأدوات</option>
@@ -99,7 +99,7 @@ export function AgreementFilterTabs({
       </div>
 
       <div className="relative">
-        <span className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-[#66788A]">
+        <span className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-brand-muted">
           🔍
         </span>
         <input
@@ -107,13 +107,13 @@ export function AgreementFilterTabs({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="ابحث برقم الاتفاقية (مثال UM-2817)، اسم العنصر، الطالب المستعير أو المالك..."
-          className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs sm:text-sm font-semibold text-[#16324A] focus:outline-none focus:border-[#0057C8] focus:bg-white"
+          className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs sm:text-sm font-semibold text-brand-ink focus:outline-none focus:border-brand-primary focus:bg-white"
         />
         {searchQuery && (
           <button
             type="button"
             onClick={() => setSearchQuery("")}
-            className="absolute inset-y-0 end-0 pe-3.5 text-xs text-[#66788A] hover:text-[#16324A]"
+            className="absolute inset-y-0 end-0 pe-3.5 text-xs text-brand-muted hover:text-brand-ink"
           >
             مسح ✕
           </button>

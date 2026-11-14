@@ -26,19 +26,19 @@ function InviteLoading() {
     >
       <div className="w-full space-y-6 animate-fade-in" dir="rtl">
         <div>
-          <span className="text-xs font-bold text-[#0057C8] uppercase tracking-wider">
+          <span className="text-xs font-bold text-brand-primary uppercase tracking-wider">
             دعوة مسؤول جديد
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#16324A] mt-1">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink mt-1">
             تفعيل حساب الإشراف
           </h2>
-          <p className="text-xs sm:text-sm text-[#66788A] pt-1">
+          <p className="text-xs sm:text-sm text-brand-muted pt-1">
             أهلاً بك! لقد تمت دعوتك للانضمام إلى فريق إدارة منصة UniMeta.
           </p>
         </div>
-        <div className="p-8 rounded-2xl bg-white border border-[#D7EAF7] text-center space-y-3">
-          <div className="w-8 h-8 mx-auto border-3 border-[#0057C8] border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-bold text-[#66788A]">جاري التحقق من صحة رابط الدعوة...</p>
+        <div className="p-8 rounded-2xl bg-white border border-brand-border-soft text-center space-y-3">
+          <div className="w-8 h-8 mx-auto border-3 border-brand-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs font-bold text-brand-muted">جاري التحقق من صحة رابط الدعوة...</p>
         </div>
       </div>
     </AuthLayout>
@@ -145,21 +145,21 @@ function InvitePageContent({ params }: InvitePageProps) {
     >
       <div className="w-full space-y-6 animate-fade-in" dir="rtl">
         <div>
-          <span className="text-xs font-bold text-[#0057C8] uppercase tracking-wider">
+          <span className="text-xs font-bold text-brand-primary uppercase tracking-wider">
             دعوة مسؤول جديد
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#16324A] mt-1">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink mt-1">
             تفعيل حساب الإشراف
           </h2>
-          <p className="text-xs sm:text-sm text-[#66788A] pt-1">
+          <p className="text-xs sm:text-sm text-brand-muted pt-1">
             أهلاً بك! لقد تمت دعوتك للانضمام إلى فريق إدارة منصة UniMeta.
           </p>
         </div>
 
         {loading ? (
-          <div className="p-8 rounded-2xl bg-white border border-[#D7EAF7] text-center space-y-3">
-            <div className="w-8 h-8 mx-auto border-3 border-[#0057C8] border-t-transparent rounded-full animate-spin" />
-            <p className="text-xs font-bold text-[#66788A]">جاري التحقق من صحة رابط الدعوة...</p>
+          <div className="p-8 rounded-2xl bg-white border border-brand-border-soft text-center space-y-3">
+            <div className="w-8 h-8 mx-auto border-3 border-brand-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-xs font-bold text-brand-muted">جاري التحقق من صحة رابط الدعوة...</p>
           </div>
         ) : fetchError ? (
           <div className="p-6 rounded-2xl bg-red-50 border border-red-200 text-red-800 space-y-4 shadow-xs">
@@ -197,30 +197,30 @@ function InvitePageContent({ params }: InvitePageProps) {
               </div>
             )}
 
-            <div className="p-4 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7] space-y-2.5">
-              <span className="text-[11px] font-bold text-[#0057C8] block">بيانات الحساب المدعو:</span>
+            <div className="p-4 rounded-2xl bg-brand-surface-muted border border-brand-border-soft space-y-2.5">
+              <span className="text-[11px] font-bold text-brand-primary block">بيانات الحساب المدعو:</span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div>
-                  <span className="text-[#66788A] text-[10px] block">الاسم:</span>
-                  <span className="font-bold text-[#16324A]">{invitation.name}</span>
+                  <span className="text-brand-muted text-[10px] block">الاسم:</span>
+                  <span className="font-bold text-brand-ink">{invitation.name}</span>
                 </div>
                 <div>
-                  <span className="text-[#66788A] text-[10px] block">البريد الإلكتروني:</span>
-                  <span className="font-bold text-[#16324A] font-mono text-[11px]" dir="ltr">{invitation.email}</span>
+                  <span className="text-brand-muted text-[10px] block">البريد الإلكتروني:</span>
+                  <span className="font-bold text-brand-ink font-mono text-[11px]" dir="ltr">{invitation.email}</span>
                 </div>
                 <div>
-                  <span className="text-[#66788A] text-[10px] block">المسمى الوظيفي:</span>
-                  <span className="font-bold text-[#16324A]">{invitation.title}</span>
+                  <span className="text-brand-muted text-[10px] block">المسمى الوظيفي:</span>
+                  <span className="font-bold text-brand-ink">{invitation.title}</span>
                 </div>
                 <div>
-                  <span className="text-[#66788A] text-[10px] block">القسم:</span>
-                  <span className="font-bold text-[#16324A]">{invitation.assignedDepartment}</span>
+                  <span className="text-brand-muted text-[10px] block">القسم:</span>
+                  <span className="font-bold text-brand-ink">{invitation.assignedDepartment}</span>
                 </div>
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#16324A] block">
+              <label className="text-xs font-bold text-brand-ink block">
                 كلمة المرور الجديدة <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -230,12 +230,12 @@ function InvitePageContent({ params }: InvitePageProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="8 أحرف على الأقل (حروف وأرقام)"
-                  className="w-full ps-3.5 pe-10 py-2.5 rounded-xl border border-[#D7EAF7] bg-white text-xs font-semibold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full ps-3.5 pe-10 py-2.5 rounded-xl border border-brand-border-soft bg-white text-xs font-semibold text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 end-0 px-3 text-xs text-[#66788A] hover:text-[#16324A]"
+                  className="absolute inset-y-0 end-0 px-3 text-xs text-brand-muted hover:text-brand-ink"
                 >
                   {showPassword ? "إخفاء" : "عرض"}
                 </button>
@@ -247,13 +247,13 @@ function InvitePageContent({ params }: InvitePageProps) {
                     <div className={`flex-1 rounded-full ${strength.score >= 2 ? strength.color : "bg-slate-200"}`} />
                     <div className={`flex-1 rounded-full ${strength.score >= 3 ? strength.color : "bg-slate-200"}`} />
                   </div>
-                  <span className="text-[10px] text-[#66788A]">قوة كلمة المرور: <strong>{strength.label}</strong></span>
+                  <span className="text-[10px] text-brand-muted">قوة كلمة المرور: <strong>{strength.label}</strong></span>
                 </div>
               )}
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#16324A] block">
+              <label className="text-xs font-bold text-brand-ink block">
                 تأكيد كلمة المرور <span className="text-red-500">*</span>
               </label>
               <input
@@ -262,14 +262,14 @@ function InvitePageContent({ params }: InvitePageProps) {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="أعد إدخال كلمة المرور"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] bg-white text-xs font-semibold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft bg-white text-xs font-semibold text-brand-ink focus:outline-none focus:border-brand-primary"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] disabled:opacity-50 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-brand-primary hover:bg-brand-hover-medium disabled:opacity-50 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               {isSubmitting ? "جاري تفعيل الحساب..." : "تفعيل الحساب والدخول إلى لوحة الإدارة 🚀"}
             </button>

@@ -51,12 +51,12 @@ export function AgreementStudentModals({
               onClose={() => setExtensionModal({ open: false, days: 7 })}
             />
             <Modal.Body className="space-y-4 text-xs">
-              <p className="text-xs text-[#66788A] leading-relaxed">
+              <p className="text-xs text-brand-muted leading-relaxed">
                 حدد عدد الأيام الإضافية التي ترغب في طلبها. يحق لمالك الغرض الموافقة أو الرفض.
               </p>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   مدة التمديد (بالأيام)
                 </label>
                 <div className="grid grid-cols-4 gap-2">
@@ -69,8 +69,8 @@ export function AgreementStudentModals({
                       }
                       className={`py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                         extensionModal.days === d
-                          ? "bg-[#0057C8] text-white border-[#0057C8] shadow-xs"
-                          : "bg-[#F8FBFE] text-[#16324A] border-[#D7EAF7] hover:border-[#0057C8]"
+                          ? "bg-brand-primary text-white border-brand-primary shadow-xs"
+                          : "bg-brand-surface-muted text-brand-ink border-brand-border-soft hover:border-brand-primary"
                       }`}
                     >
                       +{d} أيام
@@ -79,9 +79,9 @@ export function AgreementStudentModals({
                 </div>
               </div>
 
-              <div className="p-3 bg-[#F8FBFE] rounded-2xl border border-[#D7EAF7] text-[11px] text-[#66788A]">
+              <div className="p-3 bg-brand-surface-muted rounded-2xl border border-brand-border-soft text-[11px] text-brand-muted">
                 تاريخ الإرجاع المتوقع الجديد:{" "}
-                <strong className="text-[#0057C8]">
+                <strong className="text-brand-primary">
                   {(() => {
                     const d = new Date(extensionModal.agreement.returnDeadline);
                     d.setDate(d.getDate() + extensionModal.days);
@@ -94,14 +94,14 @@ export function AgreementStudentModals({
               <button
                 type="button"
                 onClick={() => setExtensionModal({ open: false, days: 7 })}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 إلغاء
               </button>
               <button
                 type="button"
                 onClick={onConfirmExtension}
-                className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#0046A0] text-white text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-[#0046A0] text-white text-xs font-bold shadow-xs cursor-pointer"
               >
                 إرسال الطلب للمالك
               </button>
@@ -126,10 +126,10 @@ export function AgreementStudentModals({
                 ✓
               </div>
               <div className="text-center space-y-1">
-                <h4 className="font-bold text-sm text-[#16324A]">
+                <h4 className="font-bold text-sm text-brand-ink">
                   هل قمت بتسليم ({returnConfirmModal.agreement.itemName}) لمالكه بالفعل؟
                 </h4>
-                <p className="text-xs text-[#66788A]">
+                <p className="text-xs text-brand-muted">
                   بمجرد تأكيدك، سيُطلب من المالك تأكيد استلامه أيضاً ليتم إنهاء الاتفاقية واسترداد مبلغ التأمين (
                   {formatCurrency(returnConfirmModal.agreement.depositAmount, "ILS")}).
                 </p>
@@ -139,7 +139,7 @@ export function AgreementStudentModals({
               <button
                 type="button"
                 onClick={() => setReturnConfirmModal({ open: false })}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 تراجع
               </button>
@@ -169,7 +169,7 @@ export function AgreementStudentModals({
             />
             <Modal.Body className="space-y-4 text-xs">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   سبب الرفض <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -179,7 +179,7 @@ export function AgreementStudentModals({
                     setRejectModal((prev) => ({ ...prev, reason: e.target.value }))
                   }
                   placeholder="مثال: الغرض محجوز لطالب آخر، أو في صيانة..."
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
             </Modal.Body>
@@ -187,7 +187,7 @@ export function AgreementStudentModals({
               <button
                 type="button"
                 onClick={() => setRejectModal({ open: false, reason: "" })}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 إلغاء
               </button>

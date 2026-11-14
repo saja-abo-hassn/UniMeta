@@ -15,21 +15,21 @@ export function IncomingRequestsSection({
   onOpenRejectModal,
 }: IncomingRequestsSectionProps) {
   return (
-    <section className="p-6 sm:p-7 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-5 animate-fade-in">
-      <div className="pb-3 border-b border-[#D7EAF7]">
-        <h2 className="text-base sm:text-lg font-bold text-[#16324A]">
+    <section className="p-6 sm:p-7 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-5 animate-fade-in">
+      <div className="pb-3 border-b border-brand-border-soft">
+        <h2 className="text-base sm:text-lg font-bold text-brand-ink">
           طلبات الإعارة الواردة من الطلاب
         </h2>
-        <p className="text-xs text-[#66788A]">
+        <p className="text-xs text-brand-muted">
           راجع طلبات الزملاء لاستعارة مقتنياتك الأكاديمية ووافق عليها لتوثيق الاتفاقية مباشرة.
         </p>
       </div>
 
       {incomingRequests.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7] space-y-2">
+        <div className="p-12 text-center rounded-2xl bg-brand-surface-muted border border-brand-border-soft space-y-2">
           <span className="text-3xl">🎉</span>
-          <h3 className="font-bold text-[#16324A] text-sm">لا توجد طلبات معلقة حالياً</h3>
-          <p className="text-xs text-[#66788A]">
+          <h3 className="font-bold text-brand-ink text-sm">لا توجد طلبات معلقة حالياً</h3>
+          <p className="text-xs text-brand-muted">
             جميع طلبات الإعارة الواردة تمت معالجتها وتوثيقها في الاتفاقيات السارية.
           </p>
         </div>
@@ -38,28 +38,28 @@ export function IncomingRequestsSection({
           {incomingRequests.map((req) => (
             <div
               key={req.id}
-              className="p-5 sm:p-6 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7] hover:border-[#4DB7F2] transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+              className="p-5 sm:p-6 rounded-2xl bg-brand-surface-muted border border-brand-border-soft hover:border-brand-secondary transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
               <div className="space-y-2 max-w-xl">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-[#0057C8]">{req.id}</span>
-                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4FD] text-[#0057C8] border border-[#D7EAF7]">
+                  <span className="text-xs font-mono font-bold text-brand-primary">{req.id}</span>
+                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-brand-surface-blue text-brand-primary border border-brand-border-soft">
                     {req.category}
                   </span>
-                  <span className="text-xs text-[#66788A]">{req.requestDate}</span>
+                  <span className="text-xs text-brand-muted">{req.requestDate}</span>
                 </div>
 
-                <h3 className="font-bold text-base text-[#16324A]">
+                <h3 className="font-bold text-base text-brand-ink">
                   طلب استعارة: {req.itemName}
                 </h3>
 
-                <div className="flex flex-wrap items-center gap-3 text-xs text-[#16324A]">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-brand-ink">
                   <div>
-                    <span className="text-[#66788A]">الطالب: </span>
+                    <span className="text-brand-muted">الطالب: </span>
                     <span className="font-bold">{req.requesterName}</span>
                   </div>
                   <div>
-                    <span className="text-[#66788A]">التخصص: </span>
+                    <span className="text-brand-muted">التخصص: </span>
                     <span className="font-semibold">{req.requesterMajor}</span>
                   </div>
                   {req.requesterGpaRange && (
@@ -70,18 +70,18 @@ export function IncomingRequestsSection({
                 </div>
 
                 {req.message && (
-                  <p className="text-xs text-[#66788A] bg-white p-3 rounded-xl border border-[#D7EAF7] leading-relaxed">
+                  <p className="text-xs text-brand-muted bg-white p-3 rounded-xl border border-brand-border-soft leading-relaxed">
                     &quot;{req.message}&quot;
                   </p>
                 )}
 
                 <div className="flex items-center gap-4 text-xs pt-1">
                   <div>
-                    <span className="text-[#66788A]">المدة المقترحة: </span>
-                    <span className="font-bold text-[#0057C8]">{req.requestedDuration}</span>
+                    <span className="text-brand-muted">المدة المقترحة: </span>
+                    <span className="font-bold text-brand-primary">{req.requestedDuration}</span>
                   </div>
                   <div>
-                    <span className="text-[#66788A]">تاريخ الاستلام: </span>
+                    <span className="text-brand-muted">تاريخ الاستلام: </span>
                     <span className="font-mono font-bold" dir="ltr">{req.proposedStartDate}</span>
                   </div>
                 </div>
@@ -91,7 +91,7 @@ export function IncomingRequestsSection({
                 <button
                   type="button"
                   onClick={() => onAcceptIncoming(req)}
-                  className="px-5 py-2.5 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs sm:text-sm font-bold transition-all shadow-xs"
+                  className="px-5 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs sm:text-sm font-bold transition-all shadow-xs"
                 >
                   قبول الطلب وتفعيل العقد
                 </button>

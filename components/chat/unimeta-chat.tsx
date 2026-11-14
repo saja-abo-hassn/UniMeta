@@ -10,7 +10,7 @@ import { ChatMessagesList } from "./components/chat-messages-list";
 
 export type { MascotState, MascotAction } from "./types";
 
-export function UniMetaChat() {
+export function UniMetaChat({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
   const {
     sessions,sessionId,selectSession,deleteSession,error,historyBusy,
     isOpen,
@@ -28,7 +28,7 @@ export function UniMetaChat() {
     messagesEndRef,
     handleInputChange,
     handleSend,
-  } = useUniMetaChat();
+  } = useUniMetaChat(initiallyOpen);
 
   return (
     <>
@@ -45,7 +45,7 @@ export function UniMetaChat() {
             role="dialog"
             aria-modal="false"
             aria-labelledby="unimeta-chat-title"
-            className="pointer-events-auto relative z-10 w-[calc(100vw-2rem)] sm:w-[370px] h-[480px] max-h-[calc(100dvh-7.5rem)] bg-white/98 backdrop-blur-xl rounded-3xl shadow-2xl border border-[#D0E8F9] flex flex-col overflow-visible animate-fade-in-scale focus-ring"
+            className="pointer-events-auto relative z-10 w-[calc(100vw-2rem)] sm:w-[370px] h-[480px] max-h-[calc(100dvh-7.5rem)] bg-white/98 backdrop-blur-xl rounded-3xl shadow-2xl border border-brand-border-soft flex flex-col overflow-visible animate-fade-in-scale focus-ring"
             dir="rtl"
           >
             <PeekingMascot
@@ -56,7 +56,7 @@ export function UniMetaChat() {
               isTransitioning={isTransitioning}
             />
 
-            <header className="p-4 bg-gradient-to-r from-[#0057C8] to-[#2D78B7] text-white flex items-center justify-between shrink-0 shadow-xs cursor-default rounded-t-3xl">
+            <header className="p-4 bg-gradient-to-r from-brand-primary to-brand-hover-medium text-white flex items-center justify-between shrink-0 shadow-xs cursor-default rounded-t-3xl">
               <div className="flex items-center gap-3">
                 <div className="relative w-8 h-8 rounded-full bg-white/15 p-1 flex items-center justify-center shrink-0 border border-white/20">
                   <Image
@@ -100,7 +100,7 @@ export function UniMetaChat() {
               messagesEndRef={messagesEndRef}
             />
 
-            <footer className="p-3.5 border-t border-[#D0E8F9] bg-[#F8FAFC] rounded-b-3xl">
+            <footer className="p-3.5 border-t border-brand-border-soft bg-[#F8FAFC] rounded-b-3xl">
               <form onSubmit={handleSend} className="flex items-center gap-2">
                 <input
                   type="text"
@@ -108,21 +108,26 @@ export function UniMetaChat() {
                   value={inputVal}
                   onChange={handleInputChange}
                   placeholder="اسأل UniMeta عن خطتك، المعدل، المواد..."
-                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-[#D0E8F9] bg-white text-xs text-slate-800 placeholder-slate-400 focus:border-[#0057C8] focus:ring-1 focus:ring-[#0057C8] outline-none transition-all"
+                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-brand-border-soft bg-white text-xs text-slate-800 placeholder-slate-400 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all"
                 />
                 <button
                   type="submit"
                   disabled={!inputVal.trim() || isTyping || historyBusy}
                   aria-label="إرسال"
-                  className="w-9 h-9 rounded-xl bg-[#0057C8] hover:bg-[#0045A5] text-white flex items-center justify-center shrink-0 shadow-xs transition-colors focus-ring cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                  className="w-9 h-9 rounded-xl bg-brand-primary hover:bg-brand-primary-hover text-white flex items-center justify-center shrink-0 shadow-xs transition-colors focus-ring cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                 >
                   <svg className="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>
               </form>
+<<<<<<< HEAD
               <p className="text-[10px] text-slate-400 text-center mt-2">
                 المساعد للدعم الدراسي؛ قد يخطئ. توفر الردود يعتمد على تفعيل الخدمة.
+=======
+              <p className="text-[10px] text-brand-subtle text-center mt-2">
+                UniMeta AI مساعد رقمي ذكي متصل بخدمات جامعة الأزهر ومنظومة UniMeta.
+>>>>>>> b079de5bb3c77012965f2ad45ddce455d601b6a9
               </p>
             </footer>
           </section>

@@ -15,7 +15,7 @@ export default function LoginPage() {
       visualTitle="أكاديميتك، بصورة أوضح."
       visualSubtitle="من التخطيط الأكاديمي إلى فرق المشاريع والاتفاقيات، كل أدواتك في تجربة واحدة متماسكة."
     >
-      <Suspense fallback={<div className="p-8 text-center text-xs text-[#66788A]">جاري التحميل...</div>}>
+      <Suspense fallback={<div className="p-8 text-center text-xs text-brand-muted">جاري التحميل...</div>}>
         <LoginForm />
       </Suspense>
     </AuthLayout>

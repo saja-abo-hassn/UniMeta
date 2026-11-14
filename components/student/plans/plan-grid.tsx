@@ -98,18 +98,18 @@ export function PlanGrid() {
           onViewPlanDetails={handleOpenDetails}
         />
       ) : (
-        <div className="card-entrance p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-[#EAF4FD] to-white border border-[#D7EAF7] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="card-entrance p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-brand-surface-blue to-white border border-brand-border-soft shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#0057C8] text-white flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-12 h-12 rounded-2xl bg-brand-primary text-white flex items-center justify-center shrink-0 shadow-md">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18C5 19.94 8.13 22 12 22C15.87 22 19 19.94 19 17.18V13.18L12 17.09L5 13.18Z" />
               </svg>
             </div>
             <div>
-              <h3 className="font-bold text-base text-[#16324A]">
+              <h3 className="font-bold text-base text-brand-ink">
                 لم تقم باختيار خطتك الدراسية بعد
               </h3>
-              <p className="text-xs text-[#66788A] mt-0.5">
+              <p className="text-xs text-brand-muted mt-0.5">
                 تصفح قائمة التخصصات المعتمدة أدناه واضغط &quot;اعتماد الخطة&quot; لربط خطتك تلقائياً وتفعيل حسابات الساعات والمعدل في لوحة التحكم.
               </p>
             </div>
@@ -117,7 +117,7 @@ export function PlanGrid() {
           <button
             type="button"
             onClick={scrollToGrid}
-            className="px-4 py-2.5 rounded-xl bg-[#0057C8] text-white text-xs font-bold hover:bg-[#2D78B7] transition-colors shrink-0 shadow-xs"
+            className="px-4 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-brand-hover-medium transition-colors shrink-0 shadow-xs"
           >
             تصفح الخطط أدناه ↓
           </button>
@@ -127,26 +127,26 @@ export function PlanGrid() {
       {/* 2. Plans Catalog Section (Grid matching Al-Azhar portal) */}
       <section id="plans-catalog-grid" className="space-y-5">
         {/* Controls: Search + Degree Filter Pills */}
-        <div className="p-5 sm:p-6 rounded-3xl bg-white border border-[#D7EAF7] shadow-xs space-y-4">
+        <div className="p-5 sm:p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-[#16324A]">
+              <h2 className="text-lg sm:text-xl font-black text-brand-ink">
                 دليل البرامج والخطط الدراسية المعتمدة
               </h2>
-              <p className="text-xs text-[#66788A] mt-0.5">
+              <p className="text-xs text-brand-muted mt-0.5">
                 تصفح خطط كلية الهندسة وتكنولوجيا المعلومات واختر تخصصك الأكاديمي لربطه تلقائياً مع أدوات المنصة.
               </p>
             </div>
 
             {/* Degree Filter Tabs (Matching screenshot tabs: برامج البكالوريوس / برامج الماجستير) */}
-            <div className="flex items-center gap-1.5 p-1 bg-[#F4FAFF] rounded-2xl border border-[#D7EAF7] text-xs font-bold">
+            <div className="flex items-center gap-1.5 p-1 bg-[#F4FAFF] rounded-2xl border border-brand-border-soft text-xs font-bold">
               <button
                 type="button"
                 onClick={() => setSelectedDegree("all")}
                 className={`px-3.5 py-2 rounded-xl transition-all ${
                   selectedDegree === "all"
-                    ? "bg-[#0057C8] text-white shadow-xs"
-                    : "text-[#16324A] hover:text-[#0057C8] hover:bg-white"
+                    ? "bg-brand-primary text-white shadow-xs"
+                    : "text-brand-ink hover:text-brand-primary hover:bg-white"
                 }`}
               >
                 كافة البرامج ({plans.length})
@@ -156,8 +156,8 @@ export function PlanGrid() {
                 onClick={() => setSelectedDegree("بكالوريوس")}
                 className={`px-3.5 py-2 rounded-xl transition-all ${
                   selectedDegree === "بكالوريوس"
-                    ? "bg-[#0057C8] text-white shadow-xs"
-                    : "text-[#16324A] hover:text-[#0057C8] hover:bg-white"
+                    ? "bg-brand-primary text-white shadow-xs"
+                    : "text-brand-ink hover:text-brand-primary hover:bg-white"
                 }`}
               >
                 برامج البكالوريوس
@@ -167,8 +167,8 @@ export function PlanGrid() {
                 onClick={() => setSelectedDegree("ماجستير")}
                 className={`px-3.5 py-2 rounded-xl transition-all ${
                   selectedDegree === "ماجستير"
-                    ? "bg-[#0057C8] text-white shadow-xs"
-                    : "text-[#16324A] hover:text-[#0057C8] hover:bg-white"
+                    ? "bg-brand-primary text-white shadow-xs"
+                    : "text-brand-ink hover:text-brand-primary hover:bg-white"
                 }`}
               >
                 برامج الماجستير
@@ -178,7 +178,7 @@ export function PlanGrid() {
 
           {/* Search Box */}
           <div className="relative">
-            <span className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-[#66788A]">
+            <span className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-brand-muted">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -188,13 +188,13 @@ export function PlanGrid() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="ابحث عن تخصص، كلية، أو مساق دراسي (مثال: علوم الحاسوب، أنظمة، ذكاء اصطناعي، 128 ساعة)..."
-              className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs sm:text-sm font-semibold text-[#16324A] placeholder:text-[#66788A] focus:outline-none focus:border-[#4DB7F2] focus:bg-white focus:ring-2 focus:ring-[#4DB7F2]/20 transition-all"
+              className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs sm:text-sm font-semibold text-brand-ink placeholder:text-brand-muted focus:outline-none focus:border-brand-secondary focus:bg-white focus:ring-2 focus:ring-brand-secondary/20 transition-all"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute inset-y-0 end-0 flex items-center pe-3.5 text-xs text-[#66788A] hover:text-[#16324A]"
+                className="absolute inset-y-0 end-0 flex items-center pe-3.5 text-xs text-brand-muted hover:text-brand-ink"
               >
                 مسح ✕
               </button>
@@ -204,16 +204,16 @@ export function PlanGrid() {
 
         {/* 3. Responsive Plans Grid (3 cols desktop, 2 cols tablet, 1 col mobile) */}
         {filteredPlans.length === 0 ? (
-          <div className="p-12 text-center bg-white rounded-3xl border border-[#D7EAF7] shadow-xs space-y-3">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EAF4FD] text-[#0057C8] flex items-center justify-center">
+          <div className="p-12 text-center bg-white rounded-3xl border border-brand-border-soft shadow-xs space-y-3">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-surface-blue text-brand-primary flex items-center justify-center">
               <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="font-bold text-base text-[#16324A]">
+            <h3 className="font-bold text-base text-brand-ink">
               لم يتم العثور على تخصص يطابق البحث
             </h3>
-            <p className="text-xs text-[#66788A] max-w-sm mx-auto">
+            <p className="text-xs text-brand-muted max-w-sm mx-auto">
               تأكد من كتابة الكلمات بشكل صحيح أو قم بإعادة ضبط معايير التصفية.
             </p>
             <button
@@ -222,7 +222,7 @@ export function PlanGrid() {
                 setSearchQuery("");
                 setSelectedDegree("all");
               }}
-              className="px-4 py-2 rounded-xl bg-[#0057C8] text-white text-xs font-bold shadow-xs hover:bg-[#2D78B7]"
+              className="px-4 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold shadow-xs hover:bg-brand-hover-medium"
             >
               عرض كافة الخطط
             </button>

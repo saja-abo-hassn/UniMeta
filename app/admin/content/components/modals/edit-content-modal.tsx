@@ -43,7 +43,7 @@ export function EditContentModal({
           )}
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#16324A] block">
+            <label className="text-xs font-bold text-brand-ink block">
               اسم المادة الدراسية <span className="text-red-500">*</span>
             </label>
             <input
@@ -52,7 +52,7 @@ export function EditContentModal({
               required
               value={formData.courseName}
               onChange={(e) => setFormData({ ...formData, courseName: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+              className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
             />
             <datalist id="courses-suggestions-edit">
               {courseSuggestions.map((name) => (
@@ -63,19 +63,19 @@ export function EditContentModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="space-y-1 sm:col-span-1">
-              <label className="text-xs font-bold text-[#16324A] block">
+              <label className="text-xs font-bold text-brand-ink block">
                 رمز المادة
               </label>
               <input
                 type="text"
                 value={formData.courseCode}
                 onChange={(e) => setFormData({ ...formData, courseCode: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
               />
             </div>
 
             <div className="space-y-1 sm:col-span-2">
-              <label className="text-xs font-bold text-[#16324A] block">
+              <label className="text-xs font-bold text-brand-ink block">
                 عنوان الملف / المصدر <span className="text-red-500">*</span>
               </label>
               <input
@@ -83,20 +83,20 @@ export function EditContentModal({
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#16324A] block">
+              <label className="text-xs font-bold text-brand-ink block">
                 القسم الرئيسي <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value as MainCategoryType })}
-                className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-bold text-[#16324A]"
+                className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-bold text-brand-ink"
               >
                 {MAIN_CATEGORIES.map((cat) => (
                   <option key={cat.id} value={cat.id}>
@@ -107,13 +107,13 @@ export function EditContentModal({
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#16324A] block">
+              <label className="text-xs font-bold text-brand-ink block">
                 حالة النشر
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as ContentStatus })}
-                className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-bold text-[#16324A]"
+                className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-bold text-brand-ink"
               >
                 <option value="منشور">منشور للطلاب</option>
                 <option value="مسودة">مسودة</option>
@@ -123,14 +123,14 @@ export function EditContentModal({
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#16324A] block">
+            <label className="text-xs font-bold text-brand-ink block">
               الوصف أو الملاحظات
             </label>
             <textarea
               rows={2}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+              className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
             />
           </div>
         </Modal.Body>
@@ -139,13 +139,13 @@ export function EditContentModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
           >
             إلغاء
           </button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
           >
             حفظ التعديلات
           </button>

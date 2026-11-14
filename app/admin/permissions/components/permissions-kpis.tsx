@@ -10,28 +10,28 @@ interface PermissionsKPIsProps {
 export function PermissionsKPIs({ counts }: PermissionsKPIsProps) {
   return (
     <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      <div className="p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs space-y-1">
-        <span className="text-xs font-semibold text-[#66788A] block">إجمالي فريق الإشراف</span>
-        <div className="text-2xl sm:text-3xl font-black text-[#16324A]">
+      <div className="p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-1">
+        <span className="text-xs font-semibold text-brand-muted block">إجمالي فريق الإشراف</span>
+        <div className="text-2xl sm:text-3xl font-black text-brand-ink">
           {counts.total}
         </div>
-        <span className="text-[11px] text-[#66788A] block">مشرفين ومسؤولين</span>
+        <span className="text-[11px] text-brand-muted block">مشرفين ومسؤولين</span>
       </div>
 
-      <div className="p-5 rounded-2xl bg-purple-50/70 border border-purple-200 shadow-xs space-y-1">
-        <span className="text-xs font-bold text-purple-800 block">المسؤولين العامين (Super Admin)</span>
-        <div className="text-2xl sm:text-3xl font-black text-purple-800">
+      <div className="p-5 rounded-2xl bg-brand-surface-blue border border-brand-border-soft shadow-xs space-y-1">
+        <span className="text-xs font-bold text-brand-ink block">المسؤولين العامين (Super Admin)</span>
+        <div className="text-2xl sm:text-3xl font-black text-brand-ink">
           {counts.superAdmins}
         </div>
-        <span className="text-[11px] text-purple-700 block">كامل صلاحيات النظام</span>
+        <span className="text-[11px] text-brand-primary block">كامل صلاحيات النظام</span>
       </div>
 
-      <div className="p-5 rounded-2xl bg-blue-50/70 border border-blue-200 shadow-xs space-y-1">
-        <span className="text-xs font-bold text-blue-800 block">المشرفين الميدانيين (Moderators)</span>
-        <div className="text-2xl sm:text-3xl font-black text-blue-800">
+      <div className="p-5 rounded-2xl bg-brand-surface-blue/70 border border-brand-border-soft shadow-xs space-y-1">
+        <span className="text-xs font-bold text-brand-ink block">المشرفين الميدانيين (Moderators)</span>
+        <div className="text-2xl sm:text-3xl font-black text-brand-ink">
           {counts.moderators}
         </div>
-        <span className="text-[11px] text-blue-700 block">صلاحيات مخصصة حسب القسم</span>
+        <span className="text-[11px] text-brand-primary block">صلاحيات مخصصة حسب القسم</span>
       </div>
 
       <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-xs space-y-1">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AppProviders } from "@/components/providers/app-providers";
 
 export const metadata: Metadata = {
   title: "حساب المعدل التراكمي جامعة الأزهر غزة | Al-Azhar GPA Calculator",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function GpaCalculatorLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return children;
+  return <AppProviders>{children}</AppProviders>;
 }

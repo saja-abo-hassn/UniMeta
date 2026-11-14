@@ -8,7 +8,7 @@ interface SidebarBrandHeaderProps {
 
 export function SidebarBrandHeader({ onClose }: SidebarBrandHeaderProps) {
   return (
-    <div className="p-5 border-b border-[#D7EAF7] flex items-center justify-between shrink-0">
+    <div className="p-5 border-b border-brand-border-soft flex items-center justify-between shrink-0">
       <Link
         href="/"
         className="flex items-center gap-3 group transition-transform duration-200 hover:scale-[1.02]"
@@ -24,10 +24,10 @@ export function SidebarBrandHeader({ onClose }: SidebarBrandHeaderProps) {
           />
         </div>
         <div className="flex flex-col">
-          <span className="font-bold text-base tracking-wider text-[#0057C8]">
+          <span className="font-bold text-base tracking-wider text-brand-primary">
             UniMeta
           </span>
-          <span className="text-[10px] text-[#2D78B7] font-medium -mt-0.5">
+          <span className="text-[10px] text-brand-hover-medium font-medium -mt-0.5">
             يوني ميتا
           </span>
         </div>
@@ -37,7 +37,7 @@ export function SidebarBrandHeader({ onClose }: SidebarBrandHeaderProps) {
         <button
           type="button"
           onClick={onClose}
-          className="lg:hidden p-1.5 rounded-lg text-[#66788A] hover:text-[#16324A] hover:bg-[#F0F7FD] transition-colors"
+          className="lg:hidden p-1.5 rounded-lg text-brand-muted hover:text-brand-ink hover:bg-brand-surface-soft transition-colors"
           aria-label="إغلاق القائمة"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

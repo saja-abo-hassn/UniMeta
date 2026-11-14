@@ -25,14 +25,14 @@ export function StatCard({
     switch (variant) {
       case "primary":
         return {
-          card: "bg-[#EAF4FD]/60 border-[#0057C8]/25",
-          val: "text-[#0057C8]",
-          badge: "bg-[#0057C8] text-white border-transparent",
-          dot: "bg-[#0057C8]",
+          card: "bg-brand-surface-blue/60 border-brand-primary/25",
+          val: "text-brand-primary",
+          badge: "bg-brand-primary text-white border-transparent",
+          dot: "bg-brand-primary",
         };
       case "warning":
         return {
-          card: "bg-amber-50/70 border-amber-200/80",
+          card: "bg-brand-surface-blue/70 border-brand-border-soft/80",
           val: "text-amber-800",
           badge: "bg-amber-100 text-amber-800 border-amber-300",
           dot: "bg-amber-500",
@@ -53,10 +53,10 @@ export function StatCard({
         };
       default:
         return {
-          card: "bg-white border-[#D7EAF7]",
-          val: "text-[#16324A]",
-          badge: "bg-[#F0F7FD] text-[#0057C8] border-[#D7EAF7]",
-          dot: "bg-[#4DB7F2]",
+          card: "bg-white border-brand-border-soft",
+          val: "text-brand-ink",
+          badge: "bg-brand-surface-soft text-brand-primary border-brand-border-soft",
+          dot: "bg-brand-secondary",
         };
     }
   };
@@ -70,7 +70,7 @@ export function StatCard({
     >
       {/* Top Header Row */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
-        <span className="text-xs font-semibold text-[#66788A] truncate" title={title}>
+        <span className="text-xs font-semibold text-brand-muted truncate" title={title}>
           {title}
         </span>
         {badge ? (
@@ -82,7 +82,7 @@ export function StatCard({
             {badge}
           </span>
         ) : icon ? (
-          <div className="w-6 h-6 rounded-lg bg-white/80 border border-[#D7EAF7] flex items-center justify-center text-[#0057C8] shrink-0 text-xs">
+          <div className="w-6 h-6 rounded-lg bg-white/80 border border-brand-border-soft flex items-center justify-center text-brand-primary shrink-0 text-xs">
             {icon}
           </div>
         ) : null}
@@ -96,7 +96,7 @@ export function StatCard({
       </div>
 
       {/* Subtext Footer Row */}
-      <div className="mt-2 pt-2 border-t border-[#D7EAF7]/60 flex items-center gap-1.5 text-[11px] text-[#66788A]">
+      <div className="mt-2 pt-2 border-t border-brand-border-soft/60 flex items-center gap-1.5 text-[11px] text-brand-muted">
         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${styles.dot}`} />
         <span className="truncate" title={subtext}>{subtext}</span>
       </div>

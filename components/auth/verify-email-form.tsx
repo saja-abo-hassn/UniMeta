@@ -214,14 +214,14 @@ export function VerifyEmailForm() {
       {/* Header with Mascot */}
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <span className="text-xs font-bold text-[#0057C8] uppercase tracking-wider flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#0057C8] animate-pulse" />
+          <span className="text-xs font-bold text-brand-primary uppercase tracking-wider flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
             التحقق من الحساب
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#16324A] mt-0.5">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink mt-0.5">
             تأكيد البريد الإلكتروني
           </h2>
-          <p className="text-xs sm:text-sm text-[#66788A] pt-0.5">
+          <p className="text-xs sm:text-sm text-brand-muted pt-0.5">
             خطوة أخيرة لتأمين حسابك وتفعيل الوصول إلى منصة UniMeta.
           </p>
         </div>
@@ -241,10 +241,10 @@ export function VerifyEmailForm() {
       </div>
 
       {/* Target Email Banner / Edit Switch */}
-      <div className="p-3.5 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] flex flex-col gap-2">
+      <div className="p-3.5 rounded-2xl bg-brand-surface-soft border border-brand-border-soft flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2 text-xs">
-          <div className="flex items-center gap-2 text-[#48627A]">
-            <svg className="w-4 h-4 text-[#0057C8] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-2 text-brand-copy-muted">
+            <svg className="w-4 h-4 text-brand-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -262,7 +262,7 @@ export function VerifyEmailForm() {
                 setTempEmail(email);
                 setIsEditingEmail(true);
               }}
-              className="text-[11px] font-semibold text-[#0057C8] hover:underline"
+              className="text-[11px] font-semibold text-brand-primary hover:underline"
             >
               تعديل
             </button>
@@ -277,33 +277,33 @@ export function VerifyEmailForm() {
               onChange={(e) => setTempEmail(e.target.value)}
               placeholder="name@student.alazhar.edu.ps"
               dir="ltr"
-              className="flex-1 h-9 px-3 text-xs bg-white rounded-lg border border-[#D7EAF7] focus:outline-none focus:border-[#0057C8] text-[#16324A]"
+              className="flex-1 h-9 px-3 text-xs bg-white rounded-lg border border-brand-border-soft focus:outline-none focus:border-brand-primary text-brand-ink"
             />
             <button
               type="submit"
-              className="h-9 px-3.5 text-xs font-semibold bg-[#0057C8] text-white rounded-lg hover:bg-[#0046A0] transition-colors shadow-xs"
+              className="h-9 px-3.5 text-xs font-semibold bg-brand-primary text-white rounded-lg hover:bg-[#0046A0] transition-colors shadow-xs"
             >
               حفظ وإرسال
             </button>
           </form>
         ) : (
-          <div className="flex items-center justify-between text-xs font-bold text-[#16324A] bg-white px-3 py-1.5 rounded-xl border border-[#D7EAF7]/80">
-            <span dir="ltr" className="font-mono text-[#0057C8]">
+          <div className="flex items-center justify-between text-xs font-bold text-brand-ink bg-white px-3 py-1.5 rounded-xl border border-brand-border-soft/80">
+            <span dir="ltr" className="font-mono text-brand-primary">
               {email || "لم يتم تحديد بريد"}
             </span>
-            <span className="text-[11px] text-[#66788A] font-normal">صلاحية الرمز: 10 دقائق</span>
+            <span className="text-[11px] text-brand-muted font-normal">صلاحية الرمز: 10 دقائق</span>
           </div>
         )}
       </div>
 
       {/* Info Notice (Console Preview Banner) */}
       {infoMessage && (
-        <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-200/70 text-blue-800 text-xs flex items-start gap-2.5 shadow-2xs">
-          <svg className="w-4 h-4 text-[#0057C8] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="p-3 rounded-xl bg-brand-surface-blue/80 border border-brand-border-soft/70 text-brand-ink text-xs flex items-start gap-2.5 shadow-2xs">
+          <svg className="w-4 h-4 text-brand-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div className="leading-relaxed">
-            <span className="font-bold block text-blue-900 mb-0.5">وضع التطوير (Dev Mode):</span>
+            <span className="font-bold block text-brand-dark mb-0.5">وضع التطوير (Dev Mode):</span>
             {infoMessage}
           </div>
         </div>
@@ -344,7 +344,7 @@ export function VerifyEmailForm() {
       {/* 6 Digit Input Boxes */}
       <div className="space-y-4 pt-1">
         <div className="space-y-2">
-          <label className="block text-center text-xs font-bold text-[#16324A]">
+          <label className="block text-center text-xs font-bold text-brand-ink">
             أدخل رمز التحقق (6 أرقام)
           </label>
 
@@ -370,8 +370,8 @@ export function VerifyEmailForm() {
                   errorMessage
                     ? "border-red-400 bg-red-50/30 text-red-700 focus:ring-2 focus:ring-red-400"
                     : digit
-                    ? "border-[#0057C8] bg-blue-50/30 text-[#0057C8] focus:ring-2 focus:ring-[#0057C8]/30"
-                    : "border-[#D7EAF7] bg-white text-[#16324A] focus:border-[#0057C8] focus:ring-2 focus:ring-[#0057C8]/20"
+                    ? "border-brand-primary bg-brand-surface-blue/30 text-brand-primary focus:ring-2 focus:ring-brand-primary/30"
+                    : "border-brand-border-soft bg-white text-brand-ink focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
                 }`}
               />
             ))}
@@ -383,7 +383,7 @@ export function VerifyEmailForm() {
           type="button"
           onClick={() => submitCode()}
           disabled={isSubmitting || digits.join("").length !== 6 || !!successMessage}
-          className="w-full h-11 sm:h-12 rounded-xl bg-[#0057C8] hover:bg-[#0046A0] disabled:bg-[#A3C7E8] text-white font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg disabled:shadow-none disabled:cursor-not-allowed"
+          className="w-full h-11 sm:h-12 rounded-xl bg-brand-primary hover:bg-[#0046A0] disabled:bg-[#A3C7E8] text-white font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg disabled:shadow-none disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
@@ -404,15 +404,15 @@ export function VerifyEmailForm() {
 
         {/* Resend Section & Countdown */}
         <div className="pt-2 border-t border-[#E5F0FA] flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs">
-          <span className="text-[#66788A]">لم يصلك الرمز؟</span>
+          <span className="text-brand-muted">لم يصلك الرمز؟</span>
 
           {countdown > 0 ? (
-            <div className="flex items-center gap-1.5 font-medium text-[#48627A] bg-[#F0F7FD] px-3 py-1.5 rounded-full border border-[#D7EAF7]">
-              <svg className="w-3.5 h-3.5 text-[#0057C8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-1.5 font-medium text-brand-copy-muted bg-brand-surface-soft px-3 py-1.5 rounded-full border border-brand-border-soft">
+              <svg className="w-3.5 h-3.5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>إعادة الإرسال بعد:</span>
-              <span className="font-mono font-bold text-[#0057C8]" dir="ltr">
+              <span className="font-mono font-bold text-brand-primary" dir="ltr">
                 {`0:${countdown.toString().padStart(2, "0")}`}
               </span>
             </div>
@@ -421,7 +421,7 @@ export function VerifyEmailForm() {
               type="button"
               onClick={handleResend}
               disabled={isResending}
-              className="font-bold text-[#0057C8] hover:text-[#0046A0] hover:underline transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="font-bold text-brand-primary hover:text-[#0046A0] hover:underline transition-colors flex items-center gap-1.5 disabled:opacity-50"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -433,15 +433,15 @@ export function VerifyEmailForm() {
       </div>
 
       {/* Footer Navigation */}
-      <div className="pt-3 border-t border-[#E5F0FA] flex items-center justify-between text-xs text-[#66788A]">
-        <Link href="/login" className="hover:text-[#0057C8] transition-colors flex items-center gap-1">
+      <div className="pt-3 border-t border-[#E5F0FA] flex items-center justify-between text-xs text-brand-muted">
+        <Link href="/login" className="hover:text-brand-primary transition-colors flex items-center gap-1">
           <svg className="w-3.5 h-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
           <span>العودة لتسجيل الدخول</span>
         </Link>
 
-        <Link href="/register" className="font-semibold text-[#0057C8] hover:underline">
+        <Link href="/register" className="font-semibold text-brand-primary hover:underline">
           إنشاء حساب آخر
         </Link>
       </div>

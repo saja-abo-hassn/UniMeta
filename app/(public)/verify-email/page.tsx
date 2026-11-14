@@ -17,7 +17,7 @@ export default function VerifyEmailPage() {
     >
       <Suspense
         fallback={
-          <div className="p-8 text-center text-sm text-[#66788A] animate-pulse">
+          <div className="p-8 text-center text-sm text-brand-muted animate-pulse">
             جاري تحميل نموذج التحقق...
           </div>
         }

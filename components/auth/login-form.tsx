@@ -99,14 +99,14 @@ export function LoginForm() {
       {/* Header */}
       <div className="space-y-1">
         <div className="flex flex-col">
-          <span className="text-xs font-bold text-[#0057C8] uppercase tracking-wider">
+          <span className="text-xs font-bold text-brand-primary uppercase tracking-wider">
             تسجيل الدخول
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#16324A] mt-0.5">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink mt-0.5">
             مرحباً بعودتك
           </h2>
         </div>
-        <p className="text-xs sm:text-sm text-[#66788A] pt-0.5">
+        <p className="text-xs sm:text-sm text-brand-muted pt-0.5">
           سجّل الدخول إلى حسابك الأكاديمي للاستمرار.
         </p>
       </div>
@@ -149,7 +149,7 @@ export function LoginForm() {
         <div className="space-y-1.5">
           <label
             htmlFor="identifier"
-            className="block text-xs font-semibold text-[#16324A]"
+            className="block text-xs font-semibold text-brand-ink"
           >
             البريد الإلكتروني أو الرقم الجامعي
           </label>
@@ -163,10 +163,10 @@ export function LoginForm() {
                 if (errors.identifier) setErrors({ ...errors, identifier: undefined });
               }}
               placeholder="name@student.alazhar.edu.ps"
-              className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-[#16324A] placeholder:text-[#66788A]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4DB7F2]/30 ${
+              className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-brand-ink placeholder:text-brand-muted/60 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 ${
                 errors.identifier
                   ? "border-red-400 focus:border-red-500"
-                  : "border-[#D7EAF7] focus:border-[#4DB7F2]"
+                  : "border-brand-border-soft focus:border-brand-secondary"
               }`}
               dir="ltr"
               autoComplete="username"
@@ -183,7 +183,7 @@ export function LoginForm() {
         <div className="space-y-1.5">
           <label
             htmlFor="password"
-            className="block text-xs font-semibold text-[#16324A]"
+            className="block text-xs font-semibold text-brand-ink"
           >
             كلمة المرور
           </label>
@@ -197,10 +197,10 @@ export function LoginForm() {
                 if (errors.password) setErrors({ ...errors, password: undefined });
               }}
               placeholder="••••••••"
-              className={`w-full h-[45px] pl-20 pr-3.5 rounded-xl bg-white border text-sm text-[#16324A] placeholder:text-[#66788A]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4DB7F2]/30 ${
+              className={`w-full h-[45px] pl-20 pr-3.5 rounded-xl bg-white border text-sm text-brand-ink placeholder:text-brand-muted/60 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 ${
                 errors.password
                   ? "border-red-400 focus:border-red-500"
-                  : "border-[#D7EAF7] focus:border-[#4DB7F2]"
+                  : "border-brand-border-soft focus:border-brand-secondary"
               }`}
               dir="ltr"
               autoComplete="current-password"
@@ -208,7 +208,7 @@ export function LoginForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 px-2 py-1 text-xs font-semibold text-[#0057C8] hover:text-[#2D78B7] hover:bg-[#F4FAFF] rounded-md transition-colors"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 px-2 py-1 text-xs font-semibold text-brand-primary hover:text-brand-hover-medium hover:bg-[#F4FAFF] rounded-md transition-colors"
               aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
             >
               {showPassword ? "إخفاء" : "إظهار"}
@@ -223,20 +223,25 @@ export function LoginForm() {
 
         {/* Remember Me & Forgot Password Row */}
         <div className="flex items-center justify-between text-xs pt-0.5">
-          <label className="flex items-center gap-2 cursor-pointer select-none text-[#16324A]">
+          <label className="flex items-center gap-2 cursor-pointer select-none text-brand-ink">
             <input
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 rounded border-[#D7EAF7] text-[#0057C8] focus:ring-[#4DB7F2]/40"
+              className="w-4 h-4 rounded border-brand-border-soft text-brand-primary focus:ring-brand-secondary/40"
             />
             <span>تذكرني</span>
           </label>
 
           <button
             type="button"
+<<<<<<< HEAD
             onClick={() => apiClient.isUsingMock() ? setForgotPasswordNote(true) : router.push("/forgot-password")}
             className="text-[#0057C8] hover:text-[#2D78B7] hover:underline font-medium transition-colors"
+=======
+            onClick={() => setForgotPasswordNote(true)}
+            className="text-brand-primary hover:text-brand-hover-medium hover:underline font-medium transition-colors"
+>>>>>>> b079de5bb3c77012965f2ad45ddce455d601b6a9
           >
             نسيت كلمة المرور؟
           </button>
@@ -252,7 +257,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-[45px] rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] active:scale-[0.99] text-white font-semibold text-sm transition-all duration-150 shadow-[0_2px_8px_rgba(0,87,200,0.25)] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full h-[45px] rounded-xl bg-brand-primary hover:bg-brand-hover-medium active:scale-[0.99] text-white font-semibold text-sm transition-all duration-150 shadow-[0_2px_8px_rgba(0,87,200,0.25)] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
@@ -269,11 +274,11 @@ export function LoginForm() {
       </form>
 
       {/* Switch to Register link */}
-      <div className="pt-3 text-center text-xs text-[#66788A] flex items-center justify-center gap-1.5 border-t border-[#D7EAF7]/80">
+      <div className="pt-3 text-center text-xs text-brand-muted flex items-center justify-center gap-1.5 border-t border-brand-border-soft/80">
         <span>ليس لديك حساب؟</span>
         <Link
           href="/register"
-          className="font-bold text-[#0057C8] hover:text-[#2D78B7] hover:underline transition-colors"
+          className="font-bold text-brand-primary hover:text-brand-hover-medium hover:underline transition-colors"
         >
           إنشاء حساب جديد
         </Link>

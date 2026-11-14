@@ -43,19 +43,19 @@ export function MyHoursModals({
 
             <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A]">اسم المساق:</label>
+                <label className="text-xs font-bold text-brand-ink">اسم المساق:</label>
                 <input
                   type="text"
                   value={editingCourse.name}
                   onChange={(e) => setEditingCourse({ ...editingCourse, name: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D7EAF7] text-xs sm:text-sm font-bold text-[#16324A] bg-[#F8FBFE]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft text-xs sm:text-sm font-bold text-brand-ink bg-brand-surface-muted"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#16324A]">الساعات المعتمدة:</label>
+                  <label className="text-xs font-bold text-brand-ink">الساعات المعتمدة:</label>
                   <input
                     type="number"
                     min="1"
@@ -67,13 +67,13 @@ export function MyHoursModals({
                         credits: Math.max(1, parseInt(e.target.value, 10) || 1),
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#16324A] bg-[#F8FBFE]"
+                    className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-ink bg-brand-surface-muted"
                     required
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#16324A]">العلامة (من 100):</label>
+                  <label className="text-xs font-bold text-brand-ink">العلامة (من 100):</label>
                   <input
                     type="number"
                     min="0"
@@ -87,15 +87,15 @@ export function MyHoursModals({
                         grade: val === "" ? "" : Math.max(0, Math.min(100, parseFloat(val) || 0)),
                       });
                     }}
-                    className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#0057C8] bg-[#F8FBFE]"
+                    className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-primary bg-brand-surface-muted"
                   />
                 </div>
               </div>
 
-              <label className="p-3 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] flex items-center justify-between cursor-pointer">
+              <label className="p-3 rounded-2xl bg-brand-surface-soft border border-brand-border-soft flex items-center justify-between cursor-pointer">
                 <div>
-                  <span className="text-xs font-bold text-[#16324A] block">حالة الإنجاز:</span>
-                  <span className="text-[10px] text-[#66788A]">تعليم المادة كمنجزة يدخل ساعاتها في المجموع الكلي</span>
+                  <span className="text-xs font-bold text-brand-ink block">حالة الإنجاز:</span>
+                  <span className="text-[10px] text-brand-muted">تعليم المادة كمنجزة يدخل ساعاتها في المجموع الكلي</span>
                 </div>
                 <input
                   type="checkbox"
@@ -103,7 +103,7 @@ export function MyHoursModals({
                   onChange={(e) =>
                     setEditingCourse({ ...editingCourse, isCompleted: e.target.checked })
                   }
-                  className="w-5 h-5 rounded text-[#0057C8] border-[#D7EAF7] cursor-pointer"
+                  className="w-5 h-5 rounded text-brand-primary border-brand-border-soft cursor-pointer"
                 />
               </label>
             </Modal.Body>
@@ -112,13 +112,13 @@ export function MyHoursModals({
               <button
                 type="button"
                 onClick={() => setEditingCourse(null)}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-semibold text-[#16324A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-semibold text-brand-ink hover:bg-brand-surface-muted cursor-pointer"
               >
                 إلغاء
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
               >
                 حفظ التعديلات
               </button>
@@ -142,25 +142,25 @@ export function MyHoursModals({
           <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1 col-span-1">
-                <label className="text-xs font-bold text-[#16324A]">رمز المساق:</label>
+                <label className="text-xs font-bold text-brand-ink">رمز المساق:</label>
                 <input
                   type="text"
                   placeholder="MATH101"
                   dir="ltr"
                   value={newCourse.code}
                   onChange={(e) => setNewCourse({ ...newCourse, code: e.target.value.toUpperCase() })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-mono font-bold text-[#16324A] bg-[#F8FBFE]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-mono font-bold text-brand-ink bg-brand-surface-muted"
                   required
                 />
               </div>
               <div className="space-y-1 col-span-2">
-                <label className="text-xs font-bold text-[#16324A]">اسم المساق:</label>
+                <label className="text-xs font-bold text-brand-ink">اسم المساق:</label>
                 <input
                   type="text"
                   placeholder="مثال: تفاضل وتكامل 1"
                   value={newCourse.name}
                   onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#16324A] bg-[#F8FBFE]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-ink bg-brand-surface-muted"
                   required
                 />
               </div>
@@ -168,7 +168,7 @@ export function MyHoursModals({
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A]">الساعات المعتمدة:</label>
+                <label className="text-xs font-bold text-brand-ink">الساعات المعتمدة:</label>
                 <input
                   type="number"
                   min="1"
@@ -180,13 +180,13 @@ export function MyHoursModals({
                       credits: Math.max(1, parseInt(e.target.value, 10) || 1),
                     })
                   }
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#16324A] bg-[#F8FBFE]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-ink bg-brand-surface-muted"
                   required
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A]">رقم الفصل (1-10):</label>
+                <label className="text-xs font-bold text-brand-ink">رقم الفصل (1-10):</label>
                 <input
                   type="number"
                   min="1"
@@ -198,18 +198,18 @@ export function MyHoursModals({
                       semester: Math.max(1, Math.min(10, parseInt(e.target.value, 10) || 1)),
                     })
                   }
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#16324A] bg-[#F8FBFE]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-ink bg-brand-surface-muted"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#16324A]">تصنيف المساق:</label>
+              <label className="text-xs font-bold text-brand-ink">تصنيف المساق:</label>
               <select
                 value={newCourse.category}
                 onChange={(e) => setNewCourse({ ...newCourse, category: e.target.value as CourseCategory })}
-                className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-semibold text-brand-ink bg-brand-surface-muted"
               >
                 <option value="major">إجباري تخصص</option>
                 <option value="college">متطلب كلية</option>
@@ -221,7 +221,7 @@ export function MyHoursModals({
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#16324A]">العلامة (اختياري):</label>
+                <label className="text-xs font-bold text-brand-ink">العلامة (اختياري):</label>
                 <input
                   type="number"
                   min="0"
@@ -235,17 +235,17 @@ export function MyHoursModals({
                       grade: val === "" ? "" : Math.max(0, Math.min(100, parseFloat(val) || 0)),
                     });
                   }}
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#0057C8] bg-[#F8FBFE]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-primary bg-brand-surface-muted"
                 />
               </div>
               <div className="flex flex-col justify-end">
-                <label className="p-2.5 rounded-xl bg-[#F0F7FD] border border-[#D7EAF7] flex items-center justify-between cursor-pointer">
-                  <span className="text-xs font-bold text-[#16324A]">منجزة:</span>
+                <label className="p-2.5 rounded-xl bg-brand-surface-soft border border-brand-border-soft flex items-center justify-between cursor-pointer">
+                  <span className="text-xs font-bold text-brand-ink">منجزة:</span>
                   <input
                     type="checkbox"
                     checked={newCourse.isCompleted}
                     onChange={(e) => setNewCourse({ ...newCourse, isCompleted: e.target.checked })}
-                    className="w-4 h-4 rounded text-[#0057C8] border-[#D7EAF7] cursor-pointer"
+                    className="w-4 h-4 rounded text-brand-primary border-brand-border-soft cursor-pointer"
                   />
                 </label>
               </div>
@@ -256,13 +256,13 @@ export function MyHoursModals({
             <button
               type="button"
               onClick={() => setIsAddModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-semibold text-[#16324A] hover:bg-[#F8FBFE] cursor-pointer"
+              className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-semibold text-brand-ink hover:bg-brand-surface-muted cursor-pointer"
             >
               إلغاء
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+              className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
             >
               إضافة المساق وحساب الساعات
             </button>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/shared/navbar";
 import { Button } from "@/components/shared/button";
 import { publicDestinations } from "@/src/lib/navigation/public";
+import { AppProviders } from "@/components/providers/app-providers";
 
 export interface PublicShellProps {
   children: React.ReactNode;
@@ -16,10 +17,11 @@ export function PublicShell({ children }: PublicShellProps) {
 
   // On the landing page and auth pages, the page owns its full-bleed Figma split layout
   if (pathname === "/" || pathname === "/login" || pathname === "/register") {
-    return <>{children}</>;
+    return pathname === "/" ? <>{children}</> : <AppProviders>{children}</AppProviders>;
   }
 
   return (
+    <AppProviders>
     <div className="min-h-screen flex flex-col bg-brand-light text-brand-dark">
       {/* Public Navbar */}
       <Navbar
@@ -52,11 +54,11 @@ export function PublicShell({ children }: PublicShellProps) {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 font-bold text-sm text-brand-primary">
             <span>منصة UniMeta الجامعية</span>
-            <span className="text-slate-600 font-normal text-xs">
+            <span className="text-brand-muted font-normal text-xs">
               | النظام الموحد لخدمات الطلاب
             </span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-slate-700">
+          <div className="flex items-center gap-4 text-xs text-brand-ink">
             <Link href="/student" className="hover:text-brand-primary transition-colors font-medium">
               بوابة الطالب
             </Link>
@@ -68,6 +70,7 @@ export function PublicShell({ children }: PublicShellProps) {
         </div>
       </footer>
     </div>
+    </AppProviders>
   );
 }
 

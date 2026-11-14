@@ -16,17 +16,17 @@ export function AgreementTimelineView({ timeline, createdAt }: AgreementTimeline
   ];
 
   return (
-    <div className="p-4 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7] space-y-3">
+    <div className="p-4 rounded-2xl bg-brand-surface-muted border border-brand-border-soft space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-black text-[#16324A]">
+        <span className="text-xs font-black text-brand-ink">
           سجل الحالة والأحداث الرسمية للاتفاقية (Timeline)
         </span>
-        <span className="text-[10px] text-[#66788A]">
+        <span className="text-[10px] text-brand-muted">
           موثق في سجل النظام
         </span>
       </div>
 
-      <div className="space-y-3 relative ps-4 border-s-2 border-[#D7EAF7] ms-2">
+      <div className="space-y-3 relative ps-4 border-s-2 border-brand-border-soft ms-2">
         {steps.map((step, idx) => (
           <div key={idx} className="relative space-y-0.5">
             <span
@@ -34,15 +34,15 @@ export function AgreementTimelineView({ timeline, createdAt }: AgreementTimeline
                 step.status === "completed"
                   ? "bg-emerald-600"
                   : step.status === "current"
-                  ? "bg-[#0057C8] animate-pulse"
+                  ? "bg-brand-primary animate-pulse"
                   : "bg-slate-300"
               }`}
             />
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-[#16324A]">{step.title}</span>
-              <span className="text-[10px] text-[#66788A] font-mono">{step.date}</span>
+              <span className="font-bold text-brand-ink">{step.title}</span>
+              <span className="text-[10px] text-brand-muted font-mono">{step.date}</span>
             </div>
-            <p className="text-[11px] text-[#66788A] leading-relaxed">
+            <p className="text-[11px] text-brand-muted leading-relaxed">
               {step.description}
             </p>
           </div>

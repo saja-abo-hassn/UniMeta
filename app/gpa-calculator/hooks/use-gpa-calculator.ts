@@ -305,10 +305,10 @@ export function useGpaCalculator() {
 
   const overallRating = useMemo(() => {
     if (totalGradedCredits === 0) {
-      return { label: "لا توجد علامات مدخلة", color: "bg-slate-100 text-[#66788A] border-slate-200" };
+      return { label: "لا توجد علامات مدخلة", color: "bg-slate-100 text-brand-muted border-brand-border-soft" };
     }
-    if (overallGpa >= 90) return { label: "ممتاز (مرتبة شرف)", color: "bg-[#EAF4FD] text-[#0057C8] border-[#D7EAF7]" };
-    if (overallGpa >= 80) return { label: "جيد جداً", color: "bg-[#F0F7FD] text-[#2D78B7] border-[#D7EAF7]" };
+    if (overallGpa >= 90) return { label: "ممتاز (مرتبة شرف)", color: "bg-brand-surface-blue text-brand-primary border-brand-border-soft" };
+    if (overallGpa >= 80) return { label: "جيد جداً", color: "bg-brand-surface-soft text-brand-hover-medium border-brand-border-soft" };
     if (overallGpa >= 70) return { label: "جيد", color: "bg-emerald-50 text-emerald-700 border-emerald-200" };
     if (overallGpa >= 60) return { label: "مقبول", color: "bg-amber-50 text-amber-700 border-amber-200" };
     return { label: "راسب / إنذار أكاديمي", color: "bg-red-50 text-red-700 border-red-200" };

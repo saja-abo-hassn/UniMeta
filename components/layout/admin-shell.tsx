@@ -73,15 +73,15 @@ export function AdminShell({ children }: AdminShellProps) {
     return (
       <div className="min-h-screen bg-[#F4FAFF] flex items-center justify-center" dir="rtl">
         <div className="flex flex-col items-center gap-3 text-center p-6 animate-fade-in">
-          <div className="w-9 h-9 border-3 border-[#0057C8] border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-semibold text-[#16324A]">جاري التحقق وتوجيهك لصفحة تسجيل الدخول...</p>
+          <div className="w-9 h-9 border-3 border-brand-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs font-semibold text-brand-ink">جاري التحقق وتوجيهك لصفحة تسجيل الدخول...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex bg-[#F4FAFF] text-[#16324A]" dir="rtl">
+    <div className="min-h-screen flex bg-[#F4FAFF] text-brand-ink" dir="rtl">
       {/* Admin Persistent Sidebar */}
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

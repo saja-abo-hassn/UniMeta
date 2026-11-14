@@ -24,33 +24,33 @@ export function SemesterCoursesTable({
   onUpdateCourse,
 }: SemesterCoursesTableProps) {
   return (
-    <div className="rounded-2xl border border-[#D7EAF7] bg-[#F8FBFE]/60 p-4 sm:p-5 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#D7EAF7]">
+    <div className="rounded-2xl border border-brand-border-soft bg-brand-surface-muted/60 p-4 sm:p-5 space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-brand-border-soft">
         <div className="flex items-center gap-2">
-          <span className={`w-2 h-2 rounded-full ${semester.isSummer ? "bg-amber-500" : "bg-[#0057C8]"}`} />
-          <h3 className="font-extrabold text-sm sm:text-base text-[#16324A]">
+          <span className={`w-2 h-2 rounded-full ${semester.isSummer ? "bg-brand-secondary" : "bg-brand-primary"}`} />
+          <h3 className="font-extrabold text-sm sm:text-base text-brand-ink">
             {semester.name}
           </h3>
           {semester.isSummer && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-surface-blue text-brand-primary border border-brand-border-soft">
               صيفي
             </span>
           )}
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="text-xs text-[#16324A] bg-white px-3 py-1.5 rounded-xl border border-[#D7EAF7]">
-            <span className="text-[#66788A]">معدل الفصل: </span>
-            <strong className="text-[#0057C8] font-bold" dir="ltr">
+          <div className="text-xs text-brand-ink bg-white px-3 py-1.5 rounded-xl border border-brand-border-soft">
+            <span className="text-brand-muted">معدل الفصل: </span>
+            <strong className="text-brand-primary font-bold" dir="ltr">
               {semesterCalc.gpa > 0 ? `${semesterCalc.gpa.toFixed(2)}%` : "-"}
             </strong>
-            <span className="text-[#66788A] text-[10px] ms-1">({semesterCalc.hours} س)</span>
+            <span className="text-brand-muted text-[10px] ms-1">({semesterCalc.hours} س)</span>
           </div>
 
           <button
             type="button"
             onClick={() => onAddCourse(yearNumber, semester.id)}
-            className="px-3 py-1.5 rounded-xl bg-white text-[#0057C8] border border-[#D7EAF7] hover:border-[#4DB7F2] text-xs font-bold transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-white text-brand-primary border border-brand-border-soft hover:border-brand-secondary text-xs font-bold transition-colors"
           >
             + إضافة مادة
           </button>
@@ -58,14 +58,14 @@ export function SemesterCoursesTable({
       </div>
 
       {semester.courses.length === 0 ? (
-        <div className="p-4 text-center rounded-xl bg-white border border-dashed border-[#D7EAF7] text-xs text-[#66788A]">
+        <div className="p-4 text-center rounded-xl bg-white border border-dashed border-brand-border-soft text-xs text-brand-muted">
           لا توجد مواد مضافة لهذا الفصل. اضغط على "+ إضافة مادة" لإدراج مساق جديد.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#D7EAF7] bg-white">
+        <div className="overflow-x-auto rounded-xl border border-brand-border-soft bg-white">
           <table className="w-full text-start text-xs">
             <thead>
-              <tr className="bg-[#F8FBFE] border-b border-[#D7EAF7] text-[#66788A] font-semibold">
+              <tr className="bg-brand-surface-muted border-b border-brand-border-soft text-brand-muted font-semibold">
                 <th className="py-2.5 px-3 text-start">رمز المادة</th>
                 <th className="py-2.5 px-3 text-start">اسم المساق</th>
                 <th className="py-2.5 px-3 text-start w-24">الساعات</th>
@@ -74,18 +74,18 @@ export function SemesterCoursesTable({
                 <th className="py-2.5 px-3 text-start w-16">إجراء</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D7EAF7]/50">
+            <tbody className="divide-y divide-brand-border-soft/50">
               {semester.courses.map((course) => {
                 const hasGrade = typeof course.grade === "number";
                 const points = hasGrade ? (course.grade as number) * course.credits : 0;
 
                 return (
-                  <tr key={course.id} className="hover:bg-[#F8FBFE] transition-colors">
-                    <td className="py-2.5 px-3 font-mono font-bold text-[#0057C8]" dir="ltr">
+                  <tr key={course.id} className="hover:bg-brand-surface-muted transition-colors">
+                    <td className="py-2.5 px-3 font-mono font-bold text-brand-primary" dir="ltr">
                       {course.code || "-"}
                     </td>
 
-                    <td className="py-2.5 px-3 font-semibold text-[#16324A]">
+                    <td className="py-2.5 px-3 font-semibold text-brand-ink">
                       <input
                         type="text"
                         value={course.name}
@@ -98,7 +98,7 @@ export function SemesterCoursesTable({
                             e.target.value
                           )
                         }
-                        className="w-full max-w-sm px-2 py-1 rounded-lg border border-transparent hover:border-[#D7EAF7] focus:border-[#4DB7F2] focus:bg-white text-xs font-semibold text-[#16324A] bg-transparent"
+                        className="w-full max-w-sm px-2 py-1 rounded-lg border border-transparent hover:border-brand-border-soft focus:border-brand-secondary focus:bg-white text-xs font-semibold text-brand-ink bg-transparent"
                       />
                     </td>
 
@@ -118,9 +118,9 @@ export function SemesterCoursesTable({
                               e.target.value
                             )
                           }
-                          className="w-14 h-8 px-2 text-center rounded-lg border border-[#D7EAF7] font-bold text-xs text-[#16324A] bg-white focus:outline-none focus:border-[#4DB7F2]"
+                          className="w-14 h-8 px-2 text-center rounded-lg border border-brand-border-soft font-bold text-xs text-brand-ink bg-white focus:outline-none focus:border-brand-secondary"
                         />
-                        <span className="text-[10px] text-[#66788A]">س</span>
+                        <span className="text-[10px] text-brand-muted">س</span>
                       </div>
                     </td>
 
@@ -142,13 +142,13 @@ export function SemesterCoursesTable({
                               e.target.value
                             )
                           }
-                          className="w-16 h-8 px-2 text-center rounded-lg border border-[#D7EAF7] font-bold text-xs text-[#0057C8] bg-white focus:outline-none focus:border-[#4DB7F2] focus:ring-1 focus:ring-[#4DB7F2]"
+                          className="w-16 h-8 px-2 text-center rounded-lg border border-brand-border-soft font-bold text-xs text-brand-primary bg-white focus:outline-none focus:border-brand-secondary focus:ring-1 focus:ring-brand-secondary"
                         />
-                        <span className="text-[11px] text-[#66788A]">%</span>
+                        <span className="text-[11px] text-brand-muted">%</span>
                       </div>
                     </td>
 
-                    <td className="py-2.5 px-3 font-mono font-bold text-xs text-[#16324A]" dir="ltr">
+                    <td className="py-2.5 px-3 font-mono font-bold text-xs text-brand-ink" dir="ltr">
                       {hasGrade ? points.toFixed(1) : "-"}
                     </td>
 

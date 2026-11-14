@@ -28,8 +28,8 @@ export function DeleteContentModal({
           ⚠️
         </div>
         <div className="space-y-1">
-          <p className="text-xs text-[#66788A] leading-relaxed">
-            هل أنت متأكد من حذف <strong className="text-[#16324A]">{deleteCandidate.title}</strong> للمادة ({deleteCandidate.courseName})؟ لن يتمكن الطلاب من الوصول إليه بعد الحذف.
+          <p className="text-xs text-brand-muted leading-relaxed">
+            هل أنت متأكد من حذف <strong className="text-brand-ink">{deleteCandidate.title}</strong> للمادة ({deleteCandidate.courseName})؟ لن يتمكن الطلاب من الوصول إليه بعد الحذف.
           </p>
         </div>
       </Modal.Body>
@@ -37,7 +37,7 @@ export function DeleteContentModal({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+          className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
         >
           تراجع
         </button>

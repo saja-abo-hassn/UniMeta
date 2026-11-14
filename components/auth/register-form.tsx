@@ -120,14 +120,14 @@ export function RegisterForm() {
       {/* Header */}
       <div className="space-y-1">
         <div className="flex flex-col">
-          <span className="text-xs font-bold text-[#0057C8] uppercase tracking-wider">
+          <span className="text-xs font-bold text-brand-primary uppercase tracking-wider">
             إنشاء حساب جديد
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#16324A] mt-0.5">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink mt-0.5">
             انضم إلى UniMeta
           </h2>
         </div>
-        <p className="text-xs sm:text-sm text-[#66788A] pt-0.5">
+        <p className="text-xs sm:text-sm text-brand-muted pt-0.5">
           سجّل حسابك الأكاديمي للوصول لكافة الخدمات والأنظمة.
         </p>
       </div>
@@ -168,8 +168,8 @@ export function RegisterForm() {
       <form onSubmit={handleSubmit} className="space-y-3.5 pt-1" noValidate>
         {/* Full Name Field */}
         <div className="space-y-1.5">
-          <label htmlFor="fullName" className="block text-xs font-semibold text-[#16324A]">
-            الاسم الكامل <span className="text-xs text-[#66788A] font-normal">(حسب السجل الجامعي)</span>
+          <label htmlFor="fullName" className="block text-xs font-semibold text-brand-ink">
+            الاسم الكامل <span className="text-xs text-brand-muted font-normal">(حسب السجل الجامعي)</span>
           </label>
           <input
             id="fullName"
@@ -180,10 +180,10 @@ export function RegisterForm() {
               if (errors.fullName) setErrors({ ...errors, fullName: "" });
             }}
             placeholder="مثال: أحمد محمد علي"
-            className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-[#16324A] placeholder:text-[#66788A]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4DB7F2]/30 ${
+            className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-brand-ink placeholder:text-brand-muted/60 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 ${
               errors.fullName
                 ? "border-red-400 focus:border-red-500"
-                : "border-[#D7EAF7] focus:border-[#4DB7F2]"
+                : "border-brand-border-soft focus:border-brand-secondary"
             }`}
             autoComplete="name"
           />
@@ -197,7 +197,7 @@ export function RegisterForm() {
         {/* Student ID & Faculty Grid */}
         {apiClient.isUsingMock() && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <label htmlFor="studentId" className="block text-xs font-semibold text-[#16324A]">
+            <label htmlFor="studentId" className="block text-xs font-semibold text-brand-ink">
               الرقم الجامعي
             </label>
             <input
@@ -209,10 +209,10 @@ export function RegisterForm() {
                 if (errors.studentId) setErrors({ ...errors, studentId: "" });
               }}
               placeholder="مثال: 20241102"
-              className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-[#16324A] placeholder:text-[#66788A]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4DB7F2]/30 ${
+              className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-brand-ink placeholder:text-brand-muted/60 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 ${
                 errors.studentId
                   ? "border-red-400 focus:border-red-500"
-                  : "border-[#D7EAF7] focus:border-[#4DB7F2]"
+                  : "border-brand-border-soft focus:border-brand-secondary"
               }`}
               dir="ltr"
             />
@@ -224,7 +224,7 @@ export function RegisterForm() {
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="faculty" className="block text-xs font-semibold text-[#16324A]">
+            <label htmlFor="faculty" className="block text-xs font-semibold text-brand-ink">
               الكلية
             </label>
             <select
@@ -234,7 +234,7 @@ export function RegisterForm() {
                 setFormData({ ...formData, faculty: e.target.value });
                 if (errors.faculty) setErrors({ ...errors, faculty: "" });
               }}
-              className="w-full h-[45px] px-3 rounded-xl bg-white border border-[#D7EAF7] text-xs sm:text-sm text-[#16324A] transition-colors focus:outline-none focus:border-[#4DB7F2] focus:ring-2 focus:ring-[#4DB7F2]/30"
+              className="w-full h-[45px] px-3 rounded-xl bg-white border border-brand-border-soft text-xs sm:text-sm text-brand-ink transition-colors focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/30"
             >
               {faculties.map((f) => (
                 <option key={f} value={f}>
@@ -248,7 +248,7 @@ export function RegisterForm() {
         }
         {/* University Email Field */}
         <div className="space-y-1.5">
-          <label htmlFor="email" className="block text-xs font-semibold text-[#16324A]">
+          <label htmlFor="email" className="block text-xs font-semibold text-brand-ink">
             البريد الإلكتروني الجامعي
           </label>
           <input
@@ -260,10 +260,10 @@ export function RegisterForm() {
               if (errors.email) setErrors({ ...errors, email: "" });
             }}
             placeholder="s20241102@student.alazhar.edu.ps"
-            className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-[#16324A] placeholder:text-[#66788A]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4DB7F2]/30 ${
+            className={`w-full h-[45px] px-3.5 rounded-xl bg-white border text-sm text-brand-ink placeholder:text-brand-muted/60 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 ${
               errors.email
                 ? "border-red-400 focus:border-red-500"
-                : "border-[#D7EAF7] focus:border-[#4DB7F2]"
+                : "border-brand-border-soft focus:border-brand-secondary"
             }`}
             dir="ltr"
             autoComplete="email"
@@ -278,7 +278,7 @@ export function RegisterForm() {
         {/* Passwords Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <label htmlFor="password" className="block text-xs font-semibold text-[#16324A]">
+            <label htmlFor="password" className="block text-xs font-semibold text-brand-ink">
               كلمة المرور
             </label>
             <div className="relative">
@@ -291,10 +291,10 @@ export function RegisterForm() {
                   if (errors.password) setErrors({ ...errors, password: "" });
                 }}
                 placeholder="••••••••"
-                className={`w-full h-[45px] pl-20 pr-3.5 rounded-xl bg-white border text-sm text-[#16324A] placeholder:text-[#66788A]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4DB7F2]/30 ${
+                className={`w-full h-[45px] pl-20 pr-3.5 rounded-xl bg-white border text-sm text-brand-ink placeholder:text-brand-muted/60 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 ${
                   errors.password
                     ? "border-red-400 focus:border-red-500"
-                    : "border-[#D7EAF7] focus:border-[#4DB7F2]"
+                    : "border-brand-border-soft focus:border-brand-secondary"
                 }`}
                 dir="ltr"
                 autoComplete="new-password"
@@ -302,7 +302,7 @@ export function RegisterForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 px-2 py-1 text-xs font-semibold text-[#0057C8] hover:text-[#2D78B7] hover:bg-[#F4FAFF] rounded-md transition-colors"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 px-2 py-1 text-xs font-semibold text-brand-primary hover:text-brand-hover-medium hover:bg-[#F4FAFF] rounded-md transition-colors"
                 aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
               >
                 {showPassword ? "إخفاء" : "إظهار"}
@@ -316,7 +316,7 @@ export function RegisterForm() {
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="confirmPassword" className="block text-xs font-semibold text-[#16324A]">
+            <label htmlFor="confirmPassword" className="block text-xs font-semibold text-brand-ink">
               تأكيد كلمة المرور
             </label>
             <div className="relative">
@@ -329,10 +329,10 @@ export function RegisterForm() {
                   if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: "" });
                 }}
                 placeholder="••••••••"
-                className={`w-full h-[45px] pl-20 pr-3.5 rounded-xl bg-white border text-sm text-[#16324A] placeholder:text-[#66788A]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#4DB7F2]/30 ${
+                className={`w-full h-[45px] pl-20 pr-3.5 rounded-xl bg-white border text-sm text-brand-ink placeholder:text-brand-muted/60 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 ${
                   errors.confirmPassword
                     ? "border-red-400 focus:border-red-500"
-                    : "border-[#D7EAF7] focus:border-[#4DB7F2]"
+                    : "border-brand-border-soft focus:border-brand-secondary"
                 }`}
                 dir="ltr"
                 autoComplete="new-password"
@@ -340,7 +340,7 @@ export function RegisterForm() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 px-2 py-1 text-xs font-semibold text-[#0057C8] hover:text-[#2D78B7] hover:bg-[#F4FAFF] rounded-md transition-colors"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 px-2 py-1 text-xs font-semibold text-brand-primary hover:text-brand-hover-medium hover:bg-[#F4FAFF] rounded-md transition-colors"
                 aria-label={showConfirmPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
               >
                 {showConfirmPassword ? "إخفاء" : "إظهار"}
@@ -356,7 +356,7 @@ export function RegisterForm() {
 
         {/* Terms and Conditions Checkbox */}
         <div className="space-y-1 pt-1">
-          <label className="flex items-start gap-2.5 cursor-pointer select-none text-xs text-[#16324A] leading-relaxed">
+          <label className="flex items-start gap-2.5 cursor-pointer select-none text-xs text-brand-ink leading-relaxed">
             <input
               type="checkbox"
               checked={formData.agreedToTerms}
@@ -364,7 +364,7 @@ export function RegisterForm() {
                 setFormData({ ...formData, agreedToTerms: e.target.checked });
                 if (errors.agreedToTerms) setErrors({ ...errors, agreedToTerms: "" });
               }}
-              className="w-4 h-4 rounded border-[#D7EAF7] text-[#0057C8] focus:ring-[#4DB7F2]/40 mt-0.5"
+              className="w-4 h-4 rounded border-brand-border-soft text-brand-primary focus:ring-brand-secondary/40 mt-0.5"
             />
             <span>
               أوافق على الشروط والأحكام وسياسة الخصوصية الخاصة بمنظومة UniMeta الجامعية.
@@ -381,7 +381,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-[45px] rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] active:scale-[0.99] text-white font-semibold text-sm transition-all duration-150 shadow-[0_2px_8px_rgba(0,87,200,0.25)] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+          className="w-full h-[45px] rounded-xl bg-brand-primary hover:bg-brand-hover-medium active:scale-[0.99] text-white font-semibold text-sm transition-all duration-150 shadow-[0_2px_8px_rgba(0,87,200,0.25)] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
         >
           {isSubmitting ? (
             <>
@@ -398,11 +398,11 @@ export function RegisterForm() {
       </form>
 
       {/* Switch to Login Link */}
-      <div className="pt-3 text-center text-xs text-[#66788A] flex items-center justify-center gap-1.5 border-t border-[#D7EAF7]/80">
+      <div className="pt-3 text-center text-xs text-brand-muted flex items-center justify-center gap-1.5 border-t border-brand-border-soft/80">
         <span>لديك حساب بالفعل؟</span>
         <Link
           href="/login"
-          className="font-bold text-[#0057C8] hover:text-[#2D78B7] hover:underline transition-colors"
+          className="font-bold text-brand-primary hover:text-brand-hover-medium hover:underline transition-colors"
         >
           تسجيل الدخول
         </Link>

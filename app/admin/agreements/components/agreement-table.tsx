@@ -12,14 +12,14 @@ interface AgreementTableProps {
 export function AgreementTable({ agreements, onSelectDetails }: AgreementTableProps) {
   if (agreements.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-[#D7EAF7] p-12 text-center space-y-3 shadow-xs">
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EAF4FD] text-[#0057C8] flex items-center justify-center text-2xl font-bold">
+      <div className="bg-white rounded-2xl border border-brand-border-soft p-12 text-center space-y-3 shadow-xs">
+        <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-surface-blue text-brand-primary flex items-center justify-center text-2xl font-bold">
           📑
         </div>
-        <h3 className="text-base font-bold text-[#16324A]">
+        <h3 className="text-base font-bold text-brand-ink">
           لا توجد اتفاقيات مطابقة لمعايير البحث
         </h3>
-        <p className="text-xs text-[#66788A] max-w-sm mx-auto">
+        <p className="text-xs text-brand-muted max-w-sm mx-auto">
           لم يتم العثور على أي اتفاقيات في هذا التبويب أو بالكلمات المدخلة.
         </p>
       </div>
@@ -27,11 +27,11 @@ export function AgreementTable({ agreements, onSelectDetails }: AgreementTablePr
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#D7EAF7] overflow-hidden shadow-xs">
+    <div className="bg-white rounded-2xl border border-brand-border-soft overflow-hidden shadow-xs">
       <div className="overflow-x-auto">
         <table className="w-full text-start text-xs sm:text-sm">
           <thead>
-            <tr className="bg-[#F8FBFE] border-b border-[#D7EAF7] text-[#66788A] font-semibold">
+            <tr className="bg-brand-surface-muted border-b border-brand-border-soft text-brand-muted font-semibold">
               <th className="py-3 px-3.5 text-start">رقم الاتفاقية</th>
               <th className="py-3 px-3.5 text-start">العنصر / الغرض</th>
               <th className="py-3 px-3.5 text-start">النوع</th>
@@ -42,21 +42,21 @@ export function AgreementTable({ agreements, onSelectDetails }: AgreementTablePr
               <th className="py-3 px-3.5 text-center">الإجراءات</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#D7EAF7]/60">
+          <tbody className="divide-y divide-brand-border-soft/60">
             {agreements.map((agr) => {
               const statusCfg = STATUS_CONFIG[agr.status] || STATUS_CONFIG["قيد الانتظار"];
               const isPending = agr.status === "قيد الانتظار";
 
               return (
-                <tr key={agr.id} className="hover:bg-[#F8FBFE] transition-colors">
-                  <td className="py-3.5 px-3.5 font-mono font-bold text-[#0057C8] text-xs" dir="ltr">
+                <tr key={agr.id} className="hover:bg-brand-surface-muted transition-colors">
+                  <td className="py-3.5 px-3.5 font-mono font-bold text-brand-primary text-xs" dir="ltr">
                     {agr.id}
                   </td>
                   <td className="py-3.5 px-3.5">
-                    <div className="font-bold text-[#16324A] max-w-xs line-clamp-1">
+                    <div className="font-bold text-brand-ink max-w-xs line-clamp-1">
                       {agr.title}
                     </div>
-                    <span className="text-[11px] text-[#66788A] block">
+                    <span className="text-[11px] text-brand-muted block">
                       تاريخ الإنشاء: {agr.createdAt}
                     </span>
                   </td>
@@ -64,8 +64,8 @@ export function AgreementTable({ agreements, onSelectDetails }: AgreementTablePr
                     <span
                       className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
                         agr.category === "أجهزة"
-                          ? "bg-purple-50 text-purple-700 border-purple-200"
-                          : "bg-blue-50 text-blue-700 border-blue-200"
+                          ? "bg-brand-surface-blue text-brand-primary border-brand-border-soft"
+                          : "bg-brand-surface-blue text-brand-primary border-brand-border-soft"
                       }`}
                     >
                       {agr.category}
@@ -73,25 +73,25 @@ export function AgreementTable({ agreements, onSelectDetails }: AgreementTablePr
                   </td>
                   <td className="py-3.5 px-3.5">
                     <div className="flex flex-col text-xs">
-                      <span className="text-[#16324A] font-bold">
-                        المستعير: {agr.requesterName} <span className="text-[10px] text-[#66788A]">({agr.requesterMajor})</span>
+                      <span className="text-brand-ink font-bold">
+                        المستعير: {agr.requesterName} <span className="text-[10px] text-brand-muted">({agr.requesterMajor})</span>
                       </span>
-                      <span className="text-[#66788A] text-[11px]">
-                        المالك: {agr.ownerName} <span className="text-[10px] text-[#66788A]">({agr.ownerMajor})</span>
+                      <span className="text-brand-muted text-[11px]">
+                        المالك: {agr.ownerName} <span className="text-[10px] text-brand-muted">({agr.ownerMajor})</span>
                       </span>
                     </div>
                   </td>
                   <td className="py-3.5 px-3.5">
                     <div className="flex flex-col text-xs">
-                      <span className="font-bold text-[#16324A]">{agr.depositAmount} د.أ تأمين</span>
+                      <span className="font-bold text-brand-ink">{agr.depositAmount} د.أ تأمين</span>
                       {agr.dailyRate ? (
-                        <span className="text-[10px] text-[#66788A]">+{agr.dailyRate} د.أ / يوم</span>
+                        <span className="text-[10px] text-brand-muted">+{agr.dailyRate} د.أ / يوم</span>
                       ) : (
                         <span className="text-[10px] text-emerald-700 font-semibold">استعارة مجانية</span>
                       )}
                     </div>
                   </td>
-                  <td className="py-3.5 px-3.5 font-mono text-xs text-[#16324A] font-medium">
+                  <td className="py-3.5 px-3.5 font-mono text-xs text-brand-ink font-medium">
                     {agr.returnDeadline}
                   </td>
                   <td className="py-3.5 px-3.5">
@@ -105,7 +105,7 @@ export function AgreementTable({ agreements, onSelectDetails }: AgreementTablePr
                       <button
                         type="button"
                         onClick={() => onSelectDetails(agr)}
-                        className="px-3 py-1.5 rounded-xl border border-[#D7EAF7] bg-white text-[#0057C8] hover:bg-[#EAF4FD] text-xs font-bold transition-all shadow-2xs hover:shadow-xs"
+                        className="px-3 py-1.5 rounded-xl border border-brand-border-soft bg-white text-brand-primary hover:bg-brand-surface-blue text-xs font-bold transition-all shadow-2xs hover:shadow-xs"
                         title="معاينة التفاصيل الكاملة وتدقيق الأطراف"
                       >
                         عرض التفاصيل 🔍

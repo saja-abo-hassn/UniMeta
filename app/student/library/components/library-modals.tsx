@@ -64,7 +64,7 @@ export function LibraryModals({
             <Modal.Header
               title={`معاينة: ${previewFile.title}`}
               badge={
-                <span className="px-2 py-0.5 rounded-lg bg-[#EAF4FD] text-[#0057C8] font-bold text-xs">
+                <span className="px-2 py-0.5 rounded-lg bg-brand-surface-blue text-brand-primary font-bold text-xs">
                   {previewFile.fileType}
                 </span>
               }
@@ -72,25 +72,25 @@ export function LibraryModals({
             />
 
             <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
-              <div className="h-44 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] flex flex-col items-center justify-center text-center p-4">
+              <div className="h-44 rounded-2xl bg-brand-surface-soft border border-brand-border-soft flex flex-col items-center justify-center text-center p-4">
                 <span className="text-4xl mb-2">📄</span>
-                <p className="font-bold text-[#16324A] text-sm">{previewFile.title}</p>
-                <p className="text-[#66788A] text-xs mt-1">
+                <p className="font-bold text-brand-ink text-sm">{previewFile.title}</p>
+                <p className="text-brand-muted text-xs mt-1">
                   الحجم: {previewFile.fileSize} • التنزيلات: {previewFile.downloads}
                 </p>
-                <p className="text-[11px] text-[#2D78B7] mt-2">
+                <p className="text-[11px] text-brand-hover-medium mt-2">
                   الملف معتمد أكاديمياً ومتاح للعرض المباشر أو التنزيل
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7]">
-                  <span className="text-[#66788A] block text-[10px]">المُعد:</span>
-                  <span className="font-bold text-[#16324A]">{previewFile.author}</span>
+                <div className="p-3 rounded-xl bg-brand-surface-muted border border-brand-border-soft">
+                  <span className="text-brand-muted block text-[10px]">المُعد:</span>
+                  <span className="font-bold text-brand-ink">{previewFile.author}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7]">
-                  <span className="text-[#66788A] block text-[10px]">تاريخ الرفع:</span>
-                  <span className="font-bold text-[#16324A]">{previewFile.date}</span>
+                <div className="p-3 rounded-xl bg-brand-surface-muted border border-brand-border-soft">
+                  <span className="text-brand-muted block text-[10px]">تاريخ الرفع:</span>
+                  <span className="font-bold text-brand-ink">{previewFile.date}</span>
                 </div>
               </div>
             </Modal.Body>
@@ -99,7 +99,7 @@ export function LibraryModals({
               <button
                 type="button"
                 onClick={onClosePreview}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 إغلاق
               </button>
@@ -109,7 +109,7 @@ export function LibraryModals({
                   onDownload(previewFile);
                   onClosePreview();
                 }}
-                className="px-5 py-2 rounded-xl bg-[#0057C8] text-white text-xs font-bold shadow-xs hover:bg-[#2D78B7] transition-all cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold shadow-xs hover:bg-brand-hover-medium transition-all cursor-pointer"
               >
                 تنزيل الملف الآن 📥
               </button>
@@ -132,13 +132,13 @@ export function LibraryModals({
 
           <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">
+              <label className="font-bold text-brand-ink block">
                 اختر المادة الدراسية: <span className="text-red-500">*</span>
               </label>
               <select
                 value={uploadCourseCode}
                 onChange={(e) => setUploadCourseCode(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
                 required
               >
                 {courses.map((c) => (
@@ -150,7 +150,7 @@ export function LibraryModals({
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">
+              <label className="font-bold text-brand-ink block">
                 عنوان الملف: <span className="text-red-500">*</span>
               </label>
               <input
@@ -159,12 +159,12 @@ export function LibraryModals({
                 value={uploadTitle}
                 onChange={(e) => setUploadTitle(e.target.value)}
                 placeholder="مثال: تلخيص الوحدة الثالثة - الخوارزميات"
-                className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE] focus:outline-none focus:border-[#0057C8]"
+                className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-[#16324A] block">تصنيف الملف:</label>
+              <label className="font-bold text-brand-ink block">تصنيف الملف:</label>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: "summaries" as const, label: "تلخيصات وشروحات" },
@@ -178,8 +178,8 @@ export function LibraryModals({
                     onClick={() => setUploadCategory(item.id)}
                     className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       uploadCategory === item.id
-                        ? "bg-[#0057C8] text-white border-[#0057C8] shadow-xs"
-                        : "bg-[#F8FBFE] text-[#16324A] border-[#D7EAF7] hover:border-[#0057C8]"
+                        ? "bg-brand-primary text-white border-brand-primary shadow-xs"
+                        : "bg-brand-surface-muted text-brand-ink border-brand-border-soft hover:border-brand-primary"
                     }`}
                   >
                     {item.label}
@@ -203,8 +203,8 @@ export function LibraryModals({
                     📄
                   </span>
                   <div className="truncate">
-                    <p className="font-bold text-[#16324A] text-xs truncate">{uploadFileName}</p>
-                    <p className="text-[10px] text-[#66788A]">{uploadFileSize || "ملف جاهز"}</p>
+                    <p className="font-bold text-brand-ink text-xs truncate">{uploadFileName}</p>
+                    <p className="text-[10px] text-brand-muted">{uploadFileSize || "ملف جاهز"}</p>
                   </div>
                 </div>
 
@@ -212,7 +212,7 @@ export function LibraryModals({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="text-[11px] text-[#0057C8] hover:underline font-bold px-2 py-1 rounded-lg"
+                    className="text-[11px] text-brand-primary hover:underline font-bold px-2 py-1 rounded-lg"
                   >
                     تغيير
                   </button>
@@ -230,11 +230,11 @@ export function LibraryModals({
             ) : (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="p-4 rounded-2xl border-2 border-dashed border-[#D7EAF7] bg-[#F8FBFE] text-center hover:bg-[#F0F7FD] cursor-pointer transition-colors"
+                className="p-4 rounded-2xl border-2 border-dashed border-brand-border-soft bg-brand-surface-muted text-center hover:bg-brand-surface-soft cursor-pointer transition-colors"
               >
                 <span className="text-2xl block mb-1">☁️</span>
-                <p className="text-xs font-bold text-[#0057C8]">انقر لاختيار الملف (PDF, Word, PPT)</p>
-                <p className="text-[10px] text-[#66788A]">الحد الأقصى 25 ميجابايت</p>
+                <p className="text-xs font-bold text-brand-primary">انقر لاختيار الملف (PDF, Word, PPT)</p>
+                <p className="text-[10px] text-brand-muted">الحد الأقصى 25 ميجابايت</p>
               </div>
             )}
           </Modal.Body>
@@ -243,13 +243,13 @@ export function LibraryModals({
             <button
               type="button"
               onClick={onCloseUpload}
-              className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+              className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
             >
               إلغاء
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#0057C8] text-white text-xs font-bold shadow-xs hover:bg-[#2D78B7] cursor-pointer transition-colors"
+              className="px-5 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer transition-colors"
             >
               إرسال للمراجعة
             </button>

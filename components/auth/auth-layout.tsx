@@ -18,7 +18,7 @@ export function AuthLayout({
   visualSubtitle = "من التخطيط الأكاديمي إلى فرق المشاريع والاتفاقيات، كل أدواتك في تجربة واحدة متماسكة.",
 }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen w-full bg-[#F4FAFF] text-[#16324A] flex flex-col lg:grid lg:grid-cols-2" dir="rtl">
+    <div className="min-h-screen w-full bg-[#F4FAFF] text-brand-ink flex flex-col lg:grid lg:grid-cols-2" dir="rtl">
       <section className="relative flex flex-col justify-between overflow-hidden auth-panel-gradient text-white p-6 sm:p-10 lg:p-14 min-h-[340px] lg:min-h-screen">
         <div className="absolute inset-0 pointer-events-none opacity-15 mix-blend-overlay z-0">
           <Image
@@ -139,13 +139,13 @@ export function AuthLayout({
 
       <section className="relative flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 bg-[#F0F6FA] overflow-hidden min-h-screen">
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div className="auth-orb-1 absolute -top-16 -end-16 w-80 h-80 rounded-full bg-[#4DB7F2]/25 blur-3xl" />
-          <div className="auth-orb-2 absolute top-1/2 -start-20 w-80 h-80 rounded-full bg-[#0057C8]/18 blur-3xl" />
-          <div className="auth-orb-3 absolute -bottom-16 end-1/4 w-72 h-72 rounded-full bg-[#D0E8F9]/50 blur-2xl" />
+          <div className="auth-orb-1 absolute -top-16 -end-16 w-80 h-80 rounded-full bg-brand-secondary/25 blur-3xl" />
+          <div className="auth-orb-2 absolute top-1/2 -start-20 w-80 h-80 rounded-full bg-brand-primary/18 blur-3xl" />
+          <div className="auth-orb-3 absolute -bottom-16 end-1/4 w-72 h-72 rounded-full bg-brand-border-soft/50 blur-2xl" />
 
-          <div className="auth-particle-1 absolute top-16 start-1/4 w-3 h-3 rounded-full bg-[#4DB7F2]/30" />
-          <div className="auth-particle-2 absolute bottom-24 end-1/3 w-2.5 h-2.5 rounded-full bg-[#0057C8]/25" />
-          <div className="auth-particle-3 absolute top-1/3 end-1/6 w-3 h-3 rounded-full border border-[#4DB7F2]/30" />
+          <div className="auth-particle-1 absolute top-16 start-1/4 w-3 h-3 rounded-full bg-brand-secondary/30" />
+          <div className="auth-particle-2 absolute bottom-24 end-1/3 w-2.5 h-2.5 rounded-full bg-brand-primary/25" />
+          <div className="auth-particle-3 absolute top-1/3 end-1/6 w-3 h-3 rounded-full border border-brand-secondary/30" />
         </div>
 
 

@@ -19,22 +19,22 @@ export function SidebarProfileCard({
       <Link
         href="/student/settings"
         onClick={onClose}
-        className="block p-3 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] hover:border-[#4DB7F2] transition-all group"
+        className="block p-3 rounded-2xl bg-brand-surface-soft border border-brand-border-soft hover:border-brand-secondary transition-all group"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#0057C8] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+          <div className="w-10 h-10 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs group-hover:scale-105 transition-transform">
             {studentInitials}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-bold text-xs sm:text-sm text-[#16324A] truncate">
+            <div className="font-bold text-xs sm:text-sm text-brand-ink truncate">
               {studentDisplayName}
             </div>
-            <div className="text-[10px] text-[#66788A] truncate">
+            <div className="text-[10px] text-brand-muted truncate">
               {studentMajorName}
             </div>
           </div>
           <svg
-            className="w-4 h-4 text-[#66788A] group-hover:text-[#0057C8] rtl:rotate-180 transition-colors shrink-0"
+            className="w-4 h-4 text-brand-muted group-hover:text-brand-primary rtl:rotate-180 transition-colors shrink-0"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

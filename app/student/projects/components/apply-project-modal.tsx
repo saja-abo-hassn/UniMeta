@@ -43,7 +43,7 @@ export function ApplyProjectModal({
         />
 
         <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
-          <div className="p-3.5 rounded-2xl bg-[#F0F7FD] border border-[#D7EAF7] space-y-1 text-xs">
+          <div className="p-3.5 rounded-2xl bg-brand-surface-soft border border-brand-border-soft space-y-1 text-xs">
             <div><strong>قائد الفريق:</strong> {project.leader}</div>
             <div><strong>المشرف الأكاديمي:</strong> {project.supervisor}</div>
             <div><strong>التخصص المعتمد:</strong> {project.major}</div>
@@ -51,7 +51,7 @@ export function ApplyProjectModal({
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-bold text-[#16324A] block">
+            <label className="font-bold text-brand-ink block">
               المرحلة المسجل بها رسمياً في الجامعة: <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -62,8 +62,8 @@ export function ApplyProjectModal({
                   onClick={() => onStageChange(stage)}
                   className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                     applicantStage === stage
-                      ? "bg-[#0057C8] text-white border-[#0057C8] shadow-xs"
-                      : "bg-[#F8FBFE] text-[#16324A] border-[#D7EAF7] hover:border-[#0057C8]"
+                      ? "bg-brand-primary text-white border-brand-primary shadow-xs"
+                      : "bg-brand-surface-muted text-brand-ink border-brand-border-soft hover:border-brand-primary"
                   }`}
                 >
                   {stage}
@@ -78,25 +78,25 @@ export function ApplyProjectModal({
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">الدور المقترح داخل الفريق:</label>
+            <label className="font-bold text-brand-ink block">الدور المقترح داخل الفريق:</label>
             <input
               type="text"
               required
               value={applicantRole}
               onChange={(e) => onRoleChange(e.target.value)}
               placeholder="مثال: مطور واجهات أو باحث ذكاء اصطناعي..."
-              className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+              className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-[#16324A] block">رسالة توضيحية لقائد الفريق:</label>
+            <label className="font-bold text-brand-ink block">رسالة توضيحية لقائد الفريق:</label>
             <textarea
               rows={2}
               value={applicantMessage}
               onChange={(e) => onMessageChange(e.target.value)}
               placeholder="وضح خبرتك والمهام التي تستطيع إنجازها..."
-              className="w-full px-3.5 py-2 rounded-xl border border-[#D7EAF7] font-semibold text-[#16324A] bg-[#F8FBFE]"
+              className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
             />
           </div>
         </Modal.Body>
@@ -105,13 +105,13 @@ export function ApplyProjectModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-[#16324A] font-semibold hover:bg-[#F8FBFE] cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-brand-border-soft text-brand-ink font-semibold hover:bg-brand-surface-muted cursor-pointer"
           >
             إلغاء
           </button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl bg-[#0057C8] text-white font-bold shadow-xs hover:bg-[#2D78B7] cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
           >
             إرسال طلب الانضمام
           </button>

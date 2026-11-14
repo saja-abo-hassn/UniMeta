@@ -50,14 +50,14 @@ export function ModerationModals({
             />
 
             <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-[#F8FBFE] border border-[#D7EAF7]">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-brand-surface-muted border border-brand-border-soft">
                 <div className="space-y-0.5">
-                  <span className="text-[10px] text-[#66788A] block">النوع والهدف</span>
+                  <span className="text-[10px] text-brand-muted block">النوع والهدف</span>
                   <div className="flex items-center gap-2">
                     <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${TARGET_TYPE_BADGES[selectedReport.targetType].badge}`}>
                       {TARGET_TYPE_BADGES[selectedReport.targetType].label}
                     </span>
-                    <strong className="text-xs text-[#16324A]">{selectedReport.targetTitle}</strong>
+                    <strong className="text-xs text-brand-ink">{selectedReport.targetTitle}</strong>
                   </div>
                 </div>
                 <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${STATUS_CONFIG[selectedReport.status].badge}`}>
@@ -71,18 +71,18 @@ export function ModerationModals({
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7]">
-                  <span className="text-[#66788A] block text-[10px]">مقدم البلاغ:</span>
-                  <span className="font-bold text-[#16324A]">{selectedReport.reportedBy}</span>
+                <div className="p-3 rounded-xl bg-brand-surface-muted border border-brand-border-soft">
+                  <span className="text-brand-muted block text-[10px]">مقدم البلاغ:</span>
+                  <span className="font-bold text-brand-ink">{selectedReport.reportedBy}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7]">
-                  <span className="text-[#66788A] block text-[10px]">المبلغ عنه:</span>
-                  <span className="font-bold text-[#16324A]">{selectedReport.reportedUser || "غير محدد"}</span>
+                <div className="p-3 rounded-xl bg-brand-surface-muted border border-brand-border-soft">
+                  <span className="text-brand-muted block text-[10px]">المبلغ عنه:</span>
+                  <span className="font-bold text-brand-ink">{selectedReport.reportedUser || "غير محدد"}</span>
                 </div>
               </div>
 
               {selectedReport.actionTaken && (
-                <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs space-y-1">
+                <div className="p-3.5 rounded-xl bg-brand-surface-blue border border-brand-border-soft text-brand-dark text-xs space-y-1">
                   <span className="font-bold block">قرار المشرف المسجل:</span>
                   <p>{selectedReport.actionTaken}</p>
                 </div>
@@ -93,7 +93,7 @@ export function ModerationModals({
               <button
                 type="button"
                 onClick={onCloseDetails}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 إغلاق
               </button>
@@ -101,7 +101,7 @@ export function ModerationModals({
                 <button
                   type="button"
                   onClick={() => onOpenActionFromDetails(selectedReport)}
-                  className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold shadow-xs cursor-pointer"
+                  className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs cursor-pointer"
                 >
                   معالجة واتخاذ قرار ⚖️
                 </button>
@@ -122,33 +122,33 @@ export function ModerationModals({
 
             <Modal.Body className="p-5 sm:p-6 space-y-4 text-xs">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#16324A] block">الإجراء المتخذ:</label>
+                <label className="text-xs font-bold text-brand-ink block">الإجراء المتخذ:</label>
                 <div className="space-y-2">
-                  <label className="p-3 rounded-2xl border border-[#D7EAF7] bg-[#F8FBFE] flex items-center justify-between cursor-pointer hover:bg-white">
+                  <label className="p-3 rounded-2xl border border-brand-border-soft bg-brand-surface-muted flex items-center justify-between cursor-pointer hover:bg-white">
                     <div>
-                      <span className="text-xs font-bold text-[#16324A] block">حل البلاغ وإغلاقه</span>
-                      <span className="text-[10px] text-[#66788A]">المحتوى سليم أو تم تسوية الخلاف</span>
+                      <span className="text-xs font-bold text-brand-ink block">حل البلاغ وإغلاقه</span>
+                      <span className="text-[10px] text-brand-muted">المحتوى سليم أو تم تسوية الخلاف</span>
                     </div>
                     <input
                       type="radio"
                       name="actionType"
                       checked={actionType === "resolve"}
                       onChange={() => onActionTypeChange("resolve")}
-                      className="w-4 h-4 text-[#0057C8]"
+                      className="w-4 h-4 text-brand-primary"
                     />
                   </label>
 
-                  <label className="p-3 rounded-2xl border border-[#D7EAF7] bg-[#F8FBFE] flex items-center justify-between cursor-pointer hover:bg-white">
+                  <label className="p-3 rounded-2xl border border-brand-border-soft bg-brand-surface-muted flex items-center justify-between cursor-pointer hover:bg-white">
                     <div>
-                      <span className="text-xs font-bold text-amber-700 block">إرسال تنذير للطالب المبلغ عنه</span>
-                      <span className="text-[10px] text-[#66788A]">تنبيه حول مخالفة سياسات التبادل</span>
+                      <span className="text-xs font-bold text-brand-primary block">إرسال تنذير للطالب المبلغ عنه</span>
+                      <span className="text-[10px] text-brand-muted">تنبيه حول مخالفة سياسات التبادل</span>
                     </div>
                     <input
                       type="radio"
                       name="actionType"
                       checked={actionType === "warning"}
                       onChange={() => onActionTypeChange("warning")}
-                      className="w-4 h-4 text-[#0057C8]"
+                      className="w-4 h-4 text-brand-primary"
                     />
                   </label>
 
@@ -169,7 +169,7 @@ export function ModerationModals({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#16324A] block">
+                <label className="text-xs font-bold text-brand-ink block">
                   ملاحظات وتوجيهات المشرف <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -178,7 +178,7 @@ export function ModerationModals({
                   value={actionNote}
                   onChange={(e) => onActionNoteChange(e.target.value)}
                   placeholder="اكتب التوضيح الذي سيتم توثيقه في السجل وإرساله كإشعار رسمي..."
-                  className="w-full px-3 py-2 rounded-xl border border-[#D7EAF7] bg-white text-xs font-medium text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
             </Modal.Body>
@@ -187,13 +187,13 @@ export function ModerationModals({
               <button
                 type="button"
                 onClick={onCloseAction}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 إلغاء
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs cursor-pointer"
               >
                 تنفيذ القرار وتوثيقه
               </button>
@@ -210,7 +210,7 @@ export function ModerationModals({
               <div className="w-14 h-14 mx-auto rounded-2xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center text-2xl font-bold">
                 ⚠️
               </div>
-              <p className="text-xs text-[#66788A] leading-relaxed">
+              <p className="text-xs text-brand-muted leading-relaxed">
                 هل أنت متأكد من حذف البلاغ رقم ({deleteCandidate.id}) نهائياً من النظام؟
               </p>
             </Modal.Body>
@@ -218,7 +218,7 @@ export function ModerationModals({
               <button
                 type="button"
                 onClick={onCloseDelete}
-                className="px-4 py-2 rounded-xl border border-[#D7EAF7] text-xs font-bold text-[#66788A] hover:bg-[#F8FBFE] cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-brand-border-soft text-xs font-bold text-brand-muted hover:bg-brand-surface-muted cursor-pointer"
               >
                 تراجع
               </button>

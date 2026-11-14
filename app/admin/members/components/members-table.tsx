@@ -16,16 +16,16 @@ export function MembersTable({
   onOpenStatusChange,
 }: MembersTableProps) {
   return (
-    <div className="bg-white rounded-2xl border border-[#D7EAF7] overflow-hidden shadow-xs">
+    <div className="bg-white rounded-2xl border border-brand-border-soft overflow-hidden shadow-xs">
       {filteredMembers.length === 0 ? (
         <div className="p-12 text-center space-y-3">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EAF4FD] text-[#0057C8] flex items-center justify-center text-2xl font-bold">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-surface-blue text-brand-primary flex items-center justify-center text-2xl font-bold">
             👥
           </div>
-          <h3 className="text-base font-bold text-[#16324A]">
+          <h3 className="text-base font-bold text-brand-ink">
             لا توجد حسابات مطابقة لمعايير البحث
           </h3>
-          <p className="text-xs text-[#66788A] max-w-sm mx-auto">
+          <p className="text-xs text-brand-muted max-w-sm mx-auto">
             يرجى التحقق من صحة الرقم الجامعي أو الاسم المدخل، أو تغيير خيارات الفلترة.
           </p>
         </div>
@@ -33,7 +33,7 @@ export function MembersTable({
         <div className="overflow-x-auto">
           <table className="w-full text-start text-xs sm:text-sm">
             <thead>
-              <tr className="bg-[#F8FBFE] border-b border-[#D7EAF7] text-[#66788A] font-semibold">
+              <tr className="bg-brand-surface-muted border-b border-brand-border-soft text-brand-muted font-semibold">
                 <th className="py-3 px-3.5 text-start">الرقم الجامعي</th>
                 <th className="py-3 px-3.5 text-start">اسم الطالب والبريد</th>
                 <th className="py-3 px-3.5 text-start">التخصص والكلية</th>
@@ -44,44 +44,44 @@ export function MembersTable({
                 <th className="py-3 px-3.5 text-center">الإجراءات</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D7EAF7]/60">
+            <tbody className="divide-y divide-brand-border-soft/60">
               {filteredMembers.map((member) => {
                 const statusCfg = STATUS_BADGES[member.status] || STATUS_BADGES["نشط"];
 
                 return (
-                  <tr key={member.id} className="hover:bg-[#F8FBFE] transition-colors">
-                    <td className="py-3.5 px-3.5 font-mono font-bold text-[#0057C8] text-xs" dir="ltr">
+                  <tr key={member.id} className="hover:bg-brand-surface-muted transition-colors">
+                    <td className="py-3.5 px-3.5 font-mono font-bold text-brand-primary text-xs" dir="ltr">
                       {member.studentId}
                     </td>
                     <td className="py-3.5 px-3.5">
-                      <div className="font-bold text-[#16324A]">
+                      <div className="font-bold text-brand-ink">
                         {member.name}
                       </div>
-                      <span className="text-[11px] text-[#66788A] font-mono block" dir="ltr">
+                      <span className="text-[11px] text-brand-muted font-mono block" dir="ltr">
                         {member.email}
                       </span>
                     </td>
                     <td className="py-3.5 px-3.5">
-                      <div className="font-bold text-[#16324A]">
+                      <div className="font-bold text-brand-ink">
                         {member.major}
                       </div>
-                      <span className="text-[11px] text-[#66788A] block">
+                      <span className="text-[11px] text-brand-muted block">
                         {member.college}
                       </span>
                     </td>
                     <td className="py-3.5 px-3.5">
                       <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
                         member.borrowedItemsCount > 0
-                          ? "bg-purple-50 text-purple-700 border-purple-200"
-                          : "bg-slate-50 text-slate-600 border-slate-200"
+                          ? "bg-brand-surface-blue text-brand-primary border-brand-border-soft"
+                          : "bg-brand-surface-muted text-brand-muted border-brand-border-soft"
                       }`}>
                         {member.borrowedItemsCount} عهدة
                       </span>
                     </td>
-                    <td className="py-3.5 px-3.5 font-mono text-xs text-[#66788A]">
+                    <td className="py-3.5 px-3.5 font-mono text-xs text-brand-muted">
                       {member.joinedDate}
                     </td>
-                    <td className="py-3.5 px-3.5 text-xs text-[#16324A] font-medium">
+                    <td className="py-3.5 px-3.5 text-xs text-brand-ink font-medium">
                       {member.lastActive}
                     </td>
                     <td className="py-3.5 px-3.5">
@@ -95,7 +95,7 @@ export function MembersTable({
                         <button
                           type="button"
                           onClick={() => onSelectMember(member)}
-                          className="px-2.5 py-1.5 rounded-lg border border-[#D7EAF7] bg-white text-[#0057C8] hover:bg-[#EAF4FD] text-xs font-bold transition-colors"
+                          className="px-2.5 py-1.5 rounded-lg border border-brand-border-soft bg-white text-brand-primary hover:bg-brand-surface-blue text-xs font-bold transition-colors"
                           title="عرض بطاقة الطالب"
                         >
                           عرض
@@ -104,7 +104,7 @@ export function MembersTable({
                         <button
                           type="button"
                           onClick={() => onOpenStatusChange(member)}
-                          className="px-2.5 py-1.5 rounded-lg border border-[#D7EAF7] bg-[#F8FBFE] text-[#16324A] hover:bg-[#EAF4FD] hover:text-[#0057C8] text-xs font-bold transition-colors"
+                          className="px-2.5 py-1.5 rounded-lg border border-brand-border-soft bg-brand-surface-muted text-brand-ink hover:bg-brand-surface-blue hover:text-brand-primary text-xs font-bold transition-colors"
                           title="تغيير حالة الحساب"
                         >
                           الحالة ⚙️

@@ -15,16 +15,16 @@ export function ReportsTable({
   onDeleteCandidate,
 }: ReportsTableProps) {
   return (
-    <div className="bg-white rounded-2xl border border-[#D7EAF7] overflow-hidden shadow-xs">
+    <div className="bg-white rounded-2xl border border-brand-border-soft overflow-hidden shadow-xs">
       {reports.length === 0 ? (
         <div className="p-12 text-center space-y-3">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EAF4FD] text-[#0057C8] flex items-center justify-center text-2xl font-bold">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-surface-blue text-brand-primary flex items-center justify-center text-2xl font-bold">
             🛡️
           </div>
-          <h3 className="text-base font-bold text-[#16324A]">
+          <h3 className="text-base font-bold text-brand-ink">
             لا توجد بلاغات تطابق البحث أو الفلترة
           </h3>
-          <p className="text-xs text-[#66788A] max-w-sm mx-auto">
+          <p className="text-xs text-brand-muted max-w-sm mx-auto">
             سجل المنصة خالٍ من البلاغات في هذا القسم. البيئة الأكاديمية آمنة ومستقرة.
           </p>
         </div>
@@ -32,7 +32,7 @@ export function ReportsTable({
         <div className="overflow-x-auto">
           <table className="w-full text-start text-xs sm:text-sm">
             <thead>
-              <tr className="bg-[#F8FBFE] border-b border-[#D7EAF7] text-[#66788A] font-semibold">
+              <tr className="bg-brand-surface-muted border-b border-brand-border-soft text-brand-muted font-semibold">
                 <th className="py-3 px-3.5 text-start">رقم البلاغ</th>
                 <th className="py-3 px-3.5 text-start">نوع الهدف</th>
                 <th className="py-3 px-3.5 text-start">موضوع البلاغ / المحتوى</th>
@@ -43,14 +43,14 @@ export function ReportsTable({
                 <th className="py-3 px-3.5 text-center">الإجراءات</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D7EAF7]/60">
+            <tbody className="divide-y divide-brand-border-soft/60">
               {reports.map((item) => {
                 const typeCfg = TARGET_TYPE_BADGES[item.targetType] || TARGET_TYPE_BADGES["محتوى"];
                 const statusCfg = STATUS_CONFIG[item.status] || STATUS_CONFIG["مفتوح"];
 
                 return (
-                  <tr key={item.id} className="hover:bg-[#F8FBFE] transition-colors">
-                    <td className="py-3.5 px-3.5 font-mono font-bold text-[#0057C8] text-xs" dir="ltr">
+                  <tr key={item.id} className="hover:bg-brand-surface-muted transition-colors">
+                    <td className="py-3.5 px-3.5 font-mono font-bold text-brand-primary text-xs" dir="ltr">
                       {item.id}
                     </td>
                     <td className="py-3.5 px-3.5">
@@ -59,22 +59,22 @@ export function ReportsTable({
                       </span>
                     </td>
                     <td className="py-3.5 px-3.5">
-                      <div className="font-bold text-[#16324A] max-w-xs line-clamp-1">
+                      <div className="font-bold text-brand-ink max-w-xs line-clamp-1">
                         {item.targetTitle}
                       </div>
                       {item.contentSnippet && (
-                        <span className="text-[11px] text-[#66788A] line-clamp-1">
+                        <span className="text-[11px] text-brand-muted line-clamp-1">
                           &ldquo;{item.contentSnippet}&rdquo;
                         </span>
                       )}
                     </td>
-                    <td className="py-3.5 px-3.5 font-medium text-[#16324A] text-xs">
+                    <td className="py-3.5 px-3.5 font-medium text-brand-ink text-xs">
                       {item.reportedBy}
                     </td>
-                    <td className="py-3.5 px-3.5 text-xs text-[#66788A] max-w-xs line-clamp-1">
+                    <td className="py-3.5 px-3.5 text-xs text-brand-muted max-w-xs line-clamp-1">
                       {item.reason}
                     </td>
-                    <td className="py-3.5 px-3.5 font-mono text-xs text-[#66788A]">
+                    <td className="py-3.5 px-3.5 font-mono text-xs text-brand-muted">
                       {item.createdAt}
                     </td>
                     <td className="py-3.5 px-3.5">
@@ -88,7 +88,7 @@ export function ReportsTable({
                         <button
                           type="button"
                           onClick={() => onSelectReport(item)}
-                          className="px-2.5 py-1.5 rounded-lg border border-[#D7EAF7] bg-white text-[#0057C8] hover:bg-[#EAF4FD] text-xs font-bold transition-colors"
+                          className="px-2.5 py-1.5 rounded-lg border border-brand-border-soft bg-white text-brand-primary hover:bg-brand-surface-blue text-xs font-bold transition-colors"
                           title="عرض التفاصيل"
                         >
                           تفاصيل
@@ -97,7 +97,7 @@ export function ReportsTable({
                         <button
                           type="button"
                           onClick={() => onOpenActionModal(item)}
-                          className="px-2.5 py-1.5 rounded-lg bg-[#0057C8] hover:bg-[#2D78B7] text-white text-xs font-bold transition-colors shadow-2xs"
+                          className="px-2.5 py-1.5 rounded-lg bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold transition-colors shadow-2xs"
                           title="اتخاذ إجراء إداري"
                         >
                           إجراء ⚖️

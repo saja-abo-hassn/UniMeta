@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import { StudentShell } from "@/components/layout/student-shell";
+import { AppProviders } from "@/components/providers/app-providers";
 
 export default function StudentLayout({
   children,
@@ -7,8 +8,10 @@ export default function StudentLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={null}>
-      <StudentShell>{children}</StudentShell>
-    </Suspense>
+    <AppProviders>
+      <Suspense fallback={null}>
+        <StudentShell>{children}</StudentShell>
+      </Suspense>
+    </AppProviders>
   );
 }

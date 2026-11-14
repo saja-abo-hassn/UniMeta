@@ -30,14 +30,14 @@ export function MembersFilterBar({
   setSearchQuery,
 }: MembersFilterBarProps) {
   return (
-    <section className="p-4 sm:p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs space-y-4">
+    <section className="p-4 sm:p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-4">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#F8FBFE] border border-[#D7EAF7] text-xs font-bold">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-brand-surface-muted border border-brand-border-soft text-xs font-bold">
           <button
             type="button"
             onClick={() => setStatusFilter("all")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              statusFilter === "all" ? "bg-white text-[#0057C8] shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              statusFilter === "all" ? "bg-white text-brand-primary shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             جميع الحسابات ({counts.total})
@@ -46,7 +46,7 @@ export function MembersFilterBar({
             type="button"
             onClick={() => setStatusFilter("نشط")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              statusFilter === "نشط" ? "bg-white text-emerald-700 shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              statusFilter === "نشط" ? "bg-white text-emerald-700 shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             النشطة ({counts.active})
@@ -55,7 +55,7 @@ export function MembersFilterBar({
             type="button"
             onClick={() => setStatusFilter("معلق")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              statusFilter === "معلق" ? "bg-white text-amber-700 shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              statusFilter === "معلق" ? "bg-white text-amber-700 shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             المعلقة ({counts.suspended})
@@ -64,7 +64,7 @@ export function MembersFilterBar({
             type="button"
             onClick={() => setStatusFilter("محظور")}
             className={`px-3 py-1.5 rounded-lg transition-colors ${
-              statusFilter === "محظور" ? "bg-white text-red-600 shadow-xs" : "text-[#66788A] hover:text-[#16324A]"
+              statusFilter === "محظور" ? "bg-white text-red-600 shadow-xs" : "text-brand-muted hover:text-brand-ink"
             }`}
           >
             المحظورة ({counts.banned})
@@ -72,11 +72,11 @@ export function MembersFilterBar({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#66788A] font-semibold">الكلية:</span>
+          <span className="text-xs text-brand-muted font-semibold">الكلية:</span>
           <select
             value={collegeFilter}
             onChange={(e) => setCollegeFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs font-bold text-[#16324A] focus:outline-none focus:border-[#0057C8]"
+            className="px-3 py-1.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-primary"
           >
             <option value="all">جميع الكليات</option>
             {collegesList.map((col) => (
@@ -89,7 +89,7 @@ export function MembersFilterBar({
       </div>
 
       <div className="relative">
-        <span className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-[#66788A]">
+        <span className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-brand-muted">
           🔍
         </span>
         <input
@@ -97,13 +97,13 @@ export function MembersFilterBar({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="ابحث بالاسم، الرقم الجامعي (2022...)، البريد الجامعي أو التخصص..."
-          className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-[#D7EAF7] bg-[#F8FBFE] text-xs sm:text-sm font-semibold text-[#16324A] focus:outline-none focus:border-[#0057C8] focus:bg-white"
+          className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-brand-border-soft bg-brand-surface-muted text-xs sm:text-sm font-semibold text-brand-ink focus:outline-none focus:border-brand-primary focus:bg-white"
         />
         {searchQuery && (
           <button
             type="button"
             onClick={() => setSearchQuery("")}
-            className="absolute inset-y-0 end-0 pe-3.5 text-xs text-[#66788A] hover:text-[#16324A]"
+            className="absolute inset-y-0 end-0 pe-3.5 text-xs text-brand-muted hover:text-brand-ink"
           >
             مسح ✕
           </button>

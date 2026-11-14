@@ -10,12 +10,12 @@ interface ModerationKPIsProps {
 export function ModerationKPIs({ counts }: ModerationKPIsProps) {
   return (
     <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      <div className="p-5 rounded-2xl bg-white border border-[#D7EAF7] shadow-xs space-y-1">
-        <span className="text-xs font-semibold text-[#66788A] block">إجمالي البلاغات</span>
-        <div className="text-2xl sm:text-3xl font-black text-[#16324A]">
+      <div className="p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-1">
+        <span className="text-xs font-semibold text-brand-muted block">إجمالي البلاغات</span>
+        <div className="text-2xl sm:text-3xl font-black text-brand-ink">
           {counts.total}
         </div>
-        <span className="text-[11px] text-[#66788A] block">مسجلة في سجل النظام</span>
+        <span className="text-[11px] text-brand-muted block">مسجلة في سجل النظام</span>
       </div>
 
       <div className="p-5 rounded-2xl bg-red-50/70 border border-red-200 shadow-xs space-y-1">
@@ -34,7 +34,7 @@ export function ModerationKPIs({ counts }: ModerationKPIsProps) {
         <div className="text-2xl sm:text-3xl font-black text-amber-800">
           {counts.inProgress}
         </div>
-        <span className="text-[11px] text-amber-700 block">جلسات استيضاح جارية</span>
+        <span className="text-[11px] text-brand-primary block">جلسات استيضاح جارية</span>
       </div>
 
       <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-xs space-y-1">
