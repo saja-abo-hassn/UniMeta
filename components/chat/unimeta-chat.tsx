@@ -121,13 +121,8 @@ export function UniMetaChat({ initiallyOpen = false }: { initiallyOpen?: boolean
                   </svg>
                 </button>
               </form>
-<<<<<<< HEAD
-              <p className="text-[10px] text-slate-400 text-center mt-2">
-                المساعد للدعم الدراسي؛ قد يخطئ. توفر الردود يعتمد على تفعيل الخدمة.
-=======
               <p className="text-[10px] text-brand-subtle text-center mt-2">
-                UniMeta AI مساعد رقمي ذكي متصل بخدمات جامعة الأزهر ومنظومة UniMeta.
->>>>>>> b079de5bb3c77012965f2ad45ddce455d601b6a9
+                المساعد للدعم الدراسي؛ قد يخطئ. توفر الردود يعتمد على تفعيل الخدمة.
               </p>
             </footer>
           </section>
