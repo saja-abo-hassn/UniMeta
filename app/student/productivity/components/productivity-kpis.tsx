@@ -30,13 +30,8 @@ export function ProductivityKPIs({
           <span>جلسات الأسبوع</span>
           <span className="p-1 rounded-lg bg-brand-surface-blue text-brand-primary">📅</span>
         </div>
-<<<<<<< HEAD
-        <div className="text-2xl font-black text-[#0057C8]">{stats.completedThisWeek}</div>
-        <span className="text-[10px] text-[#66788A] block">الأسبوع الحالي</span>
-=======
         <div className="text-2xl font-black text-brand-primary">{stats.completedThisWeek}</div>
-        <span className="text-[10px] text-brand-muted block">خلال آخر 7 أيام</span>
->>>>>>> b079de5bb3c77012965f2ad45ddce455d601b6a9
+        <span className="text-[10px] text-brand-muted block">الأسبوع الحالي</span>
       </div>
 
       <div className="card-hover-effect p-4 sm:p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-1">
@@ -47,11 +42,7 @@ export function ProductivityKPIs({
         <div className="text-2xl font-black text-brand-ink">
           {totalHours}<span className="text-sm font-bold text-brand-muted ms-1">س</span> {remainingMinutes}<span className="text-sm font-bold text-brand-muted ms-1">د</span>
         </div>
-<<<<<<< HEAD
-        <span className="text-[10px] text-[#66788A] block">الوقت المخطط للجلسات المكتملة هذا الأسبوع</span>
-=======
-        <span className="text-[10px] text-brand-muted block">إجمالي زمن التركيز</span>
->>>>>>> b079de5bb3c77012965f2ad45ddce455d601b6a9
+        <span className="text-[10px] text-brand-muted block">الوقت المخطط للجلسات المكتملة هذا الأسبوع</span>
       </div>
 
       <div className="card-hover-effect p-4 sm:p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-1">

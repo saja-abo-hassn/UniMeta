@@ -235,13 +235,8 @@ export function LoginForm() {
 
           <button
             type="button"
-<<<<<<< HEAD
             onClick={() => apiClient.isUsingMock() ? setForgotPasswordNote(true) : router.push("/forgot-password")}
-            className="text-[#0057C8] hover:text-[#2D78B7] hover:underline font-medium transition-colors"
-=======
-            onClick={() => setForgotPasswordNote(true)}
             className="text-brand-primary hover:text-brand-hover-medium hover:underline font-medium transition-colors"
->>>>>>> b079de5bb3c77012965f2ad45ddce455d601b6a9
           >
             نسيت كلمة المرور؟
           </button>
