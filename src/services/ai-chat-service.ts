@@ -4,11 +4,13 @@
  * Currently returns local service status without sending fake network requests.
  */
 
+export interface ChatSource { id:string; title:string; url:string; content?:string; }
 export interface ChatMessage {
   id: string;
   sender: "user" | "assistant" | "system";
   text: string;
   timestamp: string;
+  sources?: ChatSource[];
 }
 
 export interface AiChatService {
