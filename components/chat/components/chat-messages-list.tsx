@@ -41,6 +41,7 @@ export function ChatMessagesList({
             }`}
           >
             <p className="whitespace-pre-wrap">{msg.text}</p>
+            {!!msg.sources?.length&&<details className="mt-2"><summary className="cursor-pointer font-semibold">المراجع المتاحة للإجابة</summary><ul className="mt-2 space-y-1">{msg.sources.map(source=><li key={source.id}><a href={source.url} className="underline" title={source.content}>[{source.id}] {source.title}</a></li>)}</ul></details>}
             <span
               className={`block text-[9px] mt-1.5 text-end ${
                 msg.sender === "user" ? "text-white/70" : "text-brand-muted"

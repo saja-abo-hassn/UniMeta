@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useReducer, useCallback } from "react";
 import { aiChatService, ChatMessage } from "@/src/services/ai-chat-service";
 import { apiClient } from "@/src/services/api-client";
 import { liveChatService, ChatSession } from "@/src/services/live-chat-service";
+import { useAuth } from "@/src/contexts/auth-context";
 import {
   MascotState,
   mascotReducer,
@@ -11,6 +12,7 @@ import {
 } from "../types";
 
 export function useUniMetaChat(initiallyOpen = false) {
+  const {user}=useAuth();
   const [isOpen, setIsOpen] = useState(initiallyOpen);
   const [mascotState, dispatchMascot] = useReducer(mascotReducer, "idle");
   const [displayedState, setDisplayedState] = useState<MascotState>("greeting");
@@ -27,7 +29,7 @@ export function useUniMetaChat(initiallyOpen = false) {
   const [sessionId,setSessionId]=useState<number|null>(null);
   const [error,setError]=useState("");
   const [historyBusy,setHistoryBusy]=useState(false);
-  useEffect(()=>{if(!isOpen||apiClient.isUsingMock())return;let active=true;void liveChatService.sessions().then(s=>{if(active)setSessions(s);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[isOpen]);
+  useEffect(()=>{if(!isOpen||!user||apiClient.isUsingMock())return;let active=true;void liveChatService.sessions().then(s=>{if(active)setSessions(s);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[isOpen,user]);
   const selectSession=async(id:number|null)=>{if(isTyping||historyBusy)return;setError("");setHistoryBusy(true);try{const saved=id===null?[]:await liveChatService.messages(id);setSessionId(id);setMessages(saved);}catch(e){setError((e as Error).message);}finally{setHistoryBusy(false);}};
   const deleteSession=async()=>{if(sessionId===null||isTyping||historyBusy)return;setHistoryBusy(true);try{await liveChatService.remove(sessionId);setSessions(s=>s.filter(x=>x.id!==sessionId));setSessionId(null);setMessages([]);setError("");}catch(e){setError((e as Error).message);}finally{setHistoryBusy(false);}};
   const [inputVal, setInputVal] = useState("");
@@ -155,6 +157,11 @@ export function useUniMetaChat(initiallyOpen = false) {
     if (e) e.preventDefault();
     const query = inputVal.trim();
     if (!query || isTyping || historyBusy) return;
+    if(!apiClient.isUsingMock()&&!user){
+      setIsTyping(true);setError("");clearAllTimers();dispatchMascot({type:"SEND_MESSAGE"});
+      void liveChatService.publicSend(query,messages).then(saved=>{setMessages(prev=>[...prev,...saved]);setInputVal("");dispatchMascot({type:"RECEIVE_ANSWER"});}).catch(e=>setError((e as Error).message)).finally(()=>setIsTyping(false));
+      return;
+    }
     if(!apiClient.isUsingMock()){
       setIsTyping(true);setError("");clearAllTimers();dispatchMascot({type:"SEND_MESSAGE"});
       void (async()=>{let id=sessionId;if(id===null){const created=await liveChatService.create(query);id=created.id;setSessionId(id);setSessions(s=>[created,...s]);}const saved=await liveChatService.send(id,query);setMessages(prev=>[...prev,...saved]);setInputVal("");dispatchMascot({type:"RECEIVE_ANSWER"});})().catch(e=>setError((e as Error).message)).finally(()=>setIsTyping(false));

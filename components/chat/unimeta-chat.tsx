@@ -2,6 +2,7 @@
 
 import React from "react";
 import { apiClient } from "@/src/services/api-client";
+import { AuthProvider, useAuth } from "@/src/contexts/auth-context";
 import Image from "next/image";
 import { useUniMetaChat } from "./hooks/use-unimeta-chat";
 import { ChatFloatingButton } from "./components/chat-floating-button";
@@ -10,7 +11,19 @@ import { ChatMessagesList } from "./components/chat-messages-list";
 
 export type { MascotState, MascotAction } from "./types";
 
+// The global, lazy-loaded assistant lives outside page-specific providers.
+export function AssistantRoot({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+  return <AuthProvider><UniMetaChat initiallyOpen={initiallyOpen} /></AuthProvider>;
+}
+
 export function UniMetaChat({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+  const {user, isLoading}=useAuth();
+  if (isLoading) return null;
+  return <IdentityChat key={user?.id??"guest"} initiallyOpen={initiallyOpen}/>;
+}
+
+function IdentityChat({initiallyOpen}:{initiallyOpen:boolean}) {
+  const {user}=useAuth();
   const {
     sessions,sessionId,selectSession,deleteSession,error,historyBusy,
     isOpen,
@@ -92,7 +105,7 @@ export function UniMetaChat({ initiallyOpen = false }: { initiallyOpen?: boolean
               </button>
             </header>
 
-            {!apiClient.isUsingMock()&&<div className="p-2 flex gap-2"><select aria-label="المحادثة" disabled={isTyping||historyBusy} value={sessionId??""} onChange={e=>void selectSession(e.target.value?Number(e.target.value):null)} className="border rounded-lg p-1 text-xs flex-1"><option value="">محادثة جديدة</option>{sessions.map(s=><option key={s.id} value={s.id}>{s.title??`محادثة ${s.id}`}</option>)}</select>{sessionId!==null&&<button disabled={isTyping||historyBusy} onClick={()=>void deleteSession()} className="text-xs text-red-700">حذف المحادثة</button>}</div>}
+            {!apiClient.isUsingMock()&&user&&<div className="p-2 flex gap-2"><select aria-label="المحادثة" disabled={isTyping||historyBusy} value={sessionId??""} onChange={e=>void selectSession(e.target.value?Number(e.target.value):null)} className="border rounded-lg p-1 text-xs flex-1"><option value="">محادثة جديدة</option>{sessions.map(s=><option key={s.id} value={s.id}>{s.title??`محادثة ${s.id}`}</option>)}</select>{sessionId!==null&&<button disabled={isTyping||historyBusy} onClick={()=>void deleteSession()} className="text-xs text-red-700">حذف المحادثة</button>}</div>}
             {error&&<p role="alert" className="p-2 text-xs text-red-700">{error}</p>}
             <ChatMessagesList
               messages={messages}
