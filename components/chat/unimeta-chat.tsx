@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { apiClient } from "@/src/services/api-client";
 import Image from "next/image";
 import { useUniMetaChat } from "./hooks/use-unimeta-chat";
 import { ChatFloatingButton } from "./components/chat-floating-button";
@@ -11,6 +12,7 @@ export type { MascotState, MascotAction } from "./types";
 
 export function UniMetaChat() {
   const {
+    sessions,sessionId,selectSession,deleteSession,error,historyBusy,
     isOpen,
     setIsOpen,
     isMobile,
@@ -90,6 +92,8 @@ export function UniMetaChat() {
               </button>
             </header>
 
+            {!apiClient.isUsingMock()&&<div className="p-2 flex gap-2"><select aria-label="المحادثة" disabled={isTyping||historyBusy} value={sessionId??""} onChange={e=>void selectSession(e.target.value?Number(e.target.value):null)} className="border rounded-lg p-1 text-xs flex-1"><option value="">محادثة جديدة</option>{sessions.map(s=><option key={s.id} value={s.id}>{s.title??`محادثة ${s.id}`}</option>)}</select>{sessionId!==null&&<button disabled={isTyping||historyBusy} onClick={()=>void deleteSession()} className="text-xs text-red-700">حذف المحادثة</button>}</div>}
+            {error&&<p role="alert" className="p-2 text-xs text-red-700">{error}</p>}
             <ChatMessagesList
               messages={messages}
               isTyping={isTyping}
@@ -100,6 +104,7 @@ export function UniMetaChat() {
               <form onSubmit={handleSend} className="flex items-center gap-2">
                 <input
                   type="text"
+                  maxLength={4000}
                   value={inputVal}
                   onChange={handleInputChange}
                   placeholder="اسأل UniMeta عن خطتك، المعدل، المواد..."
@@ -107,7 +112,7 @@ export function UniMetaChat() {
                 />
                 <button
                   type="submit"
-                  disabled={!inputVal.trim() || isTyping}
+                  disabled={!inputVal.trim() || isTyping || historyBusy}
                   aria-label="إرسال"
                   className="w-9 h-9 rounded-xl bg-[#0057C8] hover:bg-[#0045A5] text-white flex items-center justify-center shrink-0 shadow-xs transition-colors focus-ring cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                 >
@@ -117,7 +122,7 @@ export function UniMetaChat() {
                 </button>
               </form>
               <p className="text-[10px] text-slate-400 text-center mt-2">
-                UniMeta AI مساعد رقمي ذكي متصل بخدمات جامعة الأزهر ومنظومة UniMeta.
+                المساعد للدعم الدراسي؛ قد يخطئ. توفر الردود يعتمد على تفعيل الخدمة.
               </p>
             </footer>
           </section>

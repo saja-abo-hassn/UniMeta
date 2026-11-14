@@ -1,5 +1,6 @@
 import { apiClient, LaravelResponse } from "./api-client";
 import { authService } from "./auth-service";
+import { BackendUser, toUser } from "./user-adapter";
 import {
   initialMembersList,
   initialAgreementsList,
@@ -33,7 +34,9 @@ export interface AdminOverviewData {
 class AdminService {
   async getMe(): Promise<LaravelResponse<AdminMeData>> {
     if (!apiClient.isUsingMock()) {
-      return apiClient.get<AdminMeData>("/me");
+      const response = await apiClient.get<BackendUser>("/users/me/profile");
+      const user = response.data ? toUser(response.data) : null;
+      return { ...response, data: user ? { ...user, role: user.role === "moderator" ? "moderator" : "super_admin", title: user.title ?? null, avatarUrl: user.avatarUrl ?? null } : null };
     }
 
     const currentAuth = authService.getCurrentUser();
@@ -59,7 +62,14 @@ class AdminService {
 
   async getOverview(): Promise<LaravelResponse<AdminOverviewData>> {
     if (!apiClient.isUsingMock()) {
-      return apiClient.get<AdminOverviewData>("/admin/overview");
+      const response = await apiClient.get<Record<string, number>>("/admin/dashboard/overview");
+      const d = response.data;
+      return { ...response, data: d ? {
+        totalStudents: d.total_students, activeNow: d.active_now ?? 0,
+        pendingAgreements: d.pending_agreements ?? 0, activeLoans: d.active_agreements ?? 0,
+        contentCount: d.content_count ?? 0, coveredCourses: d.covered_courses ?? 0,
+        totalCourses: d.total_courses ?? 0, openReports: d.open_reports ?? 0,
+      } : null };
     }
 
     let members: AdminMemberItem[] = initialMembersList;

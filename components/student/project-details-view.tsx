@@ -6,8 +6,13 @@ import { notFound } from "next/navigation";
 import { initialGraduationProjects } from "@/src/data/graduation-projects-data";
 import { useNotifications } from "@/src/contexts/notifications-context";
 import { Modal } from "@/components/shared/modal";
+import { apiClient } from "@/src/services/api-client";
+import { LiveProjectDetails } from "@/components/integration/live-project-details";
 
 export function ProjectDetailsView({ id }: { id: string }) {
+  return apiClient.isUsingMock() ? <MockProjectDetailsView id={id}/> : <LiveProjectDetails id={id}/>;
+}
+function MockProjectDetailsView({ id }: { id: string }) {
   const { notify } = useNotifications();
   const project = initialGraduationProjects.find((p) => p.id === id);
 

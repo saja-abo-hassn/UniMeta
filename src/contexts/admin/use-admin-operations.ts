@@ -1,4 +1,5 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
 
 import { useState, useCallback } from "react";
 import { useNotifications } from "../notifications-context";
@@ -21,7 +22,7 @@ export function useAdminOperations() {
   const { notify } = useNotifications();
 
   const [agreements, setAgreements] = useState<AdminAgreementItem[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_agreements_v1");
         if (stored) return JSON.parse(stored);
@@ -29,11 +30,11 @@ export function useAdminOperations() {
         // ignore
       }
     }
-    return initialAgreementsList;
+    return apiClient.isUsingMock() ? initialAgreementsList : [];
   });
 
   const [reports, setReports] = useState<AdminReportItem[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_reports_v1");
         if (stored) return JSON.parse(stored);
@@ -41,11 +42,11 @@ export function useAdminOperations() {
         // ignore
       }
     }
-    return initialReportsList;
+    return apiClient.isUsingMock() ? initialReportsList : [];
   });
 
   const [payments, setPayments] = useState<AdminPaymentItem[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_payments_v1");
         if (stored) return JSON.parse(stored);
@@ -53,11 +54,11 @@ export function useAdminOperations() {
         // ignore
       }
     }
-    return initialPaymentsList;
+    return apiClient.isUsingMock() ? initialPaymentsList : [];
   });
 
   const [members, setMembers] = useState<AdminMemberItem[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_members_v1");
         if (stored) return JSON.parse(stored);
@@ -65,11 +66,11 @@ export function useAdminOperations() {
         // ignore
       }
     }
-    return initialMembersList;
+    return apiClient.isUsingMock() ? initialMembersList : [];
   });
 
   const [settings, setSettings] = useState<AdminSettingsData>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_settings_v1");
         if (stored) return JSON.parse(stored);

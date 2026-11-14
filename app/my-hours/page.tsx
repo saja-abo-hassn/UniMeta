@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import {LiveCourseAttempts} from "@/components/integration/live-course-attempts";
+import {apiClient} from "@/src/services/api-client";
 import dynamic from "next/dynamic";
 import { StudentShell } from "@/components/layout/student-shell";
 import { useMyHours } from "./hooks/use-my-hours";
@@ -73,6 +75,7 @@ export default function MyHoursPage() {
           categoryStats={categoryStats}
         />
 
+        {!apiClient.isUsingMock()&&selectedPlan&&<LiveCourseAttempts planId={selectedPlan.id}/>}
         <CurriculumSection
           selectedPlan={selectedPlan}
           allCourses={allCourses}

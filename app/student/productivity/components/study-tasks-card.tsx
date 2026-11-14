@@ -7,6 +7,8 @@ interface StudyTasksCardProps {
   setNewTitle: (title: string) => void;
   onAddTask: (e: React.FormEvent) => void;
   onToggleTask: (id: string) => void;
+  onEditTask:(id:string,title:string,description:string)=>void;
+  onDeleteTask:(id:string)=>void;
 }
 
 export function StudyTasksCard({
@@ -15,6 +17,7 @@ export function StudyTasksCard({
   setNewTitle,
   onAddTask,
   onToggleTask,
+  onEditTask,onDeleteTask,
 }: StudyTasksCardProps) {
   const completedCount = tasks.filter((t) => t.done).length;
 
@@ -49,7 +52,7 @@ export function StudyTasksCard({
 
       <div className="space-y-2">
         {tasks.map((task) => (
-          <label
+          <div
             key={task.id}
             className={`p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 cursor-pointer ${
               task.done
@@ -60,6 +63,7 @@ export function StudyTasksCard({
             <div className="flex items-center gap-3 min-w-0">
               <input
                 type="checkbox"
+                aria-label={`إنجاز ${task.title}`}
                 checked={task.done}
                 onChange={() => onToggleTask(task.id)}
                 className="w-4 h-4 rounded border-[#D7EAF7] text-[#0057C8] focus:ring-[#4DB7F2]/30 cursor-pointer"
@@ -75,7 +79,8 @@ export function StudyTasksCard({
             <span className="text-[10px] text-[#66788A] shrink-0 font-medium">
               {task.duration}
             </span>
-          </label>
+            <details><summary className="text-xs">تعديل</summary><form onSubmit={e=>{e.preventDefault();const v=Object.fromEntries(new FormData(e.currentTarget));onEditTask(task.id,String(v.title),String(v.description));}} className="space-y-2"><input name="title" required aria-label="عنوان المهمة" defaultValue={task.title} maxLength={255} className="border p-2 rounded-lg"/><input name="description" aria-label="وصف المهمة" defaultValue={task.duration} className="border p-2 rounded-lg"/><button className="text-blue-700 text-xs">حفظ</button><button type="button" className="text-red-700 text-xs ms-3" onClick={()=>{if(window.confirm("حذف هذه المهمة؟"))onDeleteTask(task.id);}}>حذف</button></form></details>
+          </div>
         ))}
       </div>
     </div>

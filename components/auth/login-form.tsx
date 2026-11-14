@@ -1,4 +1,5 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -234,7 +235,7 @@ export function LoginForm() {
 
           <button
             type="button"
-            onClick={() => setForgotPasswordNote(true)}
+            onClick={() => apiClient.isUsingMock() ? setForgotPasswordNote(true) : router.push("/forgot-password")}
             className="text-[#0057C8] hover:text-[#2D78B7] hover:underline font-medium transition-colors"
           >
             نسيت كلمة المرور؟

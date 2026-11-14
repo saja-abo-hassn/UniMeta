@@ -138,6 +138,12 @@ export function VerifyEmailForm() {
       const response = await verifyEmailAndLogin(email.trim(), fullCode);
       setIsSubmitting(false);
 
+      if (!response.errors && response.status === 200 && !response.data?.token) {
+        setSuccessMessage(response.message);
+        router.push(`/login?email=${encodeURIComponent(email.trim())}`);
+        return;
+      }
+
       if (!response.errors && response.data?.token) {
         setSuccessMessage("تم تأكيد البريد الإلكتروني بنجاح! جاري توجيهك إلى لوحة التحكم...");
         setTimeout(() => {

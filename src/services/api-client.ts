@@ -8,9 +8,8 @@
  *   errors: Record<string, string[]> | null
  * }
  *
- * When the Laravel Backend is ready:
- * Simply configure NEXT_PUBLIC_API_URL and NEXT_PUBLIC_USE_MOCK=false in your environment variables.
- * The entire UI interacts solely with this client and services layer without needing any UI changes.
+ * Live requests go through the same-origin Next.js BFF. Configure its server-only
+ * BACKEND_API_URL with /api/v1. Demo mode is explicitly opt-in.
  */
 
 export interface LaravelResponse<T = any> {
@@ -18,12 +17,15 @@ export interface LaravelResponse<T = any> {
   message: string;
   errors: Record<string, string[]> | null;
   status?: number;
+  meta?: { current_page?: number; last_page?: number; [key: string]: unknown };
+  code?: string;
 }
 
 export const API_CONFIG = {
-  useMock: process.env.NEXT_PUBLIC_USE_MOCK !== "false", // defaults to true during local/staging
+  maxUploadMb: Math.max(1, Math.min(20, Number(process.env.NEXT_PUBLIC_LIBRARY_MAX_MB) || 20)),
+  useMock: process.env.NEXT_PUBLIC_USE_MOCK === "true",
   baseUrl:
-    process.env.NEXT_PUBLIC_USE_MOCK === "false"
+    process.env.NEXT_PUBLIC_USE_MOCK !== "true"
       ? "/api/backend"
       : process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
   storageKeys: {
@@ -75,9 +77,12 @@ class ApiClient {
 
   private async request<T>(endpoint: string, init: RequestInit): Promise<LaravelResponse<T>> {
     try {
+      const headers = new Headers({ ...this.getHeaders(), ...init.headers });
+      if (init.body instanceof FormData) headers.delete("Content-Type");
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         ...init,
-        headers: { ...this.getHeaders(), ...init.headers },
+        headers,
+        credentials: "same-origin",
       });
       let payload: Partial<LaravelResponse<T>> = {};
       try {
@@ -91,6 +96,7 @@ class ApiClient {
           message: payload.message || "تمت العملية بنجاح.",
           errors: payload.errors ?? null,
           status: response.status,
+          meta: payload.meta,
         };
       }
 
@@ -109,6 +115,7 @@ class ApiClient {
         message: payload.message || messages[response.status] || "تعذر إتمام الطلب.",
         errors: payload.errors ?? { http: [String(response.status)] },
         status: response.status,
+        code: payload.code,
       };
     } catch {
       return {
@@ -147,6 +154,31 @@ class ApiClient {
     }
 
     return this.request<T>(endpoint, { method: "PATCH", body: body ? JSON.stringify(body) : undefined });
+  }
+
+  public async put<T = any>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
+    return this.request<T>(endpoint, { method: "PUT", body: JSON.stringify(body) });
+  }
+
+  public async upload<T = unknown>(endpoint: string, body: FormData): Promise<LaravelResponse<T>> {
+    for (const value of body.values()) {
+      if (typeof value !== "string" && value.size > API_CONFIG.maxUploadMb * 1024 * 1024) {
+        const message = `حجم الملف يتجاوز الحد المتاح (${API_CONFIG.maxUploadMb} MB).`;
+        return { data: null, errors: { file: [message] }, message, status: 413 };
+      }
+    }
+    return this.request<T>(endpoint, { method: "POST", body,
+      headers: { "Content-Type": "" } });
+  }
+
+  public async all<T>(endpoint: string): Promise<LaravelResponse<T[]>> {
+    const items: T[] = [];
+    for (let page = 1; ; page++) {
+      const response = await this.get<T[]>(`${endpoint}${endpoint.includes("?") ? "&" : "?"}page=${page}${/[?&]per_page=/.test(endpoint)?"":"&per_page=100"}`);
+      if (response.errors || !Array.isArray(response.data)) return { ...response, data: null };
+      items.push(...response.data);
+      if (page >= (response.meta?.last_page ?? 1)) return { ...response, data: items };
+    }
   }
 
   public async delete<T = any>(endpoint: string): Promise<LaravelResponse<T>> {

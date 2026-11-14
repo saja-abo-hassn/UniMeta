@@ -100,7 +100,7 @@ export function PlanCard({
               {plan.degree}
             </span>
             <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#F4FAFF] text-[#16324A] border border-[#D7EAF7]">
-              سعر الساعة: {plan.hourlyRate} د.أ
+              {plan.hourlyRate > 0 ? `سعر الساعة: ${plan.hourlyRate} د.أ` : "سعر الساعة غير محدد"}
             </span>
           </div>
         </div>

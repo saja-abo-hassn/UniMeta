@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { authService, AuthSessionData, LoginCredentials, RegisterData } from "@/src/services/auth-service";
 import { LaravelResponse } from "@/src/services/api-client";
 import { apiClient } from "@/src/services/api-client";
+import { BackendUser, toUser } from "@/src/services/user-adapter";
 
 interface AuthContextValue {
   user: AuthSessionData["user"] | null;
@@ -34,18 +35,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const activeUser = authService.getCurrentUser();
       finish(activeUser && authService.isAuthenticated() ? activeUser : null);
     } else {
-      void apiClient.get<AuthSessionData["user"] | { user: AuthSessionData["user"] }>("/me")
+      void apiClient.get<BackendUser>("/users/me/profile")
         .then((response) => {
           const result = response.data;
-          finish(result && "user" in result ? result.user : result);
+          finish(result ? toUser(result) : null);
         })
         .catch(() => finish(null));
     }
     const onUnauthorized = () => finish(null);
+    const onProfileChange = () => { if(active)setUser(authService.getCurrentUser()); };
+    window.addEventListener("unimeta_auth_change", onProfileChange);
     window.addEventListener("unimeta_auth_unauthorized", onUnauthorized);
     return () => {
       active = false;
       window.removeEventListener("unimeta_auth_unauthorized", onUnauthorized);
+      window.removeEventListener("unimeta_auth_change", onProfileChange);
     };
   }, []);
 

@@ -7,6 +7,7 @@ import {
   findUserByEmailOrId,
 } from "./mock-backend/mock-users";
 import { verificationService } from "./verification-service";
+import { BackendUser, toUser } from "./user-adapter";
 
 export interface LoginCredentials {
   identifier: string; // University email or Student ID
@@ -36,6 +37,7 @@ export interface AuthSessionData {
     title?: string | null;
     avatarUrl?: string | null;
     emailVerified?: boolean;
+    permissions?: Record<string, boolean> | null;
   };
   requiresVerification?: boolean;
 }
@@ -47,10 +49,12 @@ class AuthService {
   async login(credentials: LoginCredentials): Promise<LaravelResponse<AuthSessionData>> {
     // If live Laravel API is configured:
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<AuthSessionData>("/login", {
+      const response = await apiClient.post<{ token: string; user: BackendUser }>("/auth/login", {
         identifier: credentials.identifier,
         password: credentials.password,
       });
+      if(response.data){const profile=await apiClient.get<BackendUser>("/users/me/profile");return {...response,data:{...response.data,user:toUser(profile.data??response.data.user)}};}
+      return { ...response, data: null };
     }
 
     // Mock Backend Handler:
@@ -171,7 +175,13 @@ class AuthService {
   async register(data: RegisterData): Promise<LaravelResponse<AuthSessionData>> {
     // If live Laravel API is configured:
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<AuthSessionData>("/register", data);
+      const response = await apiClient.post<BackendUser>("/auth/register", {
+        full_name: data.fullName, email: data.email, password: data.password,
+        student_id: data.studentId || undefined, faculty: data.faculty || undefined,
+      });
+      if (!response.data || response.errors) return { ...response, data: null };
+      const session = await this.login({ identifier: data.email, password: data.password });
+      return session.data ? session : { ...session, message: `تم إنشاء حسابك. سجّل الدخول للمتابعة. ${session.message}` };
     }
 
     // Mock Backend Handler:
@@ -231,7 +241,8 @@ class AuthService {
    */
   async verifyEmailAndLogin(email: string, code: string): Promise<LaravelResponse<AuthSessionData>> {
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<AuthSessionData>("/verify-email", { email, code });
+      const response = await apiClient.post<{ verified: boolean }>("/auth/verify-email", { email, code });
+      return { ...response, data: null, message: response.data?.verified ? "تم تأكيد البريد. سجّل الدخول للمتابعة." : response.message };
     }
     const cleanEmail = email.toLowerCase().trim();
     const verification = await verificationService.verifyCode(cleanEmail, code);
@@ -282,7 +293,7 @@ class AuthService {
    */
   async resendVerificationCode(email: string): Promise<LaravelResponse<{ message: string; expiresInMinutes?: number }>> {
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<{ message: string; expiresInMinutes?: number }>("/email/resend-verification", { email });
+      return apiClient.post<{ message: string; expiresInMinutes?: number }>("/auth/email/resend-verification", { email });
     }
     const cleanEmail = email.toLowerCase().trim();
     const user = findUserByEmailOrId(cleanEmail);
@@ -307,7 +318,7 @@ class AuthService {
   async logout(): Promise<LaravelResponse<null>> {
     if (!apiClient.isUsingMock()) {
       try {
-        await apiClient.post("/logout");
+        await apiClient.post("/auth/logout");
       } catch {
         // ignore
       }
@@ -398,8 +409,12 @@ class AuthService {
   public cacheCurrentUser(user: AuthSessionData["user"] | null): void {
     if (typeof window === "undefined") return;
     try {
-      if (user) localStorage.setItem(API_CONFIG.storageKeys.user, JSON.stringify(user));
+      if (user) {
+        localStorage.setItem(API_CONFIG.storageKeys.user, JSON.stringify(user));
+        sessionStorage.removeItem("unimeta_logged_out");
+      }
       else localStorage.removeItem(API_CONFIG.storageKeys.user);
+      window.dispatchEvent(new Event("unimeta_auth_change"));
     } catch {
       // ignore
     }

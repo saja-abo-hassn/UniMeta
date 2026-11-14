@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/contexts/auth-context";
 import { RegisterData } from "@/src/services/auth-service";
+import { apiClient } from "@/src/services/api-client";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -44,13 +45,13 @@ export function RegisterForm() {
       nextErrors.fullName = "يرجى إدخال الاسم الثنائي على الأقل.";
     }
 
-    if (!formData.studentId?.trim()) {
+    if (apiClient.isUsingMock() && !formData.studentId?.trim()) {
       nextErrors.studentId = "يرجى إدخال الرقم الجامعي.";
-    } else if (!/^\d{6,12}$/.test(formData.studentId.trim())) {
+    } else if (apiClient.isUsingMock() && !/^\d{6,12}$/.test(formData.studentId?.trim() ?? "")) {
       nextErrors.studentId = "الرقم الجامعي يجب أن يتكون من أرقام فقط (6-12 رقماً).";
     }
 
-    if (!formData.faculty) {
+    if (apiClient.isUsingMock() && !formData.faculty) {
       nextErrors.faculty = "يرجى اختيار الكلية.";
     }
 
@@ -194,7 +195,7 @@ export function RegisterForm() {
         </div>
 
         {/* Student ID & Faculty Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {apiClient.isUsingMock() && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <label htmlFor="studentId" className="block text-xs font-semibold text-[#16324A]">
               الرقم الجامعي
@@ -244,6 +245,7 @@ export function RegisterForm() {
           </div>
         </div>
 
+        }
         {/* University Email Field */}
         <div className="space-y-1.5">
           <label htmlFor="email" className="block text-xs font-semibold text-[#16324A]">

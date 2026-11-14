@@ -1,4 +1,5 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
 
 import { useState, useCallback } from "react";
 import {
@@ -14,10 +15,10 @@ import {
 } from "@/src/data/mock-admin-data";
 
 export function useAdminContentManagement() {
-  const [courses] = useState<AdminCourse[]>(initialCoursesList);
+  const [courses] = useState<AdminCourse[]>(apiClient.isUsingMock() ? initialCoursesList : []);
 
   const [materials, setMaterials] = useState<CourseMaterialItem[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_materials_v1");
         if (stored) return JSON.parse(stored);
@@ -25,11 +26,11 @@ export function useAdminContentManagement() {
         // ignore
       }
     }
-    return initialMaterialsList;
+    return apiClient.isUsingMock() ? initialMaterialsList : [];
   });
 
   const [exams, setExams] = useState<AdminExamItem[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_exams_v1");
         if (stored) return JSON.parse(stored);
@@ -37,7 +38,7 @@ export function useAdminContentManagement() {
         // ignore
       }
     }
-    return initialExamsList;
+    return apiClient.isUsingMock() ? initialExamsList : [];
   });
 
   const addMaterial = useCallback(
