@@ -1,4 +1,7 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveAgreements } from "@/components/integration/live-agreements";
+
 
 import React from "react";
 import dynamic from "next/dynamic";
@@ -38,7 +41,8 @@ const AuditLogDrawer = dynamic(
   { ssr: false }
 );
 
-export default function AdminAgreementsPage() {
+export default function AdminAgreementsPage() { return apiClient.isUsingMock() ? <MockAdminAgreementsPage/> : <LiveAgreements admin/>; }
+function MockAdminAgreementsPage() {
   const {
     currentUser,
     activeTab,

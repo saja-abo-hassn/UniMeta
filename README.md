@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UniMeta Frontend
+
+الوضع الافتراضي يستخدم Laravel API عبر Next.js BFF. انسخ `.env.example` إلى `.env.local` واضبط `BACKEND_API_URL` ليشمل `/api/v1`، ثم شغّل `npm ci` و`npm run dev`. شغّل Laravel من جذر المشروع بـ `php artisan serve`.
+
+القيمة `NEXT_PUBLIC_USE_MOCK=true` مخصصة لعرض النسخة التجريبية. الميزات التي لا يوجد لها باك تظهر كغير متاحة في الوضع الحقيقي.
+
+راجع [تقرير الربط والـ APIs الناقصة](../../docs/analysis/frontend-api-integration.md) للتغطية الحالية والقيود. أوامر التحقق: `npm run test:api`, `npx tsc --noEmit`, `npm run build`.
 
 ## Getting Started
 
@@ -41,4 +47,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - الدور والصلاحيات تأتي من قاعدة البيانات عبر التوكن، والسيرفر يفحصها بكل طلب (403 عند عدم الصلاحية)، والواجهة تستخدمها للعرض فقط.
 - الأدمن يعيّن المشرفين ويحدد صلاحياتهم من مصفوفة on/off، وكل إجراء للمشرف يُسجَّل في audit log.
 
-الحالة: قيد العمل
+هذه الفقرة تصف التصميم المستهدف. الباك الحالي يدعم STUDENT وADMIN؛ إدارة المشرفين والصلاحيات التفصيلية ضمن قائمة الـ APIs الناقصة في تقرير الربط.

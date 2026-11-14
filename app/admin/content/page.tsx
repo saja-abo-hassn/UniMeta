@@ -1,4 +1,6 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveLibrary } from "@/components/integration/live-library";
 
 import React from "react";
 import dynamic from "next/dynamic";
@@ -16,7 +18,8 @@ const DynamicContentModals = dynamic(
   { ssr: false }
 );
 
-export default function AdminContentPage() {
+export default function AdminContentPage() { return apiClient.isUsingMock() ? <MockAdminContentPage/> : <LiveLibrary admin/>; }
+function MockAdminContentPage() {
   const {
     materials,
     activeCategory,

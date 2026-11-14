@@ -1,4 +1,6 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveAdminAccounts } from "@/components/integration/live-admin";
 
 import React from "react";
 import dynamic from "next/dynamic";
@@ -21,7 +23,8 @@ const DynamicMemberStatusModal = dynamic(
   { ssr: false }
 );
 
-export default function AdminMembersPage() {
+export default function AdminMembersPage() { return apiClient.isUsingMock() ? <MockAdminMembersPage/> : <LiveAdminAccounts/>; }
+function MockAdminMembersPage() {
   const {
     filteredMembers,
     collegesList,

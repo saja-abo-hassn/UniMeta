@@ -1,4 +1,5 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -92,8 +93,13 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+<<<<<<< HEAD
+        {apiClient.isUsingMock() && <div className="hidden xl:flex items-center p-1 rounded-xl bg-[#F4FAFF] border border-[#D7EAF7] text-xs font-bold">
+          <span className="text-[10px] text-[#66788A] px-2">الدور:</span>
+=======
         <div className="hidden xl:flex items-center p-1 rounded-xl bg-[#F4FAFF] border border-brand-border-soft text-xs font-bold">
           <span className="text-[10px] text-brand-muted px-2">الدور:</span>
+>>>>>>> b079de5bb3c77012965f2ad45ddce455d601b6a9
           <button
             type="button"
             onClick={() => switchRole("super_admin")}
@@ -116,7 +122,7 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
           >
             مشرف
           </button>
-        </div>
+        </div>}
 
         <Link
           href="/student"

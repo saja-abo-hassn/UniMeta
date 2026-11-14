@@ -11,6 +11,7 @@ import {
 } from "@/src/data/major-orientation-config";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 import { useNotifications } from "@/src/contexts/notifications-context";
+import { apiClient } from "@/src/services/api-client";
 
 export function OrientationResultBanner() {
   const [result, setResult] = useState<QuizResultCalculation | null>(null);
@@ -34,6 +35,7 @@ export function OrientationResultBanner() {
   };
 
   useEffect(() => {
+    if(!apiClient.isUsingMock())return;
     loadSavedResult();
 
     const handleUpdate = () => loadSavedResult();

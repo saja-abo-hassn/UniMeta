@@ -1,10 +1,13 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveProfile } from "@/components/integration/live-profile";
 
 import React, { useState } from "react";
 import { useStudentUser } from "@/src/hooks/use-student-user";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 
-export default function StudentSettingsPage() {
+export default function StudentSettingsPage() { return apiClient.isUsingMock() ? <MockStudentSettingsPage/> : <LiveProfile/>; }
+function MockStudentSettingsPage() {
   const { user, fullName } = useStudentUser();
   const { selectedPlan, hasPlanSelected } = useStudyPlan();
 

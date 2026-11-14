@@ -1,4 +1,5 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
 
 import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { AdminContextValue } from "@/src/types/admin";
@@ -58,6 +59,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   } = useAdminOperations();
 
   useEffect(() => {
+    if (!apiClient.isUsingMock()) return;
     try {
       localStorage.setItem("unimeta_admin_role_v1", currentUserRole);
       localStorage.setItem("unimeta_admin_moderators_v1", JSON.stringify(moderators));

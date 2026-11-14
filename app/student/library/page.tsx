@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { apiClient } from "@/src/services/api-client";
+import { LiveLibrary } from "@/components/integration/live-library";
 import dynamic from "next/dynamic";
 import { useStudentLibrary } from "./hooks/use-student-library";
 import { NoPlanView } from "./components/no-plan-view";
@@ -17,7 +19,8 @@ const DynamicLibraryModals = dynamic(
   { ssr: false }
 );
 
-export default function StudentLibraryPage() {
+export default function StudentLibraryPage() { return apiClient.isUsingMock() ? <MockStudentLibraryPage/> : <LiveLibrary/>; }
+function MockStudentLibraryPage() {
   const {
     courses,
     selectedPlan,

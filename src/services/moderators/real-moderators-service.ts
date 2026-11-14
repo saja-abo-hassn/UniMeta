@@ -16,11 +16,11 @@ export class RealModeratorsService implements ModeratorsServiceContract {
   }
 
   async setStatus(id: string, status: ModeratorStatus): Promise<LaravelResponse<ModeratorUser>> {
-    return apiClient.patch<ModeratorUser>(`/admin/moderators/${id}/status`, { status });
+    return apiClient.patch<ModeratorUser>(`/admin/moderators/${id}/status`, { active: status === "نشط" });
   }
 
   async resendInvite(id: string): Promise<LaravelResponse<{ inviteUrl: string; token: string }>> {
-    return apiClient.post<{ inviteUrl: string; token: string }>(`/admin/moderators/${id}/resend-invite`);
+    return apiClient.post<{ inviteUrl: string; token: string }>(`/admin/invitations/${id}/resend`);
   }
 
   async cancelInvite(id: string): Promise<LaravelResponse<null>> {

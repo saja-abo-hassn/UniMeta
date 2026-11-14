@@ -1,4 +1,6 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveMarketplace } from "@/components/integration/live-marketplace";
 
 import dynamic from "next/dynamic";
 import { useExchangeDevices } from "./hooks/use-exchange-devices";
@@ -22,7 +24,8 @@ const DynamicAddDeviceModal = dynamic(
   { ssr: false }
 );
 
-export default function DeviceExchangePage() {
+export default function DeviceExchangePage() { return apiClient.isUsingMock() ? <MockDeviceExchangePage/> : <LiveMarketplace kind="DEVICE"/>; }
+function MockDeviceExchangePage() {
   const {
     devices,
     filteredDevices,

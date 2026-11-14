@@ -1,10 +1,14 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LivePlatformSettings } from "@/components/integration/live-configuration";
+
 
 import React, { useState, useEffect } from "react";
 import { useAdmin, AdminSettingsData } from "@/src/contexts/admin-context";
 import { PermissionGuard } from "@/components/admin/permission-guard";
 
-export default function AdminSettingsPage() {
+export default function AdminSettingsPage() { return apiClient.isUsingMock() ? <MockAdminSettingsPage/> : <LivePlatformSettings/>; }
+function MockAdminSettingsPage() {
   const { currentUser, settings, updateSettings, updateAdminProfile } = useAdmin();
 
   const [formData, setFormData] = useState<AdminSettingsData>({

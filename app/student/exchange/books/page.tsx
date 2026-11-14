@@ -1,4 +1,6 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveMarketplace } from "@/components/integration/live-marketplace";
 
 import dynamic from "next/dynamic";
 import { useExchangeBooks } from "./hooks/use-exchange-books";
@@ -19,7 +21,8 @@ const DynamicTwoStepExchangeModal = dynamic(
 
 import { AddBookModal } from "./components/add-book-modal";
 
-export default function BookExchangePage() {
+export default function BookExchangePage() { return apiClient.isUsingMock() ? <MockBookExchangePage/> : <LiveMarketplace kind="BOOK"/>; }
+function MockBookExchangePage() {
   const {
     books,
     filteredBooks,
