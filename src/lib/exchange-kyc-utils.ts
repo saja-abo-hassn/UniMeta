@@ -2,7 +2,6 @@ export const STORAGE_SAVED_KYC_KEY = "unimeta_saved_student_kyc_v1";
 export const STORAGE_OUTGOING_REQUESTS_KEY = "unimeta_student_outgoing_requests_v1";
 export const STORAGE_ADMIN_AGREEMENTS_KEY = "unimeta_admin_agreements_v1";
 export const STORAGE_ADMIN_NOTIFICATIONS_KEY = "unimeta_admin_notifications_v1";
-export const STORAGE_PHONE_OTPS_KEY = "unimeta_active_phone_otps_v1";
 
 export const OFFICIAL_PLEDGE_VERSION = "v1.4 - 2026 (معتمد من شؤون الطلبة)";
 

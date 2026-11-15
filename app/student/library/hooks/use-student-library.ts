@@ -52,11 +52,7 @@ export function useStudentLibrary() {
       const code = m.courseCode.toUpperCase();
       let courseEntry = courseMap.get(code);
 
-      if (
-        !courseEntry &&
-        (selectedPlan.courses.some((pc) => pc.code.toUpperCase() === code) ||
-          isCourseInMajor(m.courseCode, selectedPlan.major))
-      ) {
+      if (!courseEntry) {
         courseEntry = {
           code: m.courseCode,
           nameAr: m.courseName || m.courseCode,

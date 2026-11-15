@@ -5,14 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/src/contexts/auth-context";
+import { apiClient } from "@/src/services/api-client";
+import { EmailNoticeCard } from "@/components/shared/email-notice-card";
 
 export function VerifyEmailForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { verifyEmailAndLogin, resendVerificationCode } = useAuth();
+  const { verifyEmail, resendVerificationCode } = useAuth();
 
   // Email state (from query param or entered manually)
   const queryEmail = searchParams.get("email") || "";
+  const [showRegistrationNotice, setShowRegistrationNotice] = useState(searchParams.get("notice") === "registration");
   const [email, setEmail] = useState(queryEmail);
   const [isEditingEmail, setIsEditingEmail] = useState(!queryEmail);
   const [tempEmail, setTempEmail] = useState(queryEmail);
@@ -22,14 +25,16 @@ export function VerifyEmailForm() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Timer & countdown state
-  const [countdown, setCountdown] = useState<number>(60);
+  const [countdown, setCountdown] = useState<number>(0);
   const [isResending, setIsResending] = useState<boolean>(false);
 
   // Status & feedback banners
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(
-    "تم إرسال رمز التحقق إلى بريدك. لأغراض التجربة، يمكنك العثور عليه في Console (F12)."
+    apiClient.isUsingMock()
+      ? "تأكيد البريد غير متاح في وضع العرض التجريبي. شغّل خادم الـ API وخدمة البريد لإرسال رمز صالح."
+      : "أدخل رمز التحقق الذي أرسله الخادم إلى بريدك الإلكتروني."
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [, startTransition] = useTransition();
@@ -135,14 +140,14 @@ export function VerifyEmailForm() {
     setSuccessMessage(null);
 
     try {
-      const response = await verifyEmailAndLogin(email.trim(), fullCode);
+      const response = await verifyEmail(email.trim(), fullCode);
       setIsSubmitting(false);
 
-      if (!response.errors && response.data?.token) {
-        setSuccessMessage("تم تأكيد البريد الإلكتروني بنجاح! جاري توجيهك إلى لوحة التحكم...");
+      if (!response.errors && response.status && response.status < 300) {
+        setSuccessMessage("تم تأكيد البريد الإلكتروني. سجّل الدخول للمتابعة.");
         setTimeout(() => {
           startTransition(() => {
-            router.push("/student");
+            router.push("/login?activated=1");
           });
         }, 500);
       } else {
@@ -175,7 +180,7 @@ export function VerifyEmailForm() {
       if (!response.errors && response.data) {
         setCountdown(60);
         setDigits(["", "", "", "", "", ""]);
-        setInfoMessage("تم توليد وإرسال رمز تحقق جديد بنجاح! تفقّد الـ Console (F12).");
+        setInfoMessage(response.data.message || response.message);
         inputRefs.current[0]?.focus();
       } else {
         setErrorMessage(response.message || "تعذر إعادة إرسال الرمز في الوقت الحالي.");
@@ -187,24 +192,35 @@ export function VerifyEmailForm() {
   };
 
   // Save edited email
-  const handleSaveEmail = (e: React.FormEvent) => {
+  const handleSaveEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tempEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempEmail.trim())) {
       setErrorMessage("يرجى إدخال بريد إلكتروني صحيح.");
       return;
     }
-    setEmail(tempEmail.trim());
-    setIsEditingEmail(false);
     setErrorMessage(null);
-    // Request code for newly entered email
-    resendVerificationCode(tempEmail.trim()).then(() => {
-      setCountdown(60);
-      setInfoMessage("تم إرسال رمز التحقق إلى البريد المعدّل (تفقّد الـ Console).");
-    });
+    setIsResending(true);
+    try {
+      const response = await resendVerificationCode(tempEmail.trim());
+      if (!response.errors && response.data) {
+        setEmail(tempEmail.trim());
+        setIsEditingEmail(false);
+        setCountdown(60);
+        setDigits(["", "", "", "", "", ""]);
+        setInfoMessage(response.data.message || response.message);
+      } else {
+        setErrorMessage(response.message || "تعذر إرسال رمز التحقق إلى هذا البريد.");
+      }
+    } catch {
+      setErrorMessage("تعذر الاتصال بالخادم لإرسال رمز التحقق.");
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
-    <div className="w-full space-y-5 animate-fade-in" dir="rtl">
+    <div className="w-full space-y-4 animate-fade-in" dir="rtl">
+      {showRegistrationNotice && <EmailNoticeCard kind="activation" onDismiss={() => setShowRegistrationNotice(false)} />}
       {/* Header with Mascot */}
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
@@ -246,7 +262,7 @@ export function VerifyEmailForm() {
                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-            <span>أرسلنا رمز التحقق المكوّن من 6 أرقام إلى:</span>
+          <span>البريد المستخدم للتحقق:</span>
           </div>
 
           {!isEditingEmail && email && (
@@ -275,6 +291,7 @@ export function VerifyEmailForm() {
             />
             <button
               type="submit"
+            disabled={isResending}
               className="h-9 px-3.5 text-xs font-semibold bg-brand-primary text-white rounded-lg hover:bg-[#0046A0] transition-colors shadow-xs"
             >
               حفظ وإرسال
@@ -297,7 +314,7 @@ export function VerifyEmailForm() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div className="leading-relaxed">
-            <span className="font-bold block text-brand-dark mb-0.5">وضع التطوير (Dev Mode):</span>
+            <span className="font-bold block text-brand-dark mb-0.5">معلومة:</span>
             {infoMessage}
           </div>
         </div>

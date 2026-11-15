@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+@keyframes email-notice-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.email-notice-enter { animation: email-notice-enter 380ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .email-notice-enter { animation: none; }
+}
+
 @theme {
   --color-brand-primary: #0057C8;
   --color-brand-primary-hover: #0045A5;

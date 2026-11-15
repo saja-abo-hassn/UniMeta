@@ -6,6 +6,7 @@ import { PermissionsHeader } from "./components/permissions-header";
 import { PermissionsKPIs } from "./components/permissions-kpis";
 import { PermissionsMatrixTable } from "./components/permissions-matrix-table";
 import { PermissionsModals } from "./components/permissions-modals";
+import { EmailNoticeCard } from "@/components/shared/email-notice-card";
 
 export type { PermissionDef } from "./types";
 
@@ -27,6 +28,8 @@ export default function AdminPermissionsPage() {
     isSubmitting,
     lastCreatedInvite,
     setLastCreatedInvite,
+    showInviteEmailNotice,
+    setShowInviteEmailNotice,
     copiedToken,
     copyInviteUrl,
     handleTogglePermission,
@@ -46,6 +49,8 @@ export default function AdminPermissionsPage() {
         />
 
         {lastCreatedInvite && (
+          <div className="space-y-3">
+          {showInviteEmailNotice && <EmailNoticeCard kind="invitation" onDismiss={() => setShowInviteEmailNotice(false)} />}
           <div className="p-4 rounded-2xl bg-brand-surface-blue border-2 border-brand-primary text-brand-ink shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in">
             <div className="space-y-1.5 flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -81,6 +86,7 @@ export default function AdminPermissionsPage() {
                 ✕
               </button>
             </div>
+          </div>
           </div>
         )}
 

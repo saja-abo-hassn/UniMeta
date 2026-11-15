@@ -26,7 +26,6 @@ export {
   STORAGE_OUTGOING_REQUESTS_KEY,
   STORAGE_ADMIN_AGREEMENTS_KEY,
   STORAGE_ADMIN_NOTIFICATIONS_KEY,
-  STORAGE_PHONE_OTPS_KEY,
   OFFICIAL_PLEDGE_VERSION,
   OFFICIAL_PLEDGE_TEXT,
   validateNationalId,
@@ -35,8 +34,6 @@ export {
   maskPhone,
   validateSignatureFile,
 } from "../lib/exchange-kyc-utils";
-
-export { sendPhoneOtp, verifyPhoneOtp } from "./exchange-otp-service";
 
 export function getSavedStudentKyc(defaultStudentId?: string): StudentKycData | null {
   if (typeof window !== "undefined") {
@@ -65,7 +62,7 @@ export function getSavedStudentKyc(defaultStudentId?: string): StudentKycData | 
         fullName: student.name,
         college: student.college,
         major: student.major,
-        isPhoneVerified: true,
+        isEmailVerified: false,
       };
     }
   }

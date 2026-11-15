@@ -15,14 +15,21 @@ export interface PublicShellProps {
 export function PublicShell({ children }: PublicShellProps) {
   const pathname = usePathname();
 
-  // On the landing page and auth pages, the page owns its full-bleed Figma split layout
-  if (pathname === "/" || pathname === "/login" || pathname === "/register") {
+  // Landing and authentication routes own their full-bleed layouts.
+  const isAuthPage = [
+    "/login",
+    "/register",
+    "/verify-email",
+    "/forgot-password",
+    "/reset-password",
+  ].includes(pathname);
+  if (pathname === "/" || isAuthPage) {
     return pathname === "/" ? <>{children}</> : <AppProviders>{children}</AppProviders>;
   }
 
   return (
     <AppProviders>
-    <div className="min-h-screen flex flex-col bg-brand-light text-brand-dark">
+    <div className="min-h-dvh flex flex-col bg-brand-light text-brand-dark">
       {/* Public Navbar */}
       <Navbar
         title="UniMeta"
@@ -50,15 +57,15 @@ export function PublicShell({ children }: PublicShellProps) {
       </main>
 
       {/* Public Footer */}
-      <footer className="w-full footer-light-blue py-8 px-4 sm:px-6 lg:px-8 text-center text-xs">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 font-bold text-sm text-brand-primary">
+      <footer className="w-full footer-light-blue py-4 px-4 sm:px-6 lg:px-8 text-center text-xs">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-bold text-sm text-white">
             <span>منصة UniMeta الجامعية</span>
-            <span className="text-brand-muted font-normal text-xs">
+            <span className="font-normal text-xs footer-secondary-text">
               | النظام الموحد لخدمات الطلاب
             </span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-brand-ink">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-white">
             <Link href="/student" className="hover:text-brand-primary transition-colors font-medium">
               بوابة الطالب
             </Link>

@@ -21,11 +21,11 @@ export interface LaravelResponse<T = any> {
 }
 
 export const API_CONFIG = {
-  useMock: process.env.NEXT_PUBLIC_USE_MOCK !== "false", // defaults to true during local/staging
+  useMock: process.env.NEXT_PUBLIC_USE_MOCK === "true", // mock auth must be explicitly enabled
   baseUrl:
     process.env.NEXT_PUBLIC_USE_MOCK === "false"
       ? "/api/backend"
-      : process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
+      : process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1",
   storageKeys: {
     token: "unimeta_auth_token_v1",
     user: "unimeta_auth_user_v1",
@@ -75,8 +75,11 @@ class ApiClient {
 
   private async request<T>(endpoint: string, init: RequestInit): Promise<LaravelResponse<T>> {
     try {
+      const timeoutSignal =
+        typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(30_000) : undefined;
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         ...init,
+        signal: init.signal ?? timeoutSignal,
         headers: { ...this.getHeaders(), ...init.headers },
       });
       let payload: Partial<LaravelResponse<T>> = {};
@@ -110,11 +113,16 @@ class ApiClient {
         errors: payload.errors ?? { http: [String(response.status)] },
         status: response.status,
       };
-    } catch {
+    } catch (error) {
+      const isTimeout = error instanceof Error && error.name === "TimeoutError";
       return {
         data: null,
-        message: "تعذر الاتصال بالخادم. تحقق من الاتصال وحاول مجدداً.",
-        errors: { network: ["تعذر الاتصال بخادم الـ API"] },
+        message: isTimeout
+          ? "استغرق الطلب وقتًا أطول من المتوقع. حاول مجددًا."
+          : "تعذر الاتصال بالخادم. تحقق من الاتصال وحاول مجدداً.",
+        errors: {
+          network: [isTimeout ? "انتهت مهلة الاتصال بخادم الـ API" : "تعذر الاتصال بخادم الـ API"],
+        },
       };
     }
   }

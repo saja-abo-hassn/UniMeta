@@ -170,12 +170,22 @@ class VerificationService {
     saveAllRecords(records);
 
     // 4. Send via isolated mail service
-    await mailService.sendVerificationEmail({
+    const delivery = await mailService.sendVerificationEmail({
       to: cleanEmail,
       studentName,
       code: rawCode,
       expiresInMinutes: 10,
     });
+
+    if (!delivery.success) {
+      delete records[cleanEmail];
+      saveAllRecords(records);
+      return {
+        success: false,
+        error: "خدمة البريد غير مهيأة. لم يتم إرسال رمز التحقق.",
+        message: "تعذر إرسال رمز التحقق.",
+      };
+    }
 
     return {
       success: true,

@@ -11,6 +11,15 @@ import {
   ContentFormData,
 } from "../types";
 
+function makeManualCourseCode(courseName: string): string {
+  const normalized = courseName.trim().replace(/\s+/g, " ").toLocaleLowerCase();
+  let hash = 2166136261;
+  for (let index = 0; index < normalized.length; index += 1) {
+    hash = Math.imul(hash ^ normalized.charCodeAt(index), 16777619);
+  }
+  return `MAN-${(hash >>> 0).toString(36).toUpperCase()}`;
+}
+
 export function useAdminContent() {
   const { courses, materials, addMaterial, updateMaterial, deleteMaterial, toggleMaterialStatus } = useAdmin();
 
@@ -189,17 +198,18 @@ export function useAdminContent() {
       return;
     }
 
-    let code = formData.courseCode.trim();
-    if (!code) {
-      const existing = courses.find((c) => c.nameAr === formData.courseName.trim());
-      if (existing) {
-        code = existing.code;
-      } else {
-        code = `CRS-${Math.floor(100 + Math.random() * 900)}`;
-      }
-    }
+    const normalizedCourseName = formData.courseName.trim().replace(/\s+/g, " ").toLocaleLowerCase();
+    const existingMaterial = materials.find(
+      (material) => material.courseName.trim().replace(/\s+/g, " ").toLocaleLowerCase() === normalizedCourseName
+    );
+    const existingCourse = courses.find(
+      (course) => course.nameAr.trim().replace(/\s+/g, " ").toLocaleLowerCase() === normalizedCourseName
+    );
+    const code = formData.courseCode.trim() || existingMaterial?.courseCode || existingCourse?.code || makeManualCourseCode(formData.courseName);
+    const courseId = existingMaterial?.courseId || existingCourse?.id || `course-${code.toLowerCase()}`;
 
     addMaterial({
+      courseId,
       courseName: formData.courseName.trim(),
       courseCode: code,
       title: formData.title.trim(),

@@ -1,6 +1,6 @@
 # UniMeta API Contract — proposal for Laravel
 
-هذه العقود تمثل طريقة وصل الواجهة المطلوبة. `Implemented in client` تعني أن استدعاء الخدمة موجود في TypeScript، ولا تعني أن الخادم موجود أو أن fixture أصبح حقيقيًا. `Proposed` عمليات لازمة لاستبدال التخزين المحلي المرصود في الواجهة. ثبّت أسماء المسارات والحقول مع الفريق قبل migrations النهائية. كل المسارات تحت `/api`، JSON UTF-8، وتستخدم Sanctum عبر BFF ما عدا الدخول/التسجيل/التحقق العام.
+هذه العقود تمثل طريقة وصل الواجهة. المسارات الموثقة في OpenAPI المنشور تبدأ من `/api/v1`؛ المسارات التي تعود إلى هذه الوثيقة تبقى مقترحات. كل الطلبات JSON UTF-8، وتستخدم التوثيق عبر BFF للمسارات المحمية.
 
 ## Envelope موحد
 
@@ -22,18 +22,22 @@
 
 | الحالة | Method + URL | Request | Success data | الصلاحية/ملاحظات |
 |---|---|---|---|---|
-| موجود في خدمة auth | `POST /login` | `{ "identifier": "email أو رقم جامعي", "password": "..." }` | `{ "token": "Sanctum PAT", "user": User }` | عام؛ تحقق البريد والحالة، وإرجاع 422 للبيانات/الحساب غير المقبول. BFF يحفظ token في HttpOnly Cookie ولا يعيده للمتصفح. |
-| موجود في خدمة auth | `POST /register` | `{ fullName, email, password, confirmPassword, studentId, faculty, agreedToTerms }` | `{ user, requiresVerification: true }` أو session عند اعتماد تسجيل مباشر | عام؛ إنشاء طالب فقط؛ email وstudentId فريدان؛ كلمة مرور قوية وتأكيد وشروط؛ لا يقبل role من العميل. |
-| موجود في خدمة auth | `POST /verify-email` | `{ email, code }` | `{ token, user }` | عام بمعدل محدود؛ رمز hash، قصير العمر، محاولات محدودة، استخدام مرة واحدة؛ BFF يخزن التوكن إن أعاده. |
-| موجود في خدمة auth | `POST /email/resend-verification` | `{ email }` | `{ message, expiresInMinutes }` | عام بمعدل محدود؛ لا يكشف وجود البريد في الرد. |
-| مطلوب في التهيئة | `POST /password/forgot` | `{ email }` | `{ message }` | عام، استجابة لا تكشف الحساب، throttling. لا توجد صفحة UI حاليًا. |
-| مطلوب في التهيئة | `POST /password/reset` | `{ token, email, password, passwordConfirmation }` | `{ message }` | عام برمز مؤقت أحادي الاستخدام. لا توجد صفحة UI حاليًا. |
-| مطلوب في التهيئة | `GET /me` | — | `{ id,name,email,role,studentId?,faculty?,title?,avatarUrl?,emailVerified,permissions? }` | أي جلسة صالحة؛ إرجاع الدور من قاعدة البيانات، لا من cookie/المتصفح. مستخدم لتهيئة الهيدر والسايدبار. |
-| مطلوب في التهيئة | `POST /logout` | — | `null` | مصادق؛ إبطال PAT الحالي. BFF يمسح cookie حتى لو فشل الاتصال. |
+| موجود في API المنشور | `POST /auth/login` | `{ identifier, password }` | `{ token, user }` | عام عبر BFF؛ هذا هو endpoint المصادقة الذي يعيد token. BFF يحفظه في HttpOnly Cookie. |
+| موجود في API المنشور | `POST /auth/register` | `{ full_name, email, password, student_id?, faculty? }` | 201، بلا token | ينشئ حساب طالب؛ لا ترسل role أو حقول تأكيد كلمة المرور. حقول طلب التسجيل مذكورة في مواصفات OpenAPI المنشورة. |
+| موجود في API المنشور | `POST /auth/verify-email` | `{ email, code }` | 200 | عام؛ تحقق من الرمز ثم سجّل الدخول عبر `/auth/login` منفصلًا؛ لا يتوقع العميل token من هذا المسار. |
+| موجود في API المنشور | `POST /auth/email/resend-verification` | `{ email }` | 200 | عام؛ مسار إعادة/إرسال رمز التحقق المنشور. |
+| موجود في API المنشور | `POST /auth/forgot-password` | `{ email }` | 200 برسالة موحدة | لا يكشف وجود الحساب؛ رابط الاستعادة يبنيه الخادم من إعداد عنوان الواجهة. لا يرسل BFF `resetUrl` في الطلب. |
+| موجود في API المنشور | `POST /auth/reset-password` | `{ token, email, password }` | 200 | رمز خاطئ أو منتهي أو مستخدم يعيد 422. تأكيد كلمة المرور يبقى في الواجهة ولا يرسل للخادم. |
+| موجود في الإنتاج | `GET /users/me/profile` | — | ملف المستخدم الحالي | المسار موجود ويرفض الطلب غير المصادق بـ401؛ يستخدمه العميل لاستعادة الجلسة. |
+| موجود في الإنتاج | `POST /auth/logout` | — | `null` | المسار موجود ويرفض الطلب غير المصادق بـ401؛ BFF يمسح cookie محليًا عند تسجيل الخروج. |
 | موجود في service | `GET /invitations/{token}` | — | `{ email, role, department, expiresAt, status }` | عام برمز عشوائي hash؛ لا يكشف سجلات أخرى. |
 | موجود في service | `POST /invitations/{token}/accept` | `{ password }` | `{ email }` أو `{ user, token }` | عام برمز صالح؛ تفعيل مشرف مدعو فقط، token مرة واحدة. |
 
 `User` الحقول: `{ id, name, email, role: "student"|"moderator"|"super_admin", studentId?, faculty?, title?, avatarUrl?, emailVerified }`. لا تعرض password hash أو PAT أو national ID كاملًا.
+
+## مساعد UniMeta
+
+المسار `POST /ai/assistant` موجود في الإنتاج. فحص مباشر أول أعاد `200` دون جسم ظاهر، ثم اختبار متصفح end-to-end عبر BFF برسالة عربية أعاد إجابة عربية فعلية مع مراجع inline. لذلك الواجهة تتعامل مع العقد المتوقع `{ data: { answer: string, sources?: [...] } }` من تكامل GitHub، وتعرض خطأ واضحًا عند الجسم الفارغ بدل اختراع رد. يلزم توثيق العقد وضمان عدم رجوع جسم فارغ. `GET /ai/sessions` يتطلب مصادقة (أعاد 401 دون جلسة)؛ لم يتم التحقق من مخطط CRUD للمحادثات أو اختبار سجل محفوظ بعد إعادة فتح الصفحة.
 
 ## الخطط والمواد والإشعارات
 
@@ -114,4 +118,4 @@
 - Rate limit login, OTP, resend, invitations, reports, downloads/uploads. خزّن passwords عبر Laravel Hash. لا تكشف وجود بريد في تدفقات الاستعادة/التحقق العام.
 - ملفات private disk، أسماء عشوائية، MIME sniffing وحد حجم، antivirus إن توفر، تنزيل موقّع قصير الصلاحية. لا تنفذ file URL من العميل مباشرة.
 - التواريخ ISO-8601 UTC، العملة كما في الخطة النموذجية JOD حتى يؤكد المنتج غير ذلك. المعدل موزون بالساعات وبعلامة 0..100؛ الحسابات المحلية قابلة للتلاعب ولا تعتمد رسميًا قبل التحقق من اللوائح الجامعية.
-- Vercel: اضبط `NEXT_PUBLIC_API_URL` إلى API origin مع `/api` و`NEXT_PUBLIC_SITE_URL` إلى أصل الواجهة و`NEXT_PUBLIC_USE_MOCK=false` ثم أعد build. Route Handler يمرر طلبات JSON/ملفات إلى Laravel، يرفق cookie token server-side، ويزيله من الرد عند login. اختبر CORS، upload، cookie Secure، `GET /me`، 401/403 وpreview domains قبل إطلاق الإنتاج.
+- Vercel: اضبط `BACKEND_API_URL` (server-only) إلى عنوان API مع `/api/v1` و`NEXT_PUBLIC_SITE_URL` إلى أصل الواجهة و`NEXT_PUBLIC_USE_MOCK=false` ثم أعد build. Route Handler يمرر طلبات JSON/ملفات إلى الـ API، ويخزن token الوارد من `/auth/login` في Cookie HttpOnly. يدعم `NEXT_PUBLIC_API_URL` كبديل مؤقت للتوافق مع الإعداد الحالي. يضبط خادم API رابط الاستعادة من إعداد الواجهة لديه؛ لا يرسل المتصفح أو BFF رابطًا حرًا في طلب الاستعادة.

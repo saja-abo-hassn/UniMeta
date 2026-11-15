@@ -7,7 +7,7 @@ export interface StudentKycData {
   fullName: string;
   college?: string;
   major?: string;
-  isPhoneVerified: boolean;
+  isEmailVerified: boolean;
 }
 
 export interface AgreementSignature {

@@ -10,6 +10,7 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const prefillEmail = searchParams.get("email") || "";
   const isActivated = searchParams.get("activated") === "1";
+  const isPasswordReset = searchParams.get("reset") === "1";
   const { login } = useAuth();
 
   const [identifier, setIdentifier] = useState(prefillEmail);
@@ -20,10 +21,13 @@ export function LoginForm() {
   const [errors, setErrors] = useState<{ identifier?: string; password?: string }>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(
-    isActivated ? "تم تفعيل حسابك بنجاح! يرجى إدخال كلمة المرور لتسجيل الدخول." : null
+    isActivated
+      ? "تم تفعيل حسابك بنجاح! يرجى إدخال كلمة المرور لتسجيل الدخول."
+      : isPasswordReset
+        ? "تم تحديث كلمة المرور. سجّل الدخول باستخدام كلمة المرور الجديدة."
+        : null
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [forgotPasswordNote, setForgotPasswordNote] = useState(false);
 
   const validate = (): boolean => {
     const nextErrors: { identifier?: string; password?: string } = {};
@@ -66,7 +70,7 @@ export function LoginForm() {
 
       if (response.data?.requiresVerification || response.errors?.requiresVerification) {
         const userEmail = response.data?.user?.email || (identifier.includes("@") ? identifier.trim() : "");
-        setErrorMessage("حسابك غير مؤكّد بعد. تم إرسال رمز تحقق، جاري توجيهك لصفحة التأكيد...");
+        setErrorMessage("حسابك غير مؤكّد بعد. افتح صفحة التأكيد وأعد إرسال الرمز إذا لم يصلك.");
         setTimeout(() => {
           router.push(`/verify-email?email=${encodeURIComponent(userEmail)}`);
         }, 700);
@@ -232,20 +236,13 @@ export function LoginForm() {
             <span>تذكرني</span>
           </label>
 
-          <button
-            type="button"
-            onClick={() => setForgotPasswordNote(true)}
+          <Link
+            href="/forgot-password"
             className="text-brand-primary hover:text-brand-hover-medium hover:underline font-medium transition-colors"
           >
             نسيت كلمة المرور؟
-          </button>
+          </Link>
         </div>
-
-        {forgotPasswordNote && (
-          <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
-            استعادة كلمة المرور ستكون مفعلة ومربوطة بنظام البريد الجامعي عند تشغيل خادم الـ Backend.
-          </div>
-        )}
 
         {/* Submit Button */}
         <button

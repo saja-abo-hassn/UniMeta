@@ -23,6 +23,8 @@ export function useUniMetaChat(initiallyOpen = false) {
   ]);
   const [inputVal, setInputVal] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState("");
+  const requestInFlightRef = useRef(false);
 
   const windowRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -141,10 +143,12 @@ export function useUniMetaChat(initiallyOpen = false) {
     }
   };
 
-  const handleSend = (e?: React.FormEvent) => {
+  const handleSend = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const query = inputVal.trim();
-    if (!query || isTyping) return;
+    if (!query || isTyping || requestInFlightRef.current) return;
+    requestInFlightRef.current = true;
+    setError("");
 
     const userMsg: ChatMessage = {
       id: `usr-${Date.now()}`,
@@ -160,37 +164,20 @@ export function useUniMetaChat(initiallyOpen = false) {
     dispatchMascot({ type: "SEND_MESSAGE" });
     setIsTyping(true);
 
-    setTimeout(() => {
-      let replyText =
-        "أهلاً بك! مساعد UniMeta AI الذكي مخصص لخدمتك في استعراض خطتك الدراسية، وحساب الساعات والمعدل، والبحث في المكتبة ومشاريع التخرج.";
-
-      const lower = query.toLowerCase();
-      if (lower.includes("خطة") || lower.includes("تخصص") || lower.includes("مسار")) {
-        replyText =
-          "يمكنك إدارة ومراجعة خطتك الدراسية كاملة عبر صفحة «مساري الأكاديمي» للوصول لجميع المقررات وساعات الإنجاز المعتمدة.";
-      } else if (lower.includes("معدل") || lower.includes("حاسبة") || lower.includes("علامات")) {
-        replyText =
-          "حاسبة المعدل التراكمي مرتبطة مباشرة بمواد خطتك الدراسية لحساب المعدل الفصلي والتراكمي بدقة وفق مقياس 100%.";
-      } else if (lower.includes("رسوم") || lower.includes("ساعة") || lower.includes("دفع")) {
-        replyText =
-          "حاسبة الرسوم تحتسب التكلفة تلقائياً بناءً على سعر الساعة المعتمد لتخصصك وعدد الساعات المسجلة لهذا الفصل.";
-      } else if (lower.includes("كتب") || lower.includes("جهاز") || lower.includes("تبادل")) {
-        replyText =
-          "منصة التبادل الأكاديمي تتيح لك استعارة وشراء الكتب المنهجية والأدوات الهندسية من زملائك في الكلية بسهولة.";
-      }
-
-      const assistantMsg: ChatMessage = {
-        id: `ai-${Date.now()}`,
-        sender: "assistant",
-        text: replyText,
-        timestamp: new Date().toISOString(),
-      };
-
+    try {
+      const assistantMsg = await aiChatService.sendMessage(query, messages);
       setMessages((prev) => [...prev, assistantMsg]);
-      setIsTyping(false);
-
       dispatchMascot({ type: "RECEIVE_ANSWER" });
-    }, 1300);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "تعذر الحصول على رد من المساعد. حاول مجددًا لاحقًا."
+      );
+    } finally {
+      setIsTyping(false);
+      requestInFlightRef.current = false;
+    }
   };
 
   return {
@@ -204,6 +191,7 @@ export function useUniMetaChat(initiallyOpen = false) {
     messages,
     inputVal,
     isTyping,
+    error,
     windowRef,
     buttonRef,
     messagesEndRef,

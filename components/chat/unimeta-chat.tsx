@@ -21,6 +21,7 @@ export function UniMetaChat({ initiallyOpen = false }: { initiallyOpen?: boolean
     messages,
     inputVal,
     isTyping,
+    error,
     windowRef,
     buttonRef,
     messagesEndRef,
@@ -89,6 +90,12 @@ export function UniMetaChat({ initiallyOpen = false }: { initiallyOpen?: boolean
                 </svg>
               </button>
             </header>
+
+            {error && (
+              <p role="alert" className="mx-4 mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-700">
+                {error}
+              </p>
+            )}
 
             <ChatMessagesList
               messages={messages}

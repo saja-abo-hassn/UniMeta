@@ -25,6 +25,7 @@ export function useAdminPermissions() {
     token: string;
   } | null>(null);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [showInviteEmailNotice, setShowInviteEmailNotice] = useState(false);
 
   const [formData, setFormData] = useState<PermissionsFormData>({
     name: "",
@@ -122,6 +123,7 @@ export function useAdminPermissions() {
         inviteUrl: res.data.inviteUrl,
         token: res.data.token,
       });
+      setShowInviteEmailNotice(true);
 
       setIsAddModalOpen(false);
       setFormData({
@@ -167,6 +169,8 @@ export function useAdminPermissions() {
     isSubmitting,
     lastCreatedInvite,
     setLastCreatedInvite,
+    showInviteEmailNotice,
+    setShowInviteEmailNotice,
     copiedToken,
     copyInviteUrl,
     handleTogglePermission,

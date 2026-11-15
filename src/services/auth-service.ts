@@ -1,12 +1,5 @@
 import { apiClient, LaravelResponse, API_CONFIG } from "./api-client";
-import {
-  getStoredUsers,
-  saveNewUser,
-  MockUser,
-  markUserEmailVerified,
-  findUserByEmailOrId,
-} from "./mock-backend/mock-users";
-import { verificationService } from "./verification-service";
+import { getStoredUsers } from "./mock-backend/mock-users";
 
 export interface LoginCredentials {
   identifier: string; // University email or Student ID
@@ -40,6 +33,12 @@ export interface AuthSessionData {
   requiresVerification?: boolean;
 }
 
+export interface PasswordResetData {
+  email: string;
+  token: string;
+  password: string;
+}
+
 class AuthService {
   /**
    * Login user with identifier (email or studentId) and password
@@ -47,7 +46,7 @@ class AuthService {
   async login(credentials: LoginCredentials): Promise<LaravelResponse<AuthSessionData>> {
     // If live Laravel API is configured:
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<AuthSessionData>("/login", {
+      return apiClient.post<AuthSessionData>("/auth/login", {
         identifier: credentials.identifier,
         password: credentials.password,
       });
@@ -83,12 +82,9 @@ class AuthService {
 
     // Rule 1 & 7: Check if email is verified
     if (matchedUser.emailVerified === false) {
-      // Trigger new verification code if expired or existing
-      await verificationService.createAndSendCode(matchedUser.email, matchedUser.name);
-
       return apiClient.createErrorResponse<AuthSessionData>(
-        "حسابك غير مؤكّد بعد. يرجى إدخال رمز التحقق المرسل لبريدك الإلكتروني لتفعيل الحساب.",
-        { requiresVerification: ["يرجى إدخال رمز التحقق لتأكيد البريد."] },
+        "هذا الحساب غير مؤكّد. استخدم إعادة إرسال الرمز من صفحة تأكيد البريد بعد تشغيل خدمة البريد.",
+        { requiresVerification: ["يلزم تأكيد البريد الإلكتروني قبل تسجيل الدخول."] },
         {
           token: "",
           user: {
@@ -145,7 +141,7 @@ class AuthService {
         email: matchedUser.email,
         studentId: matchedUser.studentId,
         faculty: matchedMod?.assignedDepartment || matchedUser.faculty,
-        role: (matchedMod ? matchedMod.role : matchedUser.role) as any,
+        role: matchedMod ? matchedMod.role : matchedUser.role,
         title: matchedMod?.title || null,
         emailVerified: true,
       },
@@ -168,113 +164,41 @@ class AuthService {
   /**
    * Register a new student account (emailVerified starts as false)
    */
-  async register(data: RegisterData): Promise<LaravelResponse<AuthSessionData>> {
+  async register(data: RegisterData): Promise<LaravelResponse<unknown>> {
     // If live Laravel API is configured:
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<AuthSessionData>("/register", data);
+      return apiClient.post<unknown>("/auth/register", {
+        full_name: data.fullName.trim(),
+        email: data.email.trim(),
+        password: data.password,
+        student_id: data.studentId?.trim() || null,
+        faculty: data.faculty || null,
+      });
     }
 
-    // Mock Backend Handler:
-    await new Promise((res) => setTimeout(res, 300)); // simulate brief network latency
-
-    const emailClean = data.email.trim().toLowerCase();
-    const users = getStoredUsers();
-
-    // Check duplicate email
-    const exists = users.some((u) => u.email.toLowerCase() === emailClean);
-    if (exists) {
-      return apiClient.createErrorResponse<AuthSessionData>(
-        "البريد الإلكتروني مسجل مسبقاً في النظام.",
-        { email: ["البريد الإلكتروني مستخدم بالفعل، يرجى تسجيل الدخول أو اختيار بريد آخر."] }
-      );
-    }
-
-    // 1. Create account with emailVerified = false
-    const newUser: MockUser = {
-      id: `usr-${Date.now()}`,
-      name: data.fullName.trim(),
-      email: emailClean,
-      studentId: data.studentId?.trim() || `2024${Math.floor(1000 + Math.random() * 9000)}`,
-      faculty: data.faculty || "كلية الهندسة وتكنولوجيا المعلومات",
-      password: data.password,
-      role: "student",
-      createdAt: new Date().toISOString().split("T")[0],
-      emailVerified: false,
+    return {
+      ...apiClient.createErrorResponse<unknown>(
+        "التسجيل يتطلب خادمًا فعليًا لإرسال رمز التحقق. أوقف وضع العرض التجريبي واضبط خدمة الـ API والبريد.",
+        { configuration: ["التسجيل بالبريد غير متاح في وضع العرض التجريبي."] }
+      ),
+      status: 503,
     };
-
-    saveNewUser(newUser);
-
-    // 2. Generate and dispatch secure 6-digit verification code via mailService
-    await verificationService.createAndSendCode(newUser.email, newUser.name);
-
-    // Notice: Do NOT call this.saveSession! Access to dashboard is locked until verification.
-    return apiClient.createSuccessResponse(
-      {
-        token: "",
-        user: {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email,
-          studentId: newUser.studentId,
-          faculty: newUser.faculty,
-          role: newUser.role,
-          emailVerified: false,
-        },
-        requiresVerification: true,
-      },
-      "تم إنشاء الحساب بنجاح! تم إرسال رمز التحقق إلى بريدك الإلكتروني لتفعيل الحساب."
-    );
   }
 
   /**
    * Verify email with 6-digit code and automatically log in
    */
-  async verifyEmailAndLogin(email: string, code: string): Promise<LaravelResponse<AuthSessionData>> {
+  async verifyEmail(email: string, code: string): Promise<LaravelResponse<{ message?: string }>> {
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<AuthSessionData>("/verify-email", { email, code });
+      return apiClient.post<{ message?: string }>("/auth/verify-email", { email, code });
     }
-    const cleanEmail = email.toLowerCase().trim();
-    const verification = await verificationService.verifyCode(cleanEmail, code);
-
-    if (!verification.success) {
-      return apiClient.createErrorResponse<AuthSessionData>(
-        verification.error || "رمز التحقق غير صحيح أو منتهي الصلاحية.",
-        { code: [verification.error || "رمز التحقق غير صحيح."] }
-      );
-    }
-
-    // Mark user emailVerified = true in storage
-    markUserEmailVerified(cleanEmail);
-
-    const user = findUserByEmailOrId(cleanEmail);
-    if (!user) {
-      return apiClient.createErrorResponse<AuthSessionData>("لم يتم العثور على الحساب.");
-    }
-
-    const sessionData: AuthSessionData = {
-      token: `1|laravel_sanctum_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        studentId: user.studentId,
-        faculty: user.faculty,
-        role: user.role,
-        emailVerified: true,
-      },
+    return {
+      ...apiClient.createErrorResponse<{ message?: string }>(
+        "لا يمكن تأكيد البريد في وضع العرض التجريبي. شغّل خادم الـ API وخدمة البريد أولاً.",
+        { configuration: ["تأكيد البريد غير متاح في وضع العرض التجريبي."] }
+      ),
+      status: 503,
     };
-
-    // Save active session token and user
-    await this.saveSession(sessionData);
-
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("unimeta_auth_change"));
-    }
-
-    return apiClient.createSuccessResponse(
-      sessionData,
-      "تم تأكيد بريدك الإلكتروني بنجاح! مرحباً بك في UniMeta."
-    );
   }
 
   /**
@@ -282,23 +206,41 @@ class AuthService {
    */
   async resendVerificationCode(email: string): Promise<LaravelResponse<{ message: string; expiresInMinutes?: number }>> {
     if (!apiClient.isUsingMock()) {
-      return apiClient.post<{ message: string; expiresInMinutes?: number }>("/email/resend-verification", { email });
+      return apiClient.post<{ message: string; expiresInMinutes?: number }>("/auth/email/resend-verification", { email });
     }
-    const cleanEmail = email.toLowerCase().trim();
-    const user = findUserByEmailOrId(cleanEmail);
-    const result = await verificationService.createAndSendCode(cleanEmail, user?.name);
+    return {
+      ...apiClient.createErrorResponse<{ message: string }>(
+        "إعادة إرسال الرمز تتطلب خادمًا فعليًا لخدمة البريد.",
+        { configuration: ["خدمة البريد غير متاحة في وضع العرض التجريبي."] }
+      ),
+      status: 503,
+    };
+  }
 
-    if (!result.success) {
-      return apiClient.createErrorResponse<{ message: string }>(
-        result.error || "تعذر إعادة إرسال الرمز حالياً.",
-        { resend: [result.error || "تعذر إعادة الإرسال."] }
-      );
+  async requestPasswordReset(email: string): Promise<LaravelResponse<{ message: string }>> {
+    if (!apiClient.isUsingMock()) {
+      return apiClient.post<{ message: string }>("/auth/forgot-password", { email });
     }
+    return {
+      ...apiClient.createErrorResponse<{ message: string }>(
+        "استعادة كلمة المرور تتطلب خادمًا فعليًا وخدمة بريد مهيأة.",
+        { configuration: ["استعادة كلمة المرور غير متاحة في وضع العرض التجريبي."] }
+      ),
+      status: 503,
+    };
+  }
 
-    return apiClient.createSuccessResponse(
-      { message: result.message, expiresInMinutes: result.expiresInMinutes },
-      result.message
-    );
+  async resetPassword(data: PasswordResetData): Promise<LaravelResponse<{ message: string }>> {
+    if (!apiClient.isUsingMock()) {
+      return apiClient.post<{ message: string }>("/auth/reset-password", data);
+    }
+    return {
+      ...apiClient.createErrorResponse<{ message: string }>(
+        "تغيير كلمة المرور يتطلب خادمًا فعليًا للتحقق من رابط الاستعادة.",
+        { configuration: ["استعادة كلمة المرور غير متاحة في وضع العرض التجريبي."] }
+      ),
+      status: 503,
+    };
   }
 
   /**
@@ -307,7 +249,7 @@ class AuthService {
   async logout(): Promise<LaravelResponse<null>> {
     if (!apiClient.isUsingMock()) {
       try {
-        await apiClient.post("/logout");
+        await apiClient.post("/auth/logout");
       } catch {
         // ignore
       }

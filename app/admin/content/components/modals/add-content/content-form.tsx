@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { CourseSelect, CourseOption } from "./course-select";
 import { ContentTypeSelect } from "./content-type-select";
 import { FileDropzone } from "./file-dropzone";
 import { FilePreview } from "./file-preview";
@@ -10,9 +9,7 @@ import { ContentFormValues, ContentFormErrors, ContentUploadState } from "./type
 interface ContentFormProps {
   values: ContentFormValues;
   errors: ContentFormErrors;
-  courses: CourseOption[];
   uploadState: ContentUploadState;
-  onCourseChange: (course: CourseOption) => void;
   onValuesChange: (updater: (prev: ContentFormValues) => ContentFormValues) => void;
   onFileSelect: (file: File) => void;
   onFileRemove: () => void;
@@ -21,9 +18,7 @@ interface ContentFormProps {
 export function ContentForm({
   values,
   errors,
-  courses,
   uploadState,
-  onCourseChange,
   onValuesChange,
   onFileSelect,
   onFileRemove,
@@ -36,12 +31,23 @@ export function ContentForm({
         </div>
       )}
 
-      <CourseSelect
-        courses={courses}
-        selectedCourseId={values.courseId}
-        onChange={onCourseChange}
-        error={errors.courseId}
-      />
+      <div className="space-y-1.5">
+        <label htmlFor="content-course-name-input" className="text-xs font-bold text-brand-ink block">
+          اسم المادة الدراسية <span className="text-red-500">*</span>
+        </label>
+        <input
+          id="content-course-name-input"
+          type="text"
+          required
+          value={values.courseName}
+          onChange={(e) => onValuesChange((prev) => ({ ...prev, courseName: e.target.value }))}
+          placeholder="أدخل اسم المادة الدراسية"
+          className={`w-full px-3 py-2 rounded-xl border text-xs sm:text-sm font-semibold text-brand-ink bg-white transition-colors focus:outline-none ${
+            errors.courseId ? "border-red-400 bg-red-50/30" : "border-brand-border-soft focus:border-brand-primary"
+          }`}
+        />
+        {errors.courseId && <p className="text-[11px] text-red-600 font-medium" role="alert">{errors.courseId}</p>}
+      </div>
 
       <ContentTypeSelect
         type={values.type}

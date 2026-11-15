@@ -2,11 +2,9 @@
 
 import React, { useMemo, useState } from "react";
 import { Modal } from "@/components/shared/modal";
-import { useAdmin } from "@/src/contexts/admin-context";
 import { ContentFormData } from "../../types";
 import { useContentUpload } from "./add-content/use-content-upload";
 import { ContentForm } from "./add-content/content-form";
-import { CourseOption } from "./add-content/course-select";
 import { ContentFormValues, ContentFormErrors } from "./add-content/types";
 
 interface AddContentModalProps {
@@ -28,36 +26,15 @@ export function AddContentModal({
   formData,
   setFormData,
   formError: externalError,
-  courseSuggestions,
   onSubmit,
 }: AddContentModalProps) {
-  const { courses } = useAdmin();
   const { uploadState, handleFile, removeFile, resetUpload } = useContentUpload();
 
-  const [selectedCourseId, setSelectedCourseId] = useState("");
   const [internalErrors, setInternalErrors] = useState<ContentFormErrors>({});
-
-  const availableCourses = useMemo<CourseOption[]>(() => {
-    const list: CourseOption[] = courses.map((c) => ({
-      id: c.id || c.code,
-      code: c.code,
-      name: c.nameAr,
-    }));
-    courseSuggestions.forEach((name, idx) => {
-      if (!list.some((c) => c.name === name)) {
-        list.push({
-          id: `suggestion-${idx}`,
-          code: `CRS-${100 + idx}`,
-          name,
-        });
-      }
-    });
-    return list;
-  }, [courses, courseSuggestions]);
 
   const formValues: ContentFormValues = useMemo(
     () => ({
-      courseId: selectedCourseId,
+      courseId: "",
       courseName: formData.courseName,
       courseCode: formData.courseCode,
       type:
@@ -75,18 +52,8 @@ export function AddContentModal({
       status: formData.status,
       url: formData.url,
     }),
-    [formData, selectedCourseId]
+    [formData]
   );
-
-  const handleCourseChange = (course: CourseOption) => {
-    setSelectedCourseId(course.id);
-    setFormData((prev) => ({
-      ...prev,
-      courseName: course.name,
-      courseCode: course.code,
-    }));
-    setInternalErrors((prev) => ({ ...prev, courseId: undefined }));
-  };
 
   const handleFormValuesChange = (
     updater: (prev: ContentFormValues) => ContentFormValues
@@ -95,6 +62,7 @@ export function AddContentModal({
     setFormData((prev) => ({
       ...prev,
       title: updated.title,
+      courseName: updated.courseName,
       category: updated.category,
       description: updated.description,
       author: updated.author,
@@ -104,6 +72,7 @@ export function AddContentModal({
     if (updated.title.trim()) {
       setInternalErrors((prev) => ({ ...prev, title: undefined }));
     }
+    if (updated.courseName.trim()) setInternalErrors((prev) => ({ ...prev, courseId: undefined }));
   };
 
   const handleFileSelect = (file: File) => {
@@ -126,8 +95,8 @@ export function AddContentModal({
     e.preventDefault();
     const errors: ContentFormErrors = {};
 
-    if (!selectedCourseId || !formData.courseName.trim()) {
-      errors.courseId = "يرجى اختيار المادة الدراسية لتحديد الخطة والمساق المعتمد.";
+    if (!formData.courseName.trim()) {
+      errors.courseId = "يرجى كتابة اسم المادة الدراسية.";
     }
     if (!formData.title.trim()) {
       errors.title = "يرجى كتابة عنوان واضح للمحتوى التعليمي.";
@@ -140,12 +109,10 @@ export function AddContentModal({
 
     onSubmit(e);
     resetUpload();
-    setSelectedCourseId("");
   };
 
   const handleClose = () => {
     resetUpload();
-    setSelectedCourseId("");
     setInternalErrors({});
     onClose();
   };
@@ -155,7 +122,7 @@ export function AddContentModal({
       <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
         <Modal.Header
           title="إضافة ملف تعليمي للمادة"
-          description="ارفع الملخصات والمراجع والنماذج والفيديوهات ليتم ربطها مباشرة بخطة الطالب ومكتبته"
+          description="ارفع الملخصات والمراجع والنماذج والفيديوهات لتظهر للطلبة وفق حالة النشر"
           onClose={handleClose}
         />
 
@@ -166,9 +133,7 @@ export function AddContentModal({
               ...internalErrors,
               general: externalError || internalErrors.general,
             }}
-            courses={availableCourses}
             uploadState={uploadState}
-            onCourseChange={handleCourseChange}
             onValuesChange={handleFormValuesChange}
             onFileSelect={handleFileSelect}
             onFileRemove={handleFileRemove}
@@ -185,7 +150,7 @@ export function AddContentModal({
           </button>
           <button
             type="submit"
-            disabled={uploadState.isUploading || !selectedCourseId}
+            disabled={uploadState.isUploading}
             className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
           >
             {uploadState.isUploading && (

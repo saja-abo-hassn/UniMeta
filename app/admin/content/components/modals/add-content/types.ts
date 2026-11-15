@@ -15,7 +15,7 @@ export interface ContentUploadState {
 }
 
 export interface ContentFormValues {
-  courseId: string;
+  courseId?: string;
   courseName: string;
   courseCode: string;
   type: EducationalMaterialType;

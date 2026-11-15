@@ -95,18 +95,15 @@ export function RegisterForm() {
       const response = await register(formData);
       setIsSubmitting(false);
 
-      if (response.data?.requiresVerification) {
+      if (!response.errors && (response.status === 201 || response.status === 200)) {
         setSuccessMessage(response.message || "تم إنشاء الحساب بنجاح! جاري تحويلك لتأكيد بريدك الإلكتروني...");
         setTimeout(() => {
-          router.push(`/verify-email?email=${encodeURIComponent(formData.email.trim())}`);
+          router.push(`/verify-email?email=${encodeURIComponent(formData.email.trim())}&notice=registration`);
         }, 500);
-      } else if (response.data?.token) {
-        setSuccessMessage(response.message || "تم إنشاء الحساب وتسجيل دخولك بنجاح!");
-        setTimeout(() => {
-          router.push("/student");
-        }, 400);
       } else {
-        setErrorMessage(response.message || "تعذر إنشاء الحساب، يرجى التحقق من البيانات.");
+        setErrorMessage(
+          response.message || "تعذر إنشاء الحساب. حاول مجددًا لاحقًا."
+        );
       }
     } catch {
       setIsSubmitting(false);
@@ -115,7 +112,7 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="w-full space-y-5 animate-fade-in" dir="rtl">
+    <div className="w-full space-y-4 animate-fade-in" dir="rtl">
       {/* Header */}
       <div className="space-y-1">
         <div className="flex flex-col">

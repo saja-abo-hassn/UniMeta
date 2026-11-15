@@ -7,6 +7,7 @@ import { ModalStepperHeader } from "./components/modal-stepper-header";
 import { StepKycForm } from "./components/step-kyc-form";
 import { StepPledgeSignature } from "./components/step-pledge-signature";
 import { Modal } from "@/components/shared/modal";
+import { EmailNoticeCard } from "@/components/shared/email-notice-card";
 
 export type { TwoStepExchangeModalProps } from "./modal-types";
 
@@ -18,12 +19,12 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
     setNationalId,
     phone,
     setPhone,
+    email,
     studentId,
     setStudentId,
     fullName,
     setFullName,
-    isPhoneVerified,
-    setIsPhoneVerified,
+    isEmailVerified,
     otpCode,
     setOtpCode,
     isSendingOtp,
@@ -31,6 +32,8 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
     otpSent,
     otpCountdown,
     otpNotice,
+    showAgreementEmailNotice,
+    setShowAgreementEmailNotice,
     errors,
     setErrors,
     pledgeAgreed,
@@ -84,8 +87,8 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
             setNationalId={setNationalId}
             phone={phone}
             setPhone={setPhone}
-            isPhoneVerified={isPhoneVerified}
-            setIsPhoneVerified={setIsPhoneVerified}
+            email={email}
+            isEmailVerified={isEmailVerified}
             otpCode={otpCode}
             setOtpCode={setOtpCode}
             isSendingOtp={isSendingOtp}
@@ -93,6 +96,7 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
             otpSent={otpSent}
             otpCountdown={otpCountdown}
             otpNotice={otpNotice}
+            emailNotice={showAgreementEmailNotice ? <EmailNoticeCard kind="agreement" onDismiss={() => setShowAgreementEmailNotice(false)} /> : null}
             errors={errors}
             setErrors={setErrors}
             onSendOtp={handleSendOtp}
@@ -139,7 +143,7 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
             <button
               type="button"
               onClick={handleProceedToStep2}
-              disabled={!nationalId || !phone || !isPhoneVerified || !studentId}
+              disabled={!nationalId || !phone || !isEmailVerified || !studentId}
               className="px-6 py-2.5 rounded-xl bg-brand-primary hover:bg-[#0046A0] disabled:bg-[#A3C7E8] text-white text-xs font-bold transition-all shadow-xs disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
             >
               <span>المتابعة إلى التعهد والتوقيع</span>
