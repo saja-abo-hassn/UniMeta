@@ -86,10 +86,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const onUnauthorized = () => finish(null);
+    const onProfileChange = () => { if(active)setUser(authService.getCurrentUser()); };
+    window.addEventListener("unimeta_auth_change", onProfileChange);
     window.addEventListener("unimeta_auth_unauthorized", onUnauthorized);
     return () => {
       active = false;
       window.removeEventListener("unimeta_auth_unauthorized", onUnauthorized);
+      window.removeEventListener("unimeta_auth_change", onProfileChange);
     };
   }, []);
 

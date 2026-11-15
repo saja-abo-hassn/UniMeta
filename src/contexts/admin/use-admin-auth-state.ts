@@ -1,4 +1,5 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { AdminRole, AdminPermission, ModeratorUser, AdminNotification } from "@/src/types/admin";
@@ -7,7 +8,7 @@ import { authService } from "@/src/services/auth-service";
 
 export function useAdminAuthState() {
   const [currentUserRole, setCurrentUserRole] = useState<AdminRole>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_role_v1");
         if (stored === "super_admin" || stored === "moderator") return stored;
@@ -23,7 +24,7 @@ export function useAdminAuthState() {
   useEffect(() => {
     const handleAuthChange = () => {
       setAuthProfileTick((t) => t + 1);
-      if (typeof window !== "undefined") {
+      if (apiClient.isUsingMock() && typeof window !== "undefined") {
         const stored = localStorage.getItem("unimeta_admin_role_v1");
         if (stored === "super_admin" || stored === "moderator") {
           setCurrentUserRole(stored);
@@ -41,7 +42,7 @@ export function useAdminAuthState() {
   }, []);
 
   const [moderators, setModerators] = useState<ModeratorUser[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_moderators_v1");
         if (stored) return JSON.parse(stored);
@@ -49,11 +50,11 @@ export function useAdminAuthState() {
         // ignore
       }
     }
-    return initialModerators;
+    return apiClient.isUsingMock() ? initialModerators : [];
   });
 
   const [notifications, setNotifications] = useState<AdminNotification[]>(() => {
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem("unimeta_admin_notifications_v1");
         if (stored) return JSON.parse(stored);
@@ -61,7 +62,7 @@ export function useAdminAuthState() {
         // ignore
       }
     }
-    return initialNotificationsList;
+    return apiClient.isUsingMock() ? initialNotificationsList : [];
   });
 
   const currentUser = useMemo<ModeratorUser>(() => {
@@ -122,14 +123,19 @@ export function useAdminAuthState() {
 
   const hasPermission = useCallback(
     (_permission: AdminPermission): boolean => {
+      if (!apiClient.isUsingMock()) {
+        const user=authService.getCurrentUser();
+        return user?.role==="super_admin" || user?.role==="admin" || (user?.role==="moderator" && user.permissions?.[_permission]===true);
+      }
       return true;
     },
     []
   );
 
   const switchRole = useCallback((role: AdminRole) => {
+    if (!apiClient.isUsingMock()) return;
     setCurrentUserRole(role);
-    if (typeof window !== "undefined") {
+    if (apiClient.isUsingMock() && typeof window !== "undefined") {
       localStorage.setItem("unimeta_admin_role_v1", role);
     }
     authService.updateCurrentUser({

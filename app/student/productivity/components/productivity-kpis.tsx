@@ -31,7 +31,7 @@ export function ProductivityKPIs({
           <span className="p-1 rounded-lg bg-brand-surface-blue text-brand-primary">📅</span>
         </div>
         <div className="text-2xl font-black text-brand-primary">{stats.completedThisWeek}</div>
-        <span className="text-[10px] text-brand-muted block">خلال آخر 7 أيام</span>
+        <span className="text-[10px] text-brand-muted block">الأسبوع الحالي</span>
       </div>
 
       <div className="card-hover-effect p-4 sm:p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-1">
@@ -42,7 +42,7 @@ export function ProductivityKPIs({
         <div className="text-2xl font-black text-brand-ink">
           {totalHours}<span className="text-sm font-bold text-brand-muted ms-1">س</span> {remainingMinutes}<span className="text-sm font-bold text-brand-muted ms-1">د</span>
         </div>
-        <span className="text-[10px] text-brand-muted block">إجمالي زمن التركيز</span>
+        <span className="text-[10px] text-brand-muted block">الوقت المخطط للجلسات المكتملة هذا الأسبوع</span>
       </div>
 
       <div className="card-hover-effect p-4 sm:p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs space-y-1">
@@ -62,7 +62,7 @@ export function ProductivityKPIs({
           <span className="text-lg">🔥</span>
         </div>
         <div className="text-2xl font-black text-white">{stats.streakDays} أيام</div>
-        <span className="text-[10px] text-[#BFE8FF] font-semibold block">أيام متتالية من التركيز</span>
+        <span className="text-[10px] text-[#BFE8FF] font-semibold block">أيام متتالية خلال الأسبوع الحالي</span>
       </div>
     </section>
   );

@@ -8,6 +8,7 @@ import { useNotifications } from "@/src/contexts/notifications-context";
 import { PlanCard } from "./plan-card";
 import { PlanDetailsModal } from "./plan-details-modal";
 import { SelectedPlanBanner } from "./selected-plan-banner";
+import { reportApiError } from "@/src/services/api-result";
 
 export function PlanGrid() {
   const router = useRouter();
@@ -58,8 +59,8 @@ export function PlanGrid() {
     });
   }, [plans, selectedDegree, searchQuery]);
 
-  const handleSelectPlan = (plan: StudyPlan) => {
-    selectPlan(plan.id);
+  const handleSelectPlan = async (plan: StudyPlan) => {
+    try { await selectPlan(plan.id); } catch (error) { reportApiError(error); return; }
     notify({
       type: "general",
       title: "تم اعتماد الخطة الدراسية بنجاح! 🎓",

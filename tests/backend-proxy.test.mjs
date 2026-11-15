@@ -26,6 +26,7 @@ function loadRoute(upstreamResponse, token = null) {
     URL,
     process: { env: { NEXT_PUBLIC_API_URL: "https://api.example.test/api/v1", NODE_ENV: "production" } },
     require(name) {
+      if (name === "node:net") return { isIP: (value) => ["127.0.0.1", "::1"].includes(value) ? 4 : 0 };
       if (name === "next/headers") return { cookies: async () => ({ get: () => token ? { value: token } : undefined }) };
       if (name === "next/server") return { NextResponse };
       throw new Error(`Unexpected import ${name}`);

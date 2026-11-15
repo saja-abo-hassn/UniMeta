@@ -7,6 +7,7 @@ function checkOrigin(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (process.env.NEXT_PUBLIC_USE_MOCK !== "true") return NextResponse.json({ message: "Not found." }, {status:404});
   if (!checkOrigin(request)) {
     return NextResponse.json({ message: "Origin check failed.", errors: null }, { status: 403 });
   }

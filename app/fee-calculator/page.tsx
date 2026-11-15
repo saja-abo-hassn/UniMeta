@@ -1,4 +1,7 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveTuition } from "@/components/integration/live-configuration";
+
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -6,7 +9,8 @@ import { StudentShell } from "@/components/layout/student-shell";
 import { AcademicHeader } from "@/components/student/academic-header";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 
-export default function FeeCalculatorPage() {
+export default function FeeCalculatorPage() { return apiClient.isUsingMock() ? <MockFeeCalculatorPage/> : <StudentShell><LiveTuition/></StudentShell>; }
+function MockFeeCalculatorPage() {
   const { selectedPlan, hasPlanSelected } = useStudyPlan();
 
   // Input states from screenshot

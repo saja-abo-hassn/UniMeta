@@ -1,4 +1,6 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveAdminOverview } from "@/components/integration/live-admin";
 
 import React, { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
@@ -19,7 +21,8 @@ const DynamicAdminAgreementDetailsModal = dynamic(
   { ssr: false }
 );
 
-export default function AdminOverviewPage() {
+export default function AdminOverviewPage() { return apiClient.isUsingMock() ? <MockAdminOverviewPage/> : <LiveAdminOverview/>; }
+function MockAdminOverviewPage() {
   const {
     currentUser,
     agreements,

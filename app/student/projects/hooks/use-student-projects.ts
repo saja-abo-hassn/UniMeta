@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { initialGraduationProjects, GraduationProject } from "@/src/data/graduation-projects-data";
 import { useNotifications } from "@/src/contexts/notifications-context";
 import { useStudentUser } from "@/src/hooks/use-student-user";
 import { ScopeFilterType, AppliedProjectInfo } from "../types";
+
+import { apiClient } from "@/src/services/api-client";
+import { projectsService } from "@/src/services/projects-service";
+import { reportApiError } from "@/src/services/api-result";
 
 export function useStudentProjects() {
   const { notify } = useNotifications();
@@ -14,7 +18,7 @@ export function useStudentProjects() {
     ? fullName.split(/\s+/).slice(0, 2).map((w) => w[0]).join("")
     : "ط";
 
-  const [projects, setProjects] = useState<GraduationProject[]>(initialGraduationProjects);
+  const [projects, setProjects] = useState<GraduationProject[]>(apiClient.isUsingMock() ? initialGraduationProjects : []);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [majorFilter, setMajorFilter] = useState<string>("all");
@@ -29,10 +33,21 @@ export function useStudentProjects() {
   const [appliedProjects, setAppliedProjects] = useState<Record<string, AppliedProjectInfo>>({});
 
   const [newTitle, setNewTitle] = useState("");
-  const [newMajor, setNewMajor] = useState("هندسة البرمجيات");
-  const [newSupervisor, setNewSupervisor] = useState("د. سارة الخطيب");
+  const [newMajor, setNewMajor] = useState(apiClient.isUsingMock() ? "هندسة البرمجيات" : "");
+  const [newSupervisor, setNewSupervisor] = useState(apiClient.isUsingMock() ? "د. سارة الخطيب" : "");
   const [newSummary, setNewSummary] = useState("");
   const [newNeededRole, setNewNeededRole] = useState("");
+
+  useEffect(() => {
+    if (apiClient.isUsingMock()) return;
+    let active = true;
+    Promise.all([projectsService.list(), projectsService.mine()]).then(([items, applications]) => {
+      if (!active) return;
+      setProjects(items);
+      setAppliedProjects(Object.fromEntries(applications.filter(a => a.status !== "WITHDRAWN" && a.status !== "REJECTED").map(a => [String(a.project_id), {stage: "مشروع 1", date: a.created_at}])));
+    }).catch(reportApiError);
+    return () => { active = false; };
+  }, []);
 
   const filteredProjects = projects.filter((p) => {
     const q = searchQuery.toLowerCase().trim();
@@ -50,7 +65,7 @@ export function useStudentProjects() {
     return matchesSearch && matchesStatus && matchesMajor && matchesScope;
   });
 
-  const handleApplySubmit = (e: React.FormEvent) => {
+  const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!applyingProject) return;
 
@@ -59,11 +74,15 @@ export function useStudentProjects() {
       return;
     }
     setStageError("");
+    if (!apiClient.isUsingMock()) {
+      try { await projectsService.apply(applyingProject.id, [applicantStage, applicantRole, applicantMessage].filter(Boolean).join("\n")); }
+      catch (error) { reportApiError(error); return; }
+    }
 
     notify({
       type: "project",
       title: "تم إرسال طلب الانضمام للمشروع! 🎓",
-      message: `تم إرسال طلب انضمامك بمرحلة (${applicantStage}) إلى المشرف الأكاديمي ${applyingProject.supervisor} وقائد الفريق ${applyingProject.leader}. بانتظار الاعتماد والموافقة.`,
+      message: `تم إرسال طلب انضمامك إلى قائد الفريق ${applyingProject.leader}.`,
       link: `/student/projects/${applyingProject.id}`,
       playSound: true,
       browserNotify: true,
@@ -83,11 +102,11 @@ export function useStudentProjects() {
     setApplicantStage("");
   };
 
-  const handleCreateProjectSubmit = (e: React.FormEvent) => {
+  const handleCreateProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    const createdProject: GraduationProject = {
+    let createdProject: GraduationProject = {
       id: `proj-${Date.now()}`,
       title: newTitle,
       major: newMajor,
@@ -117,12 +136,16 @@ export function useStudentProjects() {
       academicYear: "2025/2026",
     };
 
-    setProjects([createdProject, ...projects]);
+    if (!apiClient.isUsingMock()) {
+      try { createdProject = await projectsService.create(newTitle, [newSummary, newNeededRole && `الدور المطلوب: ${newNeededRole}`, newSupervisor && `المشرف المقترح: ${newSupervisor}`].filter(Boolean).join("\n"), newMajor); }
+      catch (error) { reportApiError(error); return; }
+    }
+    setProjects(prev => [createdProject, ...prev]);
 
     notify({
       type: "project",
       title: "تم تقديم مقترح مشروع التخرج بنجاح! 🚀",
-      message: `تم تسجيل مقترح "${newTitle}" وإرساله للاعتماد المبدئي من عمادة الكلية.`,
+      message: `تم نشر إعلان مشروع "${newTitle}".`,
       link: `/student/projects/${createdProject.id}`,
       playSound: true,
       browserNotify: true,

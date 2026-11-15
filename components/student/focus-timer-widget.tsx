@@ -2,8 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import { useNotifications } from "@/src/contexts/notifications-context";
+import { apiClient } from "@/src/services/api-client";
+import { useLivePomodoro } from "@/app/student/productivity/hooks/use-live-pomodoro";
 
 export function FocusTimerWidget() {
+  return apiClient.isUsingMock() ? <MockFocusTimerWidget/> : <LiveFocusTimerWidget/>;
+}
+function LiveFocusTimerWidget() {
+  const timer=useLivePomodoro();
+  return <section className="bg-gradient-to-br from-[#0057C8] to-[#16324A] text-white rounded-3xl p-6 space-y-4"><h2 className="text-xl font-bold">جلسة التركيز</h2><p className="font-mono text-4xl" dir="ltr">{timer.timerStr}</p><div className="flex gap-3"><button type="button" className="bg-white text-[#0057C8] rounded-xl p-3" onClick={()=>void timer.handleToggleTimer()}>{timer.timerRunning?"إيقاف مؤقت":"ابدأ / استأنف"}</button><button type="button" onClick={()=>void timer.handleResetTimer()}>إعادة ضبط</button></div></section>;
+}
+function MockFocusTimerWidget() {
   const [studyMinutes, setStudyMinutes] = useState(25);
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
   const [isActive, setIsActive] = useState(false);

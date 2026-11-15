@@ -4,6 +4,10 @@ import { useState, useEffect, useMemo } from "react";
 import { useStudentUser } from "@/src/hooks/use-student-user";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 import { StudentTaskItem } from "../types";
+import { apiClient } from "@/src/services/api-client";
+import { requireData, reportApiError } from "@/src/services/api-result";
+interface BackendTask {id:number;title:string;due_date:string|null;completed_at:string|null;created_at:string;}
+const toTask=(t:BackendTask):StudentTaskItem=>({id:String(t.id),title:t.title,dueDate:t.due_date??undefined,completed:Boolean(t.completed_at),createdAt:t.created_at});
 
 export function useStudentTasks() {
   const { user } = useStudentUser();
@@ -25,6 +29,13 @@ export function useStudentTasks() {
   const [formCourseCode, setFormCourseCode] = useState("");
 
   useEffect(() => {
+    if (!apiClient.isUsingMock()) {
+      let active = true;
+      setTasks([]);setIsLoaded(false);
+      if (!user) {setIsLoaded(true);return;}
+      void apiClient.all<BackendTask>("/tasks").then(requireData).then(items=>{if(active)setTasks(items.map(toTask));}).catch(reportApiError).finally(()=>{if(active)setIsLoaded(true);});
+      return ()=>{active=false;};
+    }
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved) {
@@ -64,9 +75,13 @@ export function useStudentTasks() {
     setFormCourseCode("");
   };
 
-  const handleAddTask = (e: React.FormEvent) => {
+  const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formTitle.trim()) return;
+    if (!apiClient.isUsingMock()) {
+      try {const task=toTask(requireData(await apiClient.post<BackendTask>("/tasks",{title:formTitle.trim(),due_date:formDueDate||null})));setTasks(prev=>[task,...prev]);resetForm();}catch(error){reportApiError(error);}
+      return;
+    }
 
     let matchedCourseName = "";
     if (formCourseCode) {
@@ -88,9 +103,13 @@ export function useStudentTasks() {
     resetForm();
   };
 
-  const handleSaveEdit = (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingTaskId || !formTitle.trim()) return;
+    if (!apiClient.isUsingMock()) {
+      try {const task=toTask(requireData(await apiClient.patch<BackendTask>(`/tasks/${editingTaskId}`,{title:formTitle.trim(),due_date:formDueDate||null})));setTasks(prev=>prev.map(t=>t.id===task.id?task:t));resetForm();}catch(error){reportApiError(error);}
+      return;
+    }
 
     let matchedCourseName = "";
     if (formCourseCode) {
@@ -123,14 +142,22 @@ export function useStudentTasks() {
     setIsAdding(false);
   };
 
-  const toggleComplete = (taskId: string) => {
+  const toggleComplete = async (taskId: string) => {
+    if (!apiClient.isUsingMock()) {
+      try {const current=tasks.find(t=>t.id===taskId);if(!current)return;const task=toTask(requireData(await apiClient.patch<BackendTask>(`/tasks/${taskId}`,{completed:!current.completed})));setTasks(prev=>prev.map(t=>t.id===taskId?task:t));}catch(error){reportApiError(error);}
+      return;
+    }
     const updated = tasks.map((t) =>
       t.id === taskId ? { ...t, completed: !t.completed } : t
     );
     saveTasks(updated);
   };
 
-  const deleteTask = (taskId: string) => {
+  const deleteTask = async (taskId: string) => {
+    if (!apiClient.isUsingMock()) {
+      try {const response=await apiClient.delete(`/tasks/${taskId}`);if(response.errors)throw new Error(response.message);setTasks(prev=>prev.filter(t=>t.id!==taskId));if(editingTaskId===taskId)resetForm();}catch(error){reportApiError(error);}
+      return;
+    }
     const updated = tasks.filter((t) => t.id !== taskId);
     saveTasks(updated);
     if (editingTaskId === taskId) {

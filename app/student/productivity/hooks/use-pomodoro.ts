@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useNotifications } from "@/src/contexts/notifications-context";
+import { apiClient } from "@/src/services/api-client";
+import { useLivePomodoro } from "./use-live-pomodoro";
 import {
   PomodoroSettings,
   PomodoroStats,
@@ -10,7 +12,8 @@ import {
   DEFAULT_STATS,
 } from "../types";
 
-export function usePomodoro() {
+export const usePomodoro = apiClient.isUsingMock() ? useMockPomodoro : useLivePomodoro;
+function useMockPomodoro() {
   const { notify } = useNotifications();
 
   const [settings, setSettings] = useState<PomodoroSettings>(DEFAULT_SETTINGS);
@@ -260,6 +263,8 @@ export function usePomodoro() {
   };
 
   return {
+    editTask:(id:string,title:string,description:string)=>setTasks(prev=>prev.map(t=>t.id===id?{...t,title,duration:description}:t)),
+    deleteTask:(id:string)=>setTasks(prev=>prev.filter(t=>t.id!==id)),
     settings,
     setSettings,
     stats,

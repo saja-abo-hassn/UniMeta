@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { ApiErrorNotice } from "./api-error-notice";
 import dynamic from "next/dynamic";
 
 const AuthProvider = dynamic(() => import("@/src/contexts/auth-context").then((module) => module.AuthProvider));
@@ -11,6 +12,7 @@ const StudyPlanProvider = dynamic(() => import("@/src/contexts/study-plan-contex
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
+      <ApiErrorNotice />
       <NotificationsProvider>
         <AdminProvider>
           <StudyPlanProvider>{children}</StudyPlanProvider>

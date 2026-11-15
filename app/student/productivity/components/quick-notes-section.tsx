@@ -19,7 +19,7 @@ export function QuickNotesSection({
         <h2 className="text-base font-bold text-brand-ink">ملاحظات دراسية سريعة</h2>
         {savedNotice && (
           <span className="text-xs font-semibold text-emerald-700 animate-fade-in">
-            ✓ تم حفظ الملاحظات محلياً
+            ✓ تم حفظ الملاحظة
           </span>
         )}
       </div>

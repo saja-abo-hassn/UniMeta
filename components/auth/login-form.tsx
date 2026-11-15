@@ -1,4 +1,5 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -70,9 +71,9 @@ export function LoginForm() {
 
       if (response.data?.requiresVerification || response.errors?.requiresVerification) {
         const userEmail = response.data?.user?.email || (identifier.includes("@") ? identifier.trim() : "");
-        setErrorMessage("حسابك غير مؤكّد بعد. افتح صفحة التأكيد وأعد إرسال الرمز إذا لم يصلك.");
+        setErrorMessage("حسابك بانتظار التفعيل. أدخل رمز التحقق المرسل إلى بريدك أو اطلب رمزًا جديدًا من صفحة التأكيد.");
         setTimeout(() => {
-          router.push(`/verify-email?email=${encodeURIComponent(userEmail)}`);
+          router.push(`/verify-email?email=${encodeURIComponent(userEmail)}&pending=1`);
         }, 700);
         return;
       }

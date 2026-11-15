@@ -6,7 +6,7 @@ import { ChatFloatingButton } from "./components/chat-floating-button";
 
 // Keep the assistant and its mascot/message code out of the initial route bundle.
 const UniMetaChat = dynamic(
-  () => import("@/components/chat/unimeta-chat").then((module) => module.UniMetaChat),
+  () => import("@/components/chat/unimeta-chat").then((module) => module.AssistantRoot),
   { ssr: false },
 );
 

@@ -1,6 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { apiClient } from "@/src/services/api-client";
+import { notificationsService } from "@/src/services/notifications-service";
+import { requireData, reportApiError } from "@/src/services/api-result";
+import { useAuth } from "./auth-context";
 
 export type NotificationType =
   | "rent"
@@ -131,7 +135,9 @@ function playNotificationChime() {
 const NotificationsContext = createContext<NotificationsContextValue | undefined>(undefined);
 
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
+  const {user}=useAuth();
   const [notifications, setNotifications] = useState<NotificationItem[]>(() => {
+    if(!apiClient.isUsingMock())return [];
     if (typeof window === "undefined") return initialSeedNotifications;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -149,12 +155,23 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
 
   // Sync to localStorage on update
   useEffect(() => {
+    if(!apiClient.isUsingMock())return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
     } catch {
       // ignore
     }
   }, [notifications]);
+
+  useEffect(()=>{
+    if(apiClient.isUsingMock())return;
+    setNotifications([]);
+    if(user?.role!=="student")return;
+    let active=true;
+    const load=()=>{void notificationsService.getNotifications().then(requireData).then(items=>{if(active)setNotifications(prev=>[...items,...prev.filter(n=>!n.id.startsWith("project-")&&!n.id.startsWith("server-"))]);}).catch(reportApiError);};
+    load();const timer=window.setInterval(load,30000);
+    return()=>{active=false;window.clearInterval(timer);};
+  },[user?.id,user?.role]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -218,12 +235,18 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
   );
 
   const markAsRead = useCallback((id: string) => {
+    if(!apiClient.isUsingMock()&&(id.startsWith("project-")||id.startsWith("server-"))){
+      void notificationsService.markAsRead(id).then(requireData).then(()=>setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:true}:n))).catch(reportApiError);return;
+    }
     setNotifications((prev) =>
       prev.map((item) => (item.id === id ? { ...item, read: true } : item))
     );
   }, []);
 
   const markAllAsRead = useCallback(() => {
+    if(!apiClient.isUsingMock()){
+      void notificationsService.markAllAsRead().then(requireData).then(()=>setNotifications(prev=>prev.map(n=>({...n,read:true})))).catch(reportApiError);return;
+    }
     setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
   }, []);
 

@@ -29,6 +29,7 @@ export interface AuthSessionData {
     title?: string | null;
     avatarUrl?: string | null;
     emailVerified?: boolean;
+    permissions?: Record<string, boolean> | null;
   };
   requiresVerification?: boolean;
 }

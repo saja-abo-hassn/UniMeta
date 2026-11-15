@@ -1,4 +1,5 @@
 import { Course } from "@/src/data/study-plans-data";
+import { apiClient } from "@/src/services/api-client";
 
 interface TaskFormInlineProps {
   editingTaskId: string | null;
@@ -73,6 +74,7 @@ export function TaskFormInline({
             المادة من الخطة (اختياري)
           </label>
           <select
+            disabled={!apiClient.isUsingMock()}
             value={formCourseCode}
             onChange={(e) => onCourseCodeChange(e.target.value)}
             className="w-full h-9 px-2.5 rounded-xl bg-white border border-brand-border-soft text-xs text-brand-ink focus:outline-none focus:ring-2 focus:ring-brand-primary/25"

@@ -1,6 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { apiClient } from "@/src/services/api-client";
+import { requireData, reportApiError } from "@/src/services/api-result";
 import { Modal } from "@/components/shared/modal";
 
 interface NewProjectModalProps {
@@ -34,14 +36,19 @@ export function NewProjectModal({
   newNeededRole,
   onNeededRoleChange,
 }: NewProjectModalProps) {
+  const [majors,setMajors]=useState<{id:number;name:string}[]>([]);
+  useEffect(()=>{
+    if(apiClient.isUsingMock()||!isOpen)return;
+    void apiClient.all<{id:number;name:string}>("/majors").then(requireData).then(setMajors).catch(reportApiError);
+  },[isOpen]);
   if (!isOpen) return null;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <form onSubmit={onSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
         <Modal.Header
-          title="تقديم مقترح مشروع تخرج جديد (2025/2026)"
-          description="سيتم إرسال المقترح لمجلس القسم الأكاديمي للمراجعة وتعيين المشرف"
+          title="نشر إعلان مشروع تخرج"
+          description="اعرض فكرة المشروع لاستقبال طلبات الانضمام لفريقك."
           onClose={onClose}
         />
 
@@ -66,11 +73,11 @@ export function NewProjectModal({
                 onChange={(e) => onMajorChange(e.target.value)}
                 className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               >
-                <option value="هندسة البرمجيات ونظم المعلومات">هندسة البرمجيات ونظم المعلومات</option>
+                {!apiClient.isUsingMock() ? <><option value="">بدون تخصص محدد</option>{majors.map(m=><option key={m.id} value={m.name}>{m.name}</option>)}</> : <><option value="هندسة البرمجيات ونظم المعلومات">هندسة البرمجيات ونظم المعلومات</option>
                 <option value="علوم الحاسوب">علوم الحاسوب</option>
                 <option value="هندسة أنظمة الحاسوب">هندسة أنظمة الحاسوب</option>
                 <option value="الوسائط المتعددة">الوسائط المتعددة</option>
-                <option value="هندسة الميكاترونكس">هندسة الميكاترونكس</option>
+                <option value="هندسة الميكاترونكس">هندسة الميكاترونكس</option></>}
               </select>
             </div>
 
@@ -122,7 +129,7 @@ export function NewProjectModal({
             type="submit"
             className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
           >
-            إرسال المقترح للاعتماد
+            نشر الإعلان
           </button>
         </Modal.Footer>
       </form>

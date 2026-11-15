@@ -3,11 +3,11 @@ export interface MockMaterial {
   courseName: string;
   courseCode: string;
   title: string;
-  category: "الكتب" | "الملخصات" | "النماذج السابقة" | "الفيديوهات";
+  category: "الكتب" | "الملخصات" | "النماذج السابقة" | "الفيديوهات" | "المحاضرات" | "الملاحظات الدراسية" | "المراجع";
   fileType: string;
   fileSize: string;
-  downloads: number;
-  author: string;
+  downloads?: number;
+  author?: string;
   date: string;
 }
 

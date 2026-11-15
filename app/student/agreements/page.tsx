@@ -1,4 +1,7 @@
 "use client";
+import { apiClient } from "@/src/services/api-client";
+import { LiveAgreements } from "@/components/integration/live-agreements";
+
 
 import React from "react";
 import dynamic from "next/dynamic";
@@ -25,7 +28,8 @@ const AgreementStudentModals = dynamic(
   { ssr: false }
 );
 
-export default function StudentAgreementsPage() {
+export default function StudentAgreementsPage() { return apiClient.isUsingMock() ? <MockStudentAgreementsPage/> : <LiveAgreements/>; }
+function MockStudentAgreementsPage() {
   const { notify } = useNotifications();
   const {
     currentStudentName,
