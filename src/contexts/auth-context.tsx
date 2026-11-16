@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { authService, AuthSessionData, LoginCredentials, RegisterData } from "@/src/services/auth-service";
 import { LaravelResponse, apiClient } from "@/src/services/api-client";
 
@@ -57,11 +57,14 @@ function unwrapUser(result: CurrentUserResponse | null): AuthSessionData["user"]
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthSessionData["user"] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const authEpochRef = useRef(0);
 
   useEffect(() => {
     let active = true;
+    const initialAuthEpoch = authEpochRef.current;
     const finish = (nextUser: AuthSessionData["user"] | null) => {
-      if (!active) return;
+      // Ignore an initial profile response if login/logout has since changed auth state.
+      if (!active || authEpochRef.current !== initialAuthEpoch) return;
       const normalizedUser = nextUser ? normalizeUser(nextUser) : null;
       authService.cacheCurrentUser(normalizedUser);
       setUser(normalizedUser);
@@ -85,7 +88,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .catch(() => finish(null));
     }
 
-    const onUnauthorized = () => finish(null);
+    const onUnauthorized = () => {
+      if (authEpochRef.current === initialAuthEpoch) finish(null);
+    };
     const onProfileChange = () => { if(active)setUser(authService.getCurrentUser()); };
     window.addEventListener("unimeta_auth_change", onProfileChange);
     window.addEventListener("unimeta_auth_unauthorized", onUnauthorized);
@@ -97,8 +102,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
+    const authEpoch = ++authEpochRef.current;
     const response = await authService.login(credentials);
-    if (!response.errors && response.data?.user && response.data.token) {
+    if (authEpoch === authEpochRef.current) setIsLoading(false);
+    if (authEpoch === authEpochRef.current && !response.errors && response.data?.user && response.data.token) {
       const normalizedUser = normalizeUser(response.data.user);
       authService.cacheCurrentUser(normalizedUser);
       setUser(normalizedUser);
@@ -130,6 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
+    authEpochRef.current += 1;
     await authService.logout();
     authService.cacheCurrentUser(null);
     setUser(null);
