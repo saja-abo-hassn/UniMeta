@@ -249,10 +249,9 @@ class AuthService {
    */
   async logout(): Promise<LaravelResponse<null>> {
     if (!apiClient.isUsingMock()) {
-      try {
-        await apiClient.post("/auth/logout");
-      } catch {
-        // ignore
+      const response = await apiClient.post("/auth/logout");
+      if (response.errors || (response.status !== undefined && response.status >= 400)) {
+        throw new Error(response.message);
       }
     }
 
