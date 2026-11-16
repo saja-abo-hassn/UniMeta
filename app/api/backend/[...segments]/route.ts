@@ -130,10 +130,15 @@ async function proxy(request: NextRequest, context: { params: Promise<{ segments
     }
     return response;
   } catch {
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "تعذر الاتصال بخادم الـ API.", errors: { network: ["تعذر الاتصال بالخادم"] } },
       { status: 502 }
     );
+    if (segments.join("/") === "auth/logout") {
+      response.cookies.set(COOKIE_NAME, "", { httpOnly: true, path: "/", maxAge: 0 });
+    }
+    response.headers.set("Cache-Control", "no-store");
+    return response;
   }
 }
 

@@ -5,8 +5,12 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { AdminRole, AdminPermission, ModeratorUser, AdminNotification } from "@/src/types/admin";
 import { initialModerators, initialNotificationsList } from "@/src/data/mock-admin-data";
 import { authService } from "@/src/services/auth-service";
+import { moderatorsService } from "@/src/services/moderators";
+import { requireData, reportApiError } from "@/src/services/api-result";
+import { useAuth } from "../auth-context";
 
 export function useAdminAuthState() {
+  const { user: sessionUser } = useAuth();
   const [currentUserRole, setCurrentUserRole] = useState<AdminRole>(() => {
     if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
@@ -64,6 +68,17 @@ export function useAdminAuthState() {
     }
     return apiClient.isUsingMock() ? initialNotificationsList : [];
   });
+
+  useEffect(() => {
+    if (apiClient.isUsingMock()) return;
+    setModerators([]);
+    if (sessionUser?.role !== "admin" && sessionUser?.role !== "super_admin") return;
+    let active = true;
+    moderatorsService.list().then(requireData).then(items => {
+      if (active) setModerators(items);
+    }).catch(reportApiError);
+    return () => { active = false; };
+  }, [authProfileTick, sessionUser?.id, sessionUser?.role]);
 
   const currentUser = useMemo<ModeratorUser>(() => {
     void authProfileTick;
@@ -145,17 +160,23 @@ export function useAdminAuthState() {
     setAuthProfileTick((t) => t + 1);
   }, []);
 
-  const addModerator = useCallback((mod: Omit<ModeratorUser, "id" | "createdAt">) => {
+  const addModerator = useCallback((mod: Omit<ModeratorUser, "id" | "createdAt"> & Partial<Pick<ModeratorUser, "id" | "createdAt">>) => {
     const newMod: ModeratorUser = {
       ...mod,
-      id: `mod-${Date.now()}`,
-      createdAt: new Date().toISOString().split("T")[0],
+      id: mod.id ?? `mod-${Date.now()}`,
+      createdAt: mod.createdAt ?? new Date().toISOString().split("T")[0],
     };
     setModerators((prev) => [newMod, ...prev]);
   }, []);
 
   const updateModeratorPermissions = useCallback(
     (modId: string, perms: Record<AdminPermission, boolean>) => {
+      if (!apiClient.isUsingMock()) {
+        void moderatorsService.updatePermissions(modId, perms).then(requireData).then(saved => {
+          setModerators(prev => prev.map(m => m.id === modId ? saved : m));
+        }).catch(reportApiError);
+        return;
+      }
       setModerators((prev) =>
         prev.map((m) => (m.id === modId ? { ...m, permissions: perms } : m))
       );
@@ -164,14 +185,28 @@ export function useAdminAuthState() {
   );
 
   const toggleModeratorStatus = useCallback((modId: string) => {
+    if (!apiClient.isUsingMock()) {
+      const mod = moderators.find(m => m.id === modId);
+      if (!mod) return;
+      void moderatorsService.setStatus(modId, mod.status === "نشط" ? "معطل" : "نشط")
+        .then(requireData).then(saved => setModerators(prev => prev.map(m => m.id === modId ? saved : m))).catch(reportApiError);
+      return;
+    }
     setModerators((prev) =>
       prev.map((m) =>
         m.id === modId ? { ...m, status: m.status === "نشط" ? "معطل" : "نشط" } : m
       )
     );
-  }, []);
+  }, [moderators]);
 
   const deleteModerator = useCallback((modId: string) => {
+    if (!apiClient.isUsingMock()) {
+      void moderatorsService.delete(modId).then(response => {
+        if (response.errors) throw new Error(response.message);
+        setModerators(prev => prev.filter(m => m.id !== modId));
+      }).catch(reportApiError);
+      return;
+    }
     setModerators((prev) => prev.filter((m) => m.id !== modId));
   }, []);
 

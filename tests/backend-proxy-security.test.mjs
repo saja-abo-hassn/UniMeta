@@ -87,3 +87,12 @@ test('does not trust forwarded client IPs outside Vercel or accept invalid IPs',
     await h.exports.GET(req,context('tasks'));assert.equal(h.calls[0].init.headers.has('X-BFF-Client-IP'),false);
   }
 });
+
+test('logout clears its HttpOnly cookie even when upstream connection fails',async()=>{
+  const h=harness(null);
+  const response=await h.exports.POST(request('POST'),context('auth','logout'));
+  assert.equal(response.status,502);
+  assert.equal(h.cookieWrites[0][0],'unimeta_session');
+  assert.equal(h.cookieWrites[0][2].maxAge,0);
+  assert.equal(response.headers.get('cache-control'),'no-store');
+});
