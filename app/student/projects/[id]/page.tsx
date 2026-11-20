@@ -6,6 +6,8 @@ export function generateStaticParams() {
   return initialGraduationProjects.map((p) => ({ id: p.id }));
 }
 
+export const dynamicParams = true;
+
 export default async function ProjectDetailsPage({
   params,
 }: {
