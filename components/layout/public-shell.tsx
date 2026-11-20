@@ -15,8 +15,8 @@ export interface PublicShellProps {
 export function PublicShell({ children }: PublicShellProps) {
   const pathname = usePathname();
 
-  // On the landing page and auth pages, the page owns its full-bleed Figma split layout
-  if (pathname === "/" || pathname === "/login" || pathname === "/register") {
+  // Landing and auth pages own their full-bleed layouts and must not inherit the public shell.
+  if (pathname === "/" || pathname === "/login" || pathname === "/register" || pathname === "/forgot-password") {
     return pathname === "/" ? <>{children}</> : <AppProviders>{children}</AppProviders>;
   }
 
