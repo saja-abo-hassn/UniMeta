@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { StudentSidebar } from "./student-sidebar";
 import { StudentTopbar } from "./student-topbar";
+import { UniMetaChat } from "@/components/chat/unimeta-chat";
 import { OnboardingTour } from "@/components/student/onboarding-tour";
 import { NotificationsProvider } from "@/src/contexts/notifications-context";
 import { StudyPlanProvider } from "@/src/contexts/study-plan-context";
@@ -121,6 +122,9 @@ export function StudentShell({ children }: StudentShellProps) {
             {children}
           </main>
         </div>
+
+        {/* Persistent UniMeta AI Floating Assistant (Prompt 6 & 17) */}
+        <UniMetaChat />
 
         {/* Student Onboarding Tour */}
         <OnboardingTour />

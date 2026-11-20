@@ -2,8 +2,6 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { LiveJournals } from "@/components/integration/live-journals";
-import { apiClient } from "@/src/services/api-client";
 import { usePomodoro } from "./hooks/use-pomodoro";
 import { ProductivityHeader } from "./components/productivity-header";
 import { ProductivityKPIs } from "./components/productivity-kpis";
@@ -52,7 +50,7 @@ export default function StudentProductivityPage() {
     handleSwitchSessionType,
     toggleTask,
     handleAddTask,
-    editTask,deleteTask,
+    editTask,
   } = usePomodoro();
 
   return (
@@ -90,17 +88,17 @@ export default function StudentProductivityPage() {
             setNewTitle={setNewTitle}
             onAddTask={handleAddTask}
             onToggleTask={toggleTask}
-            onEditTask={editTask} onDeleteTask={deleteTask}
+            onEditTask={editTask}
           />
         </section>
       </div>
 
-      {!apiClient.isUsingMock() ? <LiveJournals/> : <QuickNotesSection
+      <QuickNotesSection
         notes={notes}
         setNotes={setNotes}
         savedNotice={savedNotice}
         setSavedNotice={setSavedNotice}
-      />}
+      />
 
       <DynamicPomodoroSettingsModal
         isOpen={showSettingsModal}

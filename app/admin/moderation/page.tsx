@@ -1,8 +1,4 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LiveReports } from "@/components/integration/live-reports";
-
-
 import dynamic from "next/dynamic";
 import { PermissionGuard } from "@/components/admin/permission-guard";
 import { useAdminModeration } from "./hooks/use-admin-moderation";
@@ -16,7 +12,7 @@ const DynamicModerationModals = dynamic(
   { ssr: false }
 );
 
-export default function AdminModerationPage() { return apiClient.isUsingMock() ? <MockAdminModerationPage/> : <LiveReports admin/>; }
+export default function AdminModerationPage() { return <MockAdminModerationPage/>; }
 function MockAdminModerationPage() {
   const {
     counts,

@@ -1,5 +1,4 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -93,7 +92,7 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {apiClient.isUsingMock() && <div className="hidden xl:flex items-center p-1 rounded-xl bg-[#F4FAFF] border border-brand-border-soft text-xs font-bold">
+        <div className="hidden xl:flex items-center p-1 rounded-xl bg-[#F4FAFF] border border-brand-border-soft text-xs font-bold">
           <span className="text-[10px] text-brand-muted px-2">الدور:</span>
           <button
             type="button"
@@ -117,7 +116,7 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
           >
             مشرف
           </button>
-        </div>}
+        </div>
 
         <Link
           href="/student"

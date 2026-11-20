@@ -1,12 +1,10 @@
 "use client";
 import React from "react";
-import { apiClient } from "@/src/services/api-client";
-import { LiveLibrary } from "@/components/integration/live-library";
 import { PagePlaceholder } from "@/components/placeholders/page-placeholder";
 import { TableContainer, Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/shared/table";
 import { Button } from "@/components/shared/button";
 
-export default function AdminLibraryPage() { return apiClient.isUsingMock() ? <MockAdminLibraryPage/> : <LiveLibrary admin/>; }
+export default function AdminLibraryPage() { return <MockAdminLibraryPage/>; }
 function MockAdminLibraryPage() {
   const sampleResources = [
     { id: "RES-101", title: "سلايدات المحاضرة 1-4: الخوارزميات", course: "ENCS2340", type: "محاضرة", status: "منشور للطلاب", date: "2026-10-28" },

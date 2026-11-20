@@ -1,8 +1,4 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LiveStaff } from "@/components/integration/live-configuration";
-
-
 import { PermissionGuard } from "@/components/admin/permission-guard";
 import { useAdminPermissions } from "./hooks/use-admin-permissions";
 import { PermissionsHeader } from "./components/permissions-header";
@@ -13,7 +9,7 @@ import { EmailNoticeCard } from "@/components/shared/email-notice-card";
 
 export type { PermissionDef } from "./types";
 
-export default function AdminPermissionsPage() { return apiClient.isUsingMock() ? <MockAdminPermissionsPage/> : <LiveStaff/>; }
+export default function AdminPermissionsPage() { return <MockAdminPermissionsPage/>; }
 function MockAdminPermissionsPage() {
   const {
     currentUser,

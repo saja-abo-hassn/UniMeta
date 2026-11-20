@@ -1,13 +1,11 @@
 "use client";
 
 import { useInterestsQuiz } from "./hooks/use-interests-quiz";
-import { apiClient } from "@/src/services/api-client";
-import { LiveInterests } from "@/components/integration/live-interests";
 import { InterestsHeader } from "./components/interests-header";
 import { QuizQuestionCard } from "./components/quiz-question-card";
 import { QuizResultView } from "./components/quiz-result-view";
 
-export default function StudentInterestsPage() { return apiClient.isUsingMock() ? <MockStudentInterestsPage/> : <LiveInterests/>; }
+export default function StudentInterestsPage() { return <MockStudentInterestsPage/>; }
 function MockStudentInterestsPage() {
   const {
     currentIdx,
