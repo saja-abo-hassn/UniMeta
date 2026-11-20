@@ -1,1 +1,1 @@
-export { default, dynamicParams, generateStaticParams } from "@/app/student/projects/[id]/page";
+export { default, generateStaticParams } from "@/app/student/projects/[id]/page";
