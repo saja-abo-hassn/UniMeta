@@ -5,9 +5,9 @@ export interface LibraryFile {
   title: string;
   category: LibraryCategory;
   author: string;
-  fileType: "PDF" | "SLIDES" | "ZIP" | "VIDEO";
+  fileType: "PDF" | "DOCX" | "SLIDES" | "ZIP" | "VIDEO";
   fileSize: string;
-  downloads: number;
+  downloads?: number;
   date: string;
   description?: string;
   url?: string;

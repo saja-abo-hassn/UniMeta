@@ -1,29 +1,68 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNotifications } from "@/src/contexts/notifications-context";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 import { useAdmin } from "@/src/contexts/admin-context";
-import { authService } from "@/src/services/auth-service";
+import { useAuth } from "@/src/contexts/auth-context";
+import { apiClient } from "@/src/services/api-client";
+import { materialsService } from "@/src/services/materials-service";
+import { reportApiError, requireData } from "@/src/services/api-result";
 import { isCourseInMajor } from "@/src/data/course-majors-mapping";
 import { initialCourses } from "../data/initial-courses-data";
 import { LibraryCategory, LibraryFile, LibraryCourse } from "../types";
 
 export function useStudentLibrary() {
   const { notify } = useNotifications();
-  const { selectedPlan, hasPlanSelected } = useStudyPlan();
-  const { materials, addMaterial } = useAdmin();
+  const { selectedPlan, hasPlanSelected, isLoaded: isPlanLoaded } = useStudyPlan();
+  const { materials: adminMaterials, addMaterial } = useAdmin();
+  const { user } = useAuth();
+  const [liveMaterials, setLiveMaterials] = useState<Awaited<ReturnType<typeof materialsService.getMaterials>>["data"]>([]);
+  const [isLoading, setIsLoading] = useState(!apiClient.isUsingMock());
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (apiClient.isUsingMock()) return;
+    let active = true;
+    setIsLoading(true);
+    setLoadError(null);
+    void materialsService.getMaterials().then((response) => {
+      const items = requireData(response);
+      if (active) setLiveMaterials(items);
+    }).catch((error: unknown) => {
+      if (active) setLoadError(error instanceof Error ? error.message : "تعذر تحميل مواد المكتبة.");
+      reportApiError(error);
+    }).finally(() => {
+      if (active) setIsLoading(false);
+    });
+    return () => { active = false; };
+  }, [user?.id]);
+
+  const materials = apiClient.isUsingMock()
+    ? adminMaterials
+    : (liveMaterials ?? []).map((item) => ({
+        ...item,
+        courseId: "",
+        downloads: item.downloads ?? 0,
+        author: item.author ?? "غير متاح",
+        fileName: undefined,
+        status: "منشور" as const,
+        description: undefined,
+        url: `/api/backend/library/resources/${item.id}/download`,
+      }));
 
   const courses = useMemo<LibraryCourse[]>(() => {
     const courseMap = new Map<string, LibraryCourse>();
 
-    initialCourses.forEach((c) => {
-      const inPlan = selectedPlan.courses.some((pc) => pc.code.toLowerCase() === c.code.toLowerCase());
-      const inMajor = isCourseInMajor(c.code, selectedPlan.major);
-      if (inPlan || inMajor) {
-        courseMap.set(c.code.toUpperCase(), { ...c, files: [...c.files] });
-      }
-    });
+    if (apiClient.isUsingMock()) {
+      initialCourses.forEach((c) => {
+        const inPlan = selectedPlan.courses.some((pc) => pc.code.toLowerCase() === c.code.toLowerCase());
+        const inMajor = isCourseInMajor(c.code, selectedPlan.major);
+        if (inPlan || inMajor) {
+          courseMap.set(c.code.toUpperCase(), { ...c, files: [...c.files] });
+        }
+      });
+    }
 
     selectedPlan.courses.forEach((pc) => {
       const code = pc.code.toUpperCase();
@@ -32,7 +71,7 @@ export function useStudentLibrary() {
           code: pc.code,
           nameAr: pc.name,
           nameEn: pc.name,
-          instructor: "هيئة تدريس القسم",
+          instructor: "",
           level:
             pc.semester <= 2
               ? "السنة الأولى"
@@ -79,11 +118,17 @@ export function useStudentLibrary() {
             title: m.title,
             category,
             author: m.author,
-            fileType: (m.fileType === "SLIDES" || m.fileType === "ZIP" || m.fileType === "VIDEO"
+            fileType: m.fileType.toLowerCase().includes("pdf")
+              ? "PDF"
+              : m.fileType.toLowerCase().includes("wordprocessingml") || m.fileType.toLowerCase().includes("msword")
+              ? "DOCX"
+              : m.fileType.toLowerCase().includes("presentationml") || m.fileType.toLowerCase().includes("powerpoint")
+              ? "SLIDES"
+              : m.fileType === "SLIDES" || m.fileType === "ZIP" || m.fileType === "VIDEO"
               ? m.fileType
-              : "PDF") as "PDF" | "SLIDES" | "ZIP" | "VIDEO",
+              : "PDF",
             fileSize: m.fileSize,
-            downloads: m.downloads || 0,
+            downloads: m.downloads,
             date: m.date,
             description: m.description,
           });
@@ -109,10 +154,10 @@ export function useStudentLibrary() {
   const [uploadFileName, setUploadFileName] = useState("");
   const [uploadFileSize, setUploadFileSize] = useState("");
 
-  const currentUser = authService.getCurrentUser();
-  const currentStudentName = currentUser?.name || "سارة محمد أبو حسن";
+  const currentStudentName = user?.name || "";
 
   const myContributions = useMemo(() => {
+    if (!apiClient.isUsingMock()) return [];
     return materials.filter(
       (m) =>
         m.studentName === currentStudentName ||
@@ -145,6 +190,10 @@ export function useStudentLibrary() {
   };
 
   const handleDownload = (file: LibraryFile) => {
+    if (!apiClient.isUsingMock()) {
+      window.open(`/api/backend/library/resources/${encodeURIComponent(file.id)}/download`, "_blank", "noopener,noreferrer");
+      return;
+    }
     notify({
       type: "library",
       title: "بدأ تحميل الملف",
@@ -173,6 +222,11 @@ export function useStudentLibrary() {
   const handleUploadSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!uploadTitle.trim()) return;
+
+    if (!apiClient.isUsingMock()) {
+      reportApiError(new Error("عقد مساهمة المكتبة في OpenAPI لا يحدد حقول الملف المطلوبة بعد؛ لم يُرسل الطلب."));
+      return;
+    }
 
     const matchedCourse = courses.find((c) => c.code.toUpperCase() === uploadCourseCode.toUpperCase());
 
@@ -229,6 +283,9 @@ export function useStudentLibrary() {
     courses,
     selectedPlan,
     hasPlanSelected,
+    isPlanLoaded,
+    isLoading,
+    loadError,
     searchQuery,
     setSearchQuery,
     selectedLevel,

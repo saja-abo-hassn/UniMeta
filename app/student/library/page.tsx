@@ -2,7 +2,6 @@
 
 import React from "react";
 import { apiClient } from "@/src/services/api-client";
-import { LiveLibrary } from "@/components/integration/live-library";
 import dynamic from "next/dynamic";
 import { useStudentLibrary } from "./hooks/use-student-library";
 import { NoPlanView } from "./components/no-plan-view";
@@ -11,6 +10,7 @@ import { ActivePlanBanner } from "./components/active-plan-banner";
 import { CoursesGrid } from "./components/courses-grid";
 import { CourseDetailsView } from "./components/course-details-view";
 import { MyContributionsSection } from "./components/my-contributions-section";
+import { CardSkeleton } from "@/components/shared/skeleton";
 
 export type { LibraryCategory, LibraryFile, LibraryCourse } from "./types";
 
@@ -19,12 +19,15 @@ const DynamicLibraryModals = dynamic(
   { ssr: false }
 );
 
-export default function StudentLibraryPage() { return apiClient.isUsingMock() ? <MockStudentLibraryPage/> : <LiveLibrary/>; }
+export default function StudentLibraryPage() { return <MockStudentLibraryPage/>; }
 function MockStudentLibraryPage() {
   const {
     courses,
     selectedPlan,
     hasPlanSelected,
+    isPlanLoaded,
+    isLoading,
+    loadError,
     searchQuery,
     setSearchQuery,
     selectedLevel,
@@ -58,6 +61,17 @@ function MockStudentLibraryPage() {
     myContributions,
   } = useStudentLibrary();
 
+  if (!isPlanLoaded) {
+    return (
+      <div className="space-y-6 animate-fade-in" dir="rtl" aria-busy="true">
+        <LibraryHeader onOpenUpload={() => setIsUploadModalOpen(true)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {Array.from({ length: 6 }, (_, index) => <CardSkeleton key={index} />)}
+        </div>
+      </div>
+    );
+  }
+
   if (!hasPlanSelected) {
     return <NoPlanView />;
   }
@@ -71,9 +85,27 @@ function MockStudentLibraryPage() {
         totalCoursesCount={courses.length}
       />
 
-      <MyContributionsSection contributions={myContributions} />
+      {isLoading && (
+        <div role="status" aria-label="جارٍ تحميل مواد المكتبة" aria-busy="true" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {Array.from({ length: 3 }, (_, index) => <CardSkeleton key={index} />)}
+        </div>
+      )}
 
-      {!activeCourse ? (
+      {loadError && !isLoading && (
+        <p role="alert" className="p-4 rounded-2xl bg-white border border-red-200 text-sm text-red-700">
+          {loadError}
+        </p>
+      )}
+
+      {!isLoading && courses.length === 0 && (
+        <p role="status" className="p-4 rounded-2xl bg-white border border-brand-border-soft text-sm text-brand-muted">
+          لا توجد مواد منشورة لخطة دراستك حالياً.
+        </p>
+      )}
+
+      {(!isLoading || apiClient.isUsingMock()) && <MyContributionsSection contributions={myContributions} />}
+
+      {(!isLoading || apiClient.isUsingMock()) && (!activeCourse ? (
         <CoursesGrid
           courses={courses}
           filteredCourses={filteredCourses}
@@ -102,7 +134,7 @@ function MockStudentLibraryPage() {
           onPreview={setPreviewFile}
           onDownload={handleDownload}
         />
-      )}
+      ))}
 
       <DynamicLibraryModals
         courses={courses}

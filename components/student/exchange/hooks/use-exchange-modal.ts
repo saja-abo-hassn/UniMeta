@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/src/contexts/auth-context";
+import { apiClient } from "@/src/services/api-client";
+import { reportApiError } from "@/src/services/api-result";
 import {
   StudentKycData,
   AgreementSignature,
@@ -28,7 +29,6 @@ export function useExchangeModal({
   onSuccess,
 }: TwoStepExchangeModalProps) {
   const { notify } = useNotifications();
-  const { user, verifyEmail, resendVerificationCode, refreshProfile } = useAuth();
 
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 
@@ -36,15 +36,13 @@ export function useExchangeModal({
   const [phone, setPhone] = useState("");
   const [studentId, setStudentId] = useState("");
   const [fullName, setFullName] = useState("");
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
 
   const [otpCode, setOtpCode] = useState("");
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const [showAgreementEmailNotice, setShowAgreementEmailNotice] = useState(false);
   const [otpCountdown, setOtpCountdown] = useState(0);
-  const [otpNotice, setOtpNotice] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -75,21 +73,23 @@ export function useExchangeModal({
     setShowAgreementEmailNotice(false);
     setOtpCode("");
 
-    const savedKyc = getSavedStudentKyc(currentStudent.studentId || undefined);
+    const savedKyc = apiClient.isUsingMock()
+      ? getSavedStudentKyc(currentStudent.studentId || undefined)
+      : null;
     if (savedKyc) {
       setNationalId(savedKyc.nationalId || "");
       setPhone(savedKyc.phone || "");
       setStudentId(savedKyc.studentId || currentStudent.studentId || "");
       setFullName(savedKyc.fullName || currentStudent.name || "");
-      setIsEmailVerified(user?.emailVerified === true);
+      setIsPhoneVerified(false);
     } else {
       setFullName(currentStudent.name || "");
       setStudentId(currentStudent.studentId || "");
       setNationalId("");
       setPhone("");
-      setIsEmailVerified(user?.emailVerified === true);
+      setIsPhoneVerified(false);
     }
-  }, [isOpen, currentStudent, user?.emailVerified]);
+  }, [isOpen, currentStudent]);
 
   useEffect(() => {
     if (otpCountdown <= 0) return;
@@ -113,85 +113,15 @@ export function useExchangeModal({
   }, [currentStep, signatureType]);
 
   const handleSendOtp = async () => {
-    if (sendingOtpRef.current) return;
-    const email = user?.email?.trim();
-    if (!email) {
-      setErrors((prev) => ({ ...prev, otp: "تعذر العثور على البريد الإلكتروني للحساب. سجّل الدخول مجددًا." }));
-      return;
-    }
-
-    setErrors((prev) => {
-      const copy = { ...prev };
-      delete copy.otp;
-      return copy;
-    });
-
-    sendingOtpRef.current = true;
-    setIsSendingOtp(true);
-    setOtpNotice(null);
-
-    try {
-      const result = await resendVerificationCode(email);
-      setIsSendingOtp(false);
-      if (!result.errors && result.status !== undefined && result.status >= 200 && result.status < 300) {
-        setOtpSent(true);
-        setOtpCountdown(60);
-        setOtpNotice("تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-        setShowAgreementEmailNotice(true);
-      } else {
-        setErrors((prev) => ({ ...prev, otp: "تعذر إرسال رمز التحقق إلى البريد الإلكتروني. يرجى المحاولة مجددًا." }));
-      }
-    } catch {
-      setIsSendingOtp(false);
-      setErrors((prev) => ({ ...prev, otp: "تعذر إرسال رمز التحقق إلى البريد الإلكتروني. يرجى المحاولة مجددًا." }));
-    } finally {
-      sendingOtpRef.current = false;
-    }
+    const error = new Error("التحقق برمز الجوال غير متاح في API الحالي.");
+    setErrors((prev) => ({ ...prev, otp: error.message }));
+    reportApiError(error);
   };
 
   const handleVerifyOtp = async () => {
-    if (verifyingOtpRef.current) return;
-    const submittedCode = otpCode.replace(/\D/g, "");
-    if (submittedCode.length !== 6) {
-      setErrors((prev) => ({ ...prev, otp: "يرجى إدخال رمز التحقق المكوّن من 6 أرقام." }));
-      return;
-    }
-
-    verifyingOtpRef.current = true;
-    setIsVerifyingOtp(true);
-    setErrors((prev) => {
-      const copy = { ...prev };
-      delete copy.otp;
-      return copy;
-    });
-
-    try {
-      const email = user?.email?.trim();
-      if (!email || !/^\d{6}$/.test(submittedCode)) {
-        setIsVerifyingOtp(false);
-        setErrors((prev) => ({ ...prev, otp: "يرجى إدخال رمز التحقق المكوّن من 6 أرقام." }));
-        return;
-      }
-
-      const result = await verifyEmail(email, submittedCode);
-      setIsVerifyingOtp(false);
-      if (!result.errors && result.status !== undefined && result.status >= 200 && result.status < 300) {
-        const refreshedUser = await refreshProfile();
-        if (refreshedUser?.emailVerified === false) {
-          setErrors((prev) => ({ ...prev, otp: "لم يؤكد الخادم حالة البريد بعد. حدّث الصفحة أو أعد المحاولة." }));
-          return;
-        }
-        setIsEmailVerified(true);
-        setOtpNotice("تم التحقق من البريد الإلكتروني.");
-      } else {
-        setErrors((prev) => ({ ...prev, otp: result.message || "رمز التحقق غير صحيح أو منتهي الصلاحية." }));
-      }
-    } catch {
-      setIsVerifyingOtp(false);
-      setErrors((prev) => ({ ...prev, otp: "تعذر التحقق من الرمز. يرجى المحاولة مجددًا." }));
-    } finally {
-      verifyingOtpRef.current = false;
-    }
+    const error = new Error("التحقق برمز الجوال غير متاح في API الحالي.");
+    setErrors((prev) => ({ ...prev, otp: error.message }));
+    reportApiError(error);
   };
 
   const handleProceedToStep2 = () => {
@@ -207,7 +137,10 @@ export function useExchangeModal({
       nextErrors.phone = phoneCheck.error || "رقم الجوال غير صحيح.";
     }
 
-    if (!isEmailVerified) nextErrors.otp = "يجب التحقق من البريد الإلكتروني للمتابعة.";
+    if (!isPhoneVerified) {
+      nextErrors.otp = "يجب التحقق من رقم الجوال للمتابعة.";
+      reportApiError(new Error(nextErrors.otp));
+    }
 
     if (!studentId.trim()) {
       nextErrors.studentId = "الرقم الجامعي إجباري.";
@@ -320,6 +253,12 @@ export function useExchangeModal({
     setIsSubmitting(true);
     setSubmitErrorMessage(null);
 
+    if (!apiClient.isUsingMock()) {
+      setIsSubmitting(false);
+      setSubmitErrorMessage("API الحالي يقبل رسالة الطلب فقط ولا يدعم بيانات التحقق والتعهد والتوقيع المطلوبة هنا.");
+      return;
+    }
+
     const studentKyc: StudentKycData = {
       nationalId: nationalId.trim(),
       maskedNationalId: maskNationalId(nationalId),
@@ -398,21 +337,18 @@ export function useExchangeModal({
     setNationalId,
     phone,
     setPhone,
-    email: user?.email || "",
     studentId,
     setStudentId,
     fullName,
     setFullName,
-    isEmailVerified,
+    isPhoneVerified,
+    setIsPhoneVerified,
     otpCode,
     setOtpCode,
     isSendingOtp,
     isVerifyingOtp,
     otpSent,
     otpCountdown,
-    otpNotice,
-    showAgreementEmailNotice,
-    setShowAgreementEmailNotice,
     errors,
     setErrors,
     pledgeAgreed,

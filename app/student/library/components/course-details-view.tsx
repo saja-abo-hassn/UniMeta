@@ -159,6 +159,7 @@ export function CourseDetailsView({
             >
               <option value="all">الكل</option>
               <option value="PDF">PDF</option>
+              <option value="DOCX">Word</option>
               <option value="SLIDES">Slides</option>
               <option value="ZIP">ZIP</option>
               <option value="VIDEO">Video</option>
@@ -211,7 +212,7 @@ export function CourseDetailsView({
                       <svg className="w-3.5 h-3.5 text-brand-hover-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
-                      <span>{file.downloads} تنزيل</span>
+                      <span>{file.downloads ?? "—"} تنزيل</span>
                     </span>
                   </div>
 
