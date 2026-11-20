@@ -60,7 +60,7 @@ function MockAdminOverviewPage() {
       );
     }).length;
   }, [members]);
-  const activeNow = !apiClient.isUsingMock() ? liveOverview?.activeNow ?? 0 : mockActiveNow;
+  const activeNow = !apiClient.isUsingMock() ? liveOverview?.activeNow ?? null : mockActiveNow;
 
   const coveredCoursesCount = useMemo(() => {
     const publishedCodes = new Set(
