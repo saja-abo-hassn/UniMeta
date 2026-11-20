@@ -2,12 +2,18 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { authService, AuthSessionData, LoginCredentials, RegisterData } from "@/src/services/auth-service";
-import { LaravelResponse, apiClient } from "@/src/services/api-client";
+import { ApiSuccessData, LaravelResponse, apiClient } from "@/src/services/api-client";
+import { canAccessAdmin } from "@/src/lib/admin-access";
 
 interface AuthContextValue {
   user: AuthSessionData["user"] | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  adminRole: "super_admin" | "moderator" | null;
+  permissions: Record<string, boolean> | null;
+  isSuperAdmin: boolean;
+  isModerator: boolean;
+  can: (permission: string) => boolean;
   login: (credentials: LoginCredentials) => Promise<LaravelResponse<AuthSessionData>>;
   register: (data: RegisterData) => Promise<LaravelResponse<unknown>>;
   verifyEmail: (email: string, code: string) => Promise<LaravelResponse<{ message?: string }>>;
@@ -18,7 +24,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-type CurrentUserResponse = AuthSessionData["user"] | { user: AuthSessionData["user"] };
+type GeneratedProfileData = ApiSuccessData<"/users/me/profile", "get">;
 
 function normalizeRole(value: unknown): AuthSessionData["user"]["role"] {
   const role = String(value ?? "").trim().toLowerCase().replace(/[\s-]+/g, "_");
@@ -37,6 +43,7 @@ function normalizeUser(user: AuthSessionData["user"]): AuthSessionData["user"] {
     email_verified?: boolean;
     email_verified_at?: string | null;
     admin_role?: string | null;
+    permissions?: Record<string, boolean> | null;
   };
   return {
     ...user,
@@ -46,12 +53,19 @@ function normalizeUser(user: AuthSessionData["user"]): AuthSessionData["user"] {
     studentId: backendUser.studentId || backendUser.student_id || undefined,
     avatarUrl: backendUser.avatarUrl || backendUser.avatar_url || undefined,
     emailVerified: backendUser.emailVerified ?? backendUser.email_verified ?? Boolean(backendUser.email_verified_at),
+    adminRole: backendUser.admin_role === "super_admin" || backendUser.admin_role === "moderator"
+      ? backendUser.admin_role
+      : (apiClient.isUsingMock() && user.role === "admin" ? "super_admin"
+        : apiClient.isUsingMock() && (user.role === "super_admin" || user.role === "moderator") ? user.role : null),
+    permissions: backendUser.permissions ?? null,
   };
 }
 
-function unwrapUser(result: CurrentUserResponse | null): AuthSessionData["user"] | null {
-  if (!result) return null;
-  return normalizeUser("user" in result ? result.user : result);
+function unwrapUser(result: unknown): AuthSessionData["user"] | null {
+  if (!result || typeof result !== "object" || Array.isArray(result)) return null;
+  const candidate = "user" in result ? result.user : result;
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return null;
+  return normalizeUser(candidate as AuthSessionData["user"]);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -75,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const activeUser = authService.getCurrentUser();
       finish(activeUser && authService.isAuthenticated() ? activeUser : null);
     } else {
-      void apiClient.get<CurrentUserResponse>("/users/me/profile")
+      void apiClient.get<GeneratedProfileData>("/users/me/profile")
         .then((response) => {
           if (response.status === 401) {
             finish(null);
@@ -103,14 +117,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     const authEpoch = ++authEpochRef.current;
+    setIsLoading(true);
     const response = await authService.login(credentials);
-    if (authEpoch === authEpochRef.current) setIsLoading(false);
     if (authEpoch === authEpochRef.current && !response.errors && response.data?.user && response.data.token) {
-      const normalizedUser = normalizeUser(response.data.user);
-      authService.cacheCurrentUser(normalizedUser);
-      setUser(normalizedUser);
-      return { ...response, data: { ...response.data, user: normalizedUser } };
+      if (apiClient.isUsingMock()) {
+        const normalizedUser = normalizeUser(response.data.user);
+        authService.cacheCurrentUser(normalizedUser);
+        setUser(normalizedUser);
+        setIsLoading(false);
+        return { ...response, data: { ...response.data, user: normalizedUser } };
+      }
+
+      const profile = await apiClient.get<GeneratedProfileData>("/users/me/profile");
+      const freshUser = unwrapUser(profile.data);
+      if (authEpoch !== authEpochRef.current) return response;
+      if (profile.errors || !freshUser) {
+        authService.cacheCurrentUser(null);
+        setUser(null);
+        setIsLoading(false);
+        return { ...response, data: null, errors: profile.errors ?? { profile: [profile.message] }, message: profile.message };
+      }
+      authService.cacheCurrentUser(freshUser);
+      setUser(freshUser);
+      setIsLoading(false);
+      return { ...response, data: { ...response.data, user: freshUser } };
     }
+    if (authEpoch === authEpochRef.current) setIsLoading(false);
     return response;
   }, []);
 
@@ -128,13 +160,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshProfile = useCallback(async () => {
     if (apiClient.isUsingMock()) return null;
-    const response = await apiClient.get<CurrentUserResponse>("/users/me/profile");
+    const response = await apiClient.get<GeneratedProfileData>("/users/me/profile");
     const freshUser = unwrapUser(response.data);
-    if (response.errors || !freshUser) return null;
+    if (response.errors || !freshUser) {
+      if (response.status === 401) {
+        authService.cacheCurrentUser(null);
+        setUser(null);
+      }
+      return null;
+    }
     authService.cacheCurrentUser(freshUser);
     setUser(freshUser);
     return freshUser;
   }, []);
+
+  const adminRole = user?.adminRole ?? null;
+  const permissions = user?.permissions ?? null;
+  const isSuperAdmin = adminRole === "super_admin";
+  const isModerator = adminRole === "moderator";
+  const can = useCallback((permission: string) => canAccessAdmin(adminRole, permissions, permission), [adminRole, permissions]);
 
   const logout = useCallback(async () => {
     authEpochRef.current += 1;
@@ -149,6 +193,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isAuthenticated: !!user,
         isLoading,
+        adminRole,
+        permissions,
+        isSuperAdmin,
+        isModerator,
+        can,
         login,
         register,
         verifyEmail,

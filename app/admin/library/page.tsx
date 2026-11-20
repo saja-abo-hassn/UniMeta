@@ -3,6 +3,7 @@ import React from "react";
 import { PagePlaceholder } from "@/components/placeholders/page-placeholder";
 import { TableContainer, Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/shared/table";
 import { Button } from "@/components/shared/button";
+import { PermissionGuard } from "@/components/admin/permission-guard";
 
 export default function AdminLibraryPage() { return <MockAdminLibraryPage/>; }
 function MockAdminLibraryPage() {
@@ -13,6 +14,7 @@ function MockAdminLibraryPage() {
   ];
 
   return (
+    <PermissionGuard permission="manage_content">
     <PagePlaceholder
       title="إدارة المكتبة الرقمية"
       description="إدارة المواد الدراسية ورفع المراجع والملخصات، والتحكم في نشر الملفات للطلاب أو حجبها."
@@ -94,6 +96,7 @@ function MockAdminLibraryPage() {
         </TableContainer>
       </div>
     </PagePlaceholder>
+    </PermissionGuard>
   );
 }
 

@@ -6,7 +6,7 @@ This handoff uses `docs/openapi.yaml` as the endpoint and schema source of truth
 
 | Endpoint | Page | Expected request / response |
 |---|---|---|
-| `/admin/content` | Admin content management | Not present in OpenAPI; published API returned 404. Confirm whether this screen should use the documented `/admin/library/resources` and `/admin/library/subjects` endpoints, or provide the intended endpoint contract. Do not add `/admin/content` as a client route until confirmed. |
+| `/admin/content` (frontend page only) | Admin content management | This is a Next.js screen path, not a backend endpoint; calling `/api/v1/admin/content` returns 404 and the path is absent from OpenAPI. Use documented `/admin/library/resources` and `/admin/library/subjects` for its data with `manage_content`. Do not call or add a Laravel `/admin/content` route. |
 | `POST /library/contributions` | Student library contribution form | OpenAPI only describes a multipart `file` property and uses a generic response. Define required fields (subject/resource category/title/description), upload limits, moderation status, and response resource shape. |
 | `GET /admin/library/contributions`, `PATCH /admin/library/contributions/{id}/review` | Admin library moderation | Both paths exist, but schemas are generic. Define list item fields, pagination, statuses, accepted review actions, request body fields, and response resource shape. |
 | Mobile phone OTP issue and verify | Exchange flow (books/devices) | No phone OTP endpoint exists in OpenAPI. The documented auth verification endpoints are email based (`/auth/email/resend-verification`, `/auth/verify-email`). Provide phone OTP send/verify paths, request fields, expiry/rate limits, and response schemas if mobile verification is required. |
@@ -20,7 +20,7 @@ This handoff uses `docs/openapi.yaml` as the endpoint and schema source of truth
 
 | Endpoint / flow | OpenAPI contract | Observed runtime | Difference / follow-up |
 |---|---|---|---|
-| `/admin/content` | No path documented | `404` | Screen route is not a backend endpoint. Confirm mapping to `/admin/library/resources` or publish the intended contract. |
+| `/api/v1/admin/content` | No path documented | `404` | Expected: frontend screen `/admin/content` maps to `/admin/library/resources` and `/admin/library/subjects`; no backend route is missing for the basic content list. |
 | `/admin/library/subjects`, `/admin/library/resources` | Typed CRUD paths documented | Related read endpoints returned `200` | Read routes are present. Mutations were not called under the no-write rule; verify body/response parity only in an authorized test environment. |
 | `/marketplace/offers` and `/marketplace/offers/{id}/requests` | Minimal listing fields; request body only has optional `message` | Earlier authenticated GET probe returned `200` for exchange read data; write parity not tested | Baseline UI fields exceed the documented contract. Do not send the richer payload until Alaa updates/clarifies the schema. |
 | Mobile OTP in exchange | No phone OTP route; email verification routes are documented | Earlier integration attempted email verification in the phone-verification step; this mapping was removed | Email verification cannot stand in for mobile OTP. Mobile OTP remains unavailable pending backend contract. |

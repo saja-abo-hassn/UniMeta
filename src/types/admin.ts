@@ -1,14 +1,7 @@
 export type AdminRole = "super_admin" | "moderator";
 
-export type AdminPermission =
-  | "manage_content"
-  | "manage_agreements"
-  | "manage_exams"
-  | "manage_finances"
-  | "manage_reports"
-  | "manage_members"
-  | "manage_moderators"
-  | "manage_settings";
+export type { AdminPermissionKey as AdminPermission } from "@/src/lib/admin-access";
+import type { AdminPermissionKey as AdminPermission } from "@/src/lib/admin-access";
 
 export type ModeratorStatus = "نشط" | "معطل" | "دعوة معلّقة";
 

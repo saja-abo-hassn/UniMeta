@@ -1,3 +1,14 @@
+import type { paths } from "../../types/api";
+
+export type ApiPath = keyof paths;
+export type ApiMethod<P extends ApiPath> = Exclude<keyof paths[P], "parameters">;
+export type ApiSuccessData<P extends ApiPath, M extends ApiMethod<P>> =
+  NonNullable<paths[P][M]> extends { responses: infer Responses }
+    ? Responses extends { 200: { content: { "application/json": { data: infer Data } } } }
+      ? Data
+      : never
+    : never;
+
 /**
  * UniMeta Unified API Client
  *
@@ -112,6 +123,9 @@ class ApiClient {
       if (response.status === 401 && typeof window !== "undefined") {
         this.removeToken();
         window.dispatchEvent(new Event("unimeta_auth_unauthorized"));
+      }
+      if (response.status === 403 && endpoint !== "/users/me/profile" && typeof window !== "undefined") {
+        window.dispatchEvent(new Event("unimeta_api_forbidden"));
       }
       return {
         data: payload.data ?? null,

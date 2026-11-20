@@ -44,7 +44,7 @@ function MockAdminSettingsPage() {
   };
 
   return (
-    <PermissionGuard permission="manage_settings">
+    <PermissionGuard superAdminOnly>
       <div className="space-y-6 animate-fade-in" dir="rtl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
