@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <AuthLayout
+      showBrandHeader={false}
       visualTitle="انضم إلى مجتمع UniMeta"
       visualSubtitle="سجّل بياناتك الجامعية لتستفيد من المساعد الذكي UniMeta، وتنسيق المشاريع، والخدمات الأكاديمية الموحدة."
     >

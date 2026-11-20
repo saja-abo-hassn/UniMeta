@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ForgotPasswordPage() {
   return (
-    <AuthLayout visualTitle="استعد الوصول إلى حسابك" visualSubtitle="سنساعدك على إنشاء كلمة مرور جديدة بأمان.">
+    <AuthLayout showBrandHeader={false} visualTitle="استعد الوصول إلى حسابك" visualSubtitle="سنساعدك على إنشاء كلمة مرور جديدة بأمان.">
       <ForgotPasswordForm />
     </AuthLayout>
   );

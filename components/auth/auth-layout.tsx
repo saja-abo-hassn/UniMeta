@@ -10,12 +10,14 @@ export interface AuthLayoutProps {
   visualTitle?: string;
  
   visualSubtitle?: string;
+  showBrandHeader?: boolean;
 }
 
 export function AuthLayout({
   children,
   visualTitle = "أكاديميتك، بصورة أوضح.",
   visualSubtitle = "من التخطيط الأكاديمي إلى فرق المشاريع والاتفاقيات، كل أدواتك في تجربة واحدة متماسكة.",
+  showBrandHeader = true,
 }: AuthLayoutProps) {
   return (
     <div className="min-h-dvh w-full bg-[#F4FAFF] text-brand-ink flex flex-col lg:grid lg:grid-cols-2" dir="rtl">
@@ -60,7 +62,7 @@ export function AuthLayout({
           />
         </div>
 
-        <div className="relative z-10 flex items-center justify-between gap-4">
+        {showBrandHeader && <div className="relative z-10 flex items-center justify-between gap-4">
           <Link
             href="/"
             className="flex items-center gap-3 group transition-transform duration-200 hover:scale-[1.02]"
@@ -99,7 +101,7 @@ export function AuthLayout({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </Link>
-        </div>
+        </div>}
 
         <div className="relative z-10 my-5 sm:my-8 lg:my-auto max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-md text-white border border-white/30 mb-4 shadow-xs auth-panel-text-shadow">
