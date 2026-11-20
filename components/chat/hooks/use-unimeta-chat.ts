@@ -28,12 +28,12 @@ export function useUniMetaChat(initiallyOpen = false) {
   const [sessions,setSessions]=useState<ChatSession[]>([]);
   const [sessionId,setSessionId]=useState<number|null>(null);
   const [historyBusy,setHistoryBusy]=useState(false);
-  useEffect(()=>{if(!isOpen||!user||apiClient.isUsingMock())return;let active=true;void liveChatService.sessions().then(s=>{if(active)setSessions(s);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[isOpen,user]);
   const selectSession=async(id:number|null)=>{if(isTyping||historyBusy)return;setError("");setHistoryBusy(true);try{const saved=id===null?[]:await liveChatService.messages(id);setSessionId(id);setMessages(saved);}catch(e){setError((e as Error).message);}finally{setHistoryBusy(false);}};
   const deleteSession=async()=>{if(sessionId===null||isTyping||historyBusy)return;setHistoryBusy(true);try{await liveChatService.remove(sessionId);setSessions(s=>s.filter(x=>x.id!==sessionId));setSessionId(null);setMessages([]);setError("");}catch(e){setError((e as Error).message);}finally{setHistoryBusy(false);}};
   const [inputVal, setInputVal] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState("");
+  useEffect(()=>{if(!isOpen||!user||apiClient.isUsingMock())return;let active=true;void liveChatService.sessions().then(s=>{if(active)setSessions(s);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[isOpen,user]);
   const requestInFlightRef = useRef(false);
 
   const windowRef = useRef<HTMLDivElement>(null);

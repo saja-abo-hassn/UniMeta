@@ -11,6 +11,7 @@ import { reportApiError, requireData } from "@/src/services/api-result";
 import { isCourseInMajor } from "@/src/data/course-majors-mapping";
 import { initialCourses } from "../data/initial-courses-data";
 import { LibraryCategory, LibraryFile, LibraryCourse } from "../types";
+import type { CourseMaterialItem } from "@/src/types/admin";
 
 export function useStudentLibrary() {
   const { notify } = useNotifications();
@@ -24,6 +25,8 @@ export function useStudentLibrary() {
   useEffect(() => {
     if (apiClient.isUsingMock()) return;
     let active = true;
+    // Enter the loading state when the authenticated student changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     setLoadError(null);
     void materialsService.getMaterials().then((response) => {
@@ -38,11 +41,16 @@ export function useStudentLibrary() {
     return () => { active = false; };
   }, [user?.id]);
 
-  const materials = apiClient.isUsingMock()
+  const materials: CourseMaterialItem[] = apiClient.isUsingMock()
     ? adminMaterials
     : (liveMaterials ?? []).map((item) => ({
         ...item,
         courseId: "",
+        fileType: item.fileType.toLowerCase().includes("word") ? "DOCX" as const
+          : item.fileType.toLowerCase().includes("presentation") ? "SLIDES" as const
+          : item.fileType.toLowerCase().includes("image") ? "IMAGE" as const
+          : item.fileType.toLowerCase().includes("zip") ? "ZIP" as const
+          : item.fileType.toLowerCase().includes("video") ? "VIDEO" as const : "PDF" as const,
         downloads: item.downloads ?? 0,
         author: item.author ?? "غير متاح",
         fileName: undefined,
@@ -245,7 +253,7 @@ export function useStudentLibrary() {
       courseCode: uploadCourseCode,
       title: uploadTitle.trim(),
       category: catMap[uploadCategory] || "الملخصات",
-      fileType: fileType as any,
+      fileType,
       fileSize: uploadFileSize || "3.5 MB",
       author: currentStudentName,
       studentName: currentStudentName,

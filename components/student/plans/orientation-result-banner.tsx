@@ -36,6 +36,8 @@ export function OrientationResultBanner() {
 
   useEffect(() => {
     if(!apiClient.isUsingMock())return;
+    // Read browser-only quiz state after hydration and listen for same-tab updates.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadSavedResult();
 
     const handleUpdate = () => loadSavedResult();

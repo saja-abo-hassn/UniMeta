@@ -7,6 +7,8 @@ interface StudyTasksCardProps {
   setNewTitle: (title: string) => void;
   onAddTask: (e: React.FormEvent) => void;
   onToggleTask: (id: string) => void;
+  onEditTask?: (id: string, title: string, description: string) => void | Promise<void>;
+  onDeleteTask?: (id: string) => void | Promise<void>;
 }
 
 export function StudyTasksCard({

@@ -32,6 +32,8 @@ export function useInterestsQuiz() {
       if (savedProgress) {
         const parsed = JSON.parse(savedProgress);
         if (parsed.answers && typeof parsed.answers === "object") {
+          // Restore persisted quiz progress only after hydration to avoid server/client markup drift.
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setAnswers(parsed.answers);
           if (typeof parsed.currentIdx === "number") {
             setCurrentIdx(Math.min(parsed.currentIdx, ORIENTATION_QUESTIONS.length - 1));

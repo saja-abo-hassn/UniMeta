@@ -23,7 +23,7 @@ export type ApiSuccessData<P extends ApiPath, M extends ApiMethod<P>> =
  * BACKEND_API_URL with /api/v1. Demo mode is explicitly opt-in.
  */
 
-export interface LaravelResponse<T = any> {
+export interface LaravelResponse<T = unknown> {
   data: T | null;
   message: string;
   errors: Record<string, string[]> | null;
@@ -151,7 +151,7 @@ class ApiClient {
   /**
    * Standard GET request
    */
-  public async get<T = any>(endpoint: string): Promise<LaravelResponse<T>> {
+  public async get<T = unknown>(endpoint: string): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for GET ${endpoint}`);
     }
@@ -162,7 +162,7 @@ class ApiClient {
   /**
    * Standard POST request
    */
-  public async post<T = any>(endpoint: string, body?: any): Promise<LaravelResponse<T>> {
+  public async post<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for POST ${endpoint}`);
     }
@@ -170,7 +170,7 @@ class ApiClient {
     return this.request<T>(endpoint, { method: "POST", body: body ? JSON.stringify(body) : undefined });
   }
 
-  public async patch<T = any>(endpoint: string, body?: any): Promise<LaravelResponse<T>> {
+  public async patch<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for PATCH ${endpoint}`);
     }
@@ -178,7 +178,7 @@ class ApiClient {
     return this.request<T>(endpoint, { method: "PATCH", body: body ? JSON.stringify(body) : undefined });
   }
 
-  public async put<T = any>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
+  public async put<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
     return this.request<T>(endpoint, { method: "PUT", body: JSON.stringify(body) });
   }
 
@@ -203,7 +203,7 @@ class ApiClient {
     }
   }
 
-  public async delete<T = any>(endpoint: string): Promise<LaravelResponse<T>> {
+  public async delete<T = unknown>(endpoint: string): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for DELETE ${endpoint}`);
     }

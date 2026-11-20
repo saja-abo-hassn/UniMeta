@@ -26,6 +26,8 @@ export function useAdminOverview() {
   }, []);
 
   useEffect(() => {
+    // Load overview data on mount and refresh it after auth changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchOverview();
 
     const handleSync = () => {

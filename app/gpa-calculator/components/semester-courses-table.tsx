@@ -59,7 +59,7 @@ export function SemesterCoursesTable({
 
       {semester.courses.length === 0 ? (
         <div className="p-4 text-center rounded-xl bg-white border border-dashed border-brand-border-soft text-xs text-brand-muted">
-          لا توجد مواد مضافة لهذا الفصل. اضغط على "+ إضافة مادة" لإدراج مساق جديد.
+          لا توجد مواد مضافة لهذا الفصل. اضغط على &quot;+ إضافة مادة&quot; لإدراج مساق جديد.
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-brand-border-soft bg-white">

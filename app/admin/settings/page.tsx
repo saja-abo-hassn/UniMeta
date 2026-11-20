@@ -22,6 +22,8 @@ function MockAdminSettingsPage() {
   const [adminAvatarUrl, setAdminAvatarUrl] = useState(currentUser.avatarUrl || "");
 
   useEffect(() => {
+    // Synchronize this form with the auth profile when the current admin changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAdminName(currentUser.name);
     setAdminTitle(currentUser.title || "");
     setAdminAvatarUrl(currentUser.avatarUrl || "");

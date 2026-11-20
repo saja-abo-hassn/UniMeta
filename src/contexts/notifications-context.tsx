@@ -165,6 +165,8 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
 
   useEffect(()=>{
     if(apiClient.isUsingMock())return;
+    // Clear notifications from a prior session before loading the current student.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNotifications([]);
     if(user?.role!=="student")return;
     let active=true;

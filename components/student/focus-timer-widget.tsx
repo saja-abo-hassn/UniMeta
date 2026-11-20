@@ -15,6 +15,8 @@ export function FocusTimerWidget() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed.studyMinutes) {
+          // Restore client-only settings after hydration.
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setStudyMinutes(parsed.studyMinutes);
           setSecondsLeft(parsed.studyMinutes * 60);
         }

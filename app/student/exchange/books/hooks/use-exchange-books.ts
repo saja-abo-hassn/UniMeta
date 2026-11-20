@@ -50,7 +50,7 @@ export function useExchangeBooks() {
     return matchesSearch && matchesType && matchesCondition;
   });
 
-  const handleAddBookSubmit = (e: React.FormEvent, payload?: any) => {
+  const handleAddBookSubmit = (e: React.FormEvent, payload?: Partial<ExchangeBook>) => {
     e.preventDefault();
     const titleVal = payload?.title || newTitle;
     if (!titleVal.trim()) return;

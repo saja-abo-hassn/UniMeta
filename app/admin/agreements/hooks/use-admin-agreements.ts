@@ -34,6 +34,8 @@ export function useAdminAgreements() {
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
 
   useEffect(() => {
+    // Restore browser-only audit history after hydration to keep server and client markup aligned.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAuditLogs(getPersistedAuditLogs());
   }, []);
 

@@ -64,13 +64,14 @@ export function useExchangeModal({
   useEffect(() => {
     if (!isOpen) return;
 
+    // Reset modal state on each open; the dialog is reused for different offers.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentStep(1);
     setSubmitErrorMessage(null);
     setPledgeAgreed(false);
     setSignatureDataUrl(null);
     setHasDrawnOnCanvas(false);
     setOtpSent(false);
-    setShowAgreementEmailNotice(false);
     setOtpCode("");
 
     const savedKyc = apiClient.isUsingMock()
@@ -123,6 +124,7 @@ export function useExchangeModal({
     setErrors((prev) => ({ ...prev, otp: error.message }));
     reportApiError(error);
   };
+  const otpNotice = "التحقق برمز الجوال غير متاح في API الحالي.";
 
   const handleProceedToStep2 = () => {
     const nextErrors: Record<string, string> = {};
@@ -348,6 +350,7 @@ export function useExchangeModal({
     isSendingOtp,
     isVerifyingOtp,
     otpSent,
+    otpNotice,
     otpCountdown,
     errors,
     setErrors,

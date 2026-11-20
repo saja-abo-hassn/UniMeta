@@ -71,6 +71,8 @@ export function useAdminAuthState() {
 
   useEffect(() => {
     if (apiClient.isUsingMock()) return;
+    // Clear the previous account's moderator list before loading the new profile's data.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setModerators([]);
     if (adminRole !== "super_admin") return;
     let active = true;
