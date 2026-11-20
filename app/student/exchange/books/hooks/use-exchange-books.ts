@@ -6,6 +6,9 @@ import { useStudentUser } from "@/src/hooks/use-student-user";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 import { BookListingType, ExchangeBook } from "../types";
 import { initialBooks } from "../data/initial-books";
+import { apiClient } from "@/src/services/api-client";
+import { isPalestinianMobile } from "@/src/lib/palestinian-phone";
+import type { NewBookPayload } from "../components/add-book-modal";
 
 export function useExchangeBooks() {
   const { notify } = useNotifications();
@@ -50,10 +53,12 @@ export function useExchangeBooks() {
     return matchesSearch && matchesType && matchesCondition;
   });
 
-  const handleAddBookSubmit = (e: React.FormEvent, payload?: Partial<ExchangeBook>) => {
+  const handleAddBookSubmit = (e: React.FormEvent, payload?: NewBookPayload) => {
     e.preventDefault();
+    if (!apiClient.isUsingMock()) return;
     const titleVal = payload?.title || newTitle;
     if (!titleVal.trim()) return;
+    if (!isPalestinianMobile(payload?.contactPhone || "")) return;
 
     const courseCodeVal = payload?.courseCode || newCourseCode;
     const authorVal = payload?.author || newAuthor;
@@ -72,6 +77,7 @@ export function useExchangeBooks() {
       author: authorVal.trim() || "غير محدد",
       owner: currentStudentName,
       ownerMajor: currentStudentMajor,
+      contactPhone: payload?.contactPhone,
       condition: conditionVal,
       type: typeVal,
       price: typeVal === "تبادل" ? undefined : priceVal,

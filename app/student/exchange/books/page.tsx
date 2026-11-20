@@ -5,6 +5,7 @@ import { BooksHeader } from "./components/books-header";
 import { BooksKPIs } from "./components/books-kpis";
 import { BooksFilterBar } from "./components/books-filter-bar";
 import { BooksGrid } from "./components/books-grid";
+import { apiClient } from "@/src/services/api-client";
 
 export type { BookListingType, ExchangeBook } from "./types";
 
@@ -86,6 +87,7 @@ function MockBookExchangePage() {
             category: "كتب ومراجع",
             ownerName: requestingBook.owner,
             ownerMajor: requestingBook.ownerMajor,
+            ownerPhone: requestingBook.contactPhone,
             depositAmount: requestingBook.price
               ? Math.max(10, Math.round(requestingBook.price * 0.8))
               : 10,
@@ -109,6 +111,7 @@ function MockBookExchangePage() {
       {isAddBookModalOpen && (
         <AddBookModal
           isOpen={isAddBookModalOpen}
+          publishAvailable={apiClient.isUsingMock()}
           onClose={() => setIsAddBookModalOpen(false)}
           onSubmit={handleAddBookSubmit}
         />

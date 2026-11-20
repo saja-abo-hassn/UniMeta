@@ -9,19 +9,8 @@ interface StepKycFormProps {
   setNationalId: (id: string) => void;
   phone: string;
   setPhone: (phone: string) => void;
-  isPhoneVerified: boolean;
-  setIsPhoneVerified: (verified: boolean) => void;
-  otpCode: string;
-  setOtpCode: (code: string) => void;
-  isSendingOtp: boolean;
-  isVerifyingOtp: boolean;
-  otpSent: boolean;
-  otpCountdown: number;
-  otpNotice: string | null;
   errors: Record<string, string>;
   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
-  onSendOtp: () => void;
-  onVerifyOtp: () => void;
 }
 
 export function StepKycForm({
@@ -33,19 +22,8 @@ export function StepKycForm({
   setNationalId,
   phone,
   setPhone,
-  isPhoneVerified,
-  setIsPhoneVerified,
-  otpCode,
-  setOtpCode,
-  isSendingOtp,
-  isVerifyingOtp,
-  otpSent,
-  otpCountdown,
-  otpNotice,
   errors,
   setErrors,
-  onSendOtp,
-  onVerifyOtp,
 }: StepKycFormProps) {
   return (
     <div className="space-y-4 animate-fade-in">
@@ -108,86 +86,22 @@ export function StepKycForm({
         {errors.nationalId && <p className="text-[11px] text-red-600">{errors.nationalId}</p>}
       </div>
 
-      <div className="space-y-2 p-4 rounded-2xl bg-brand-surface-muted border border-brand-border-soft">
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-bold text-brand-ink">رقم الجوال للتواصل وتأكيد الحساب</label>
-          {isPhoneVerified && (
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-              <span>✓</span>
-              <span>تم التحقق من الجوال عبر OTP</span>
-            </span>
-          )}
-        </div>
-
-        <div className="flex gap-2">
+      <div className="space-y-1">
+        <label className="block text-xs font-bold text-brand-ink">رقم الجوال للتواصل</label>
           <input
             type="tel"
             value={phone}
             onChange={(e) => {
-              setPhone(e.target.value);
-              setIsPhoneVerified(false);
+              setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
               if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" }));
             }}
             placeholder="مثال: 0599182744"
             dir="ltr"
-            disabled={isPhoneVerified}
-            className="flex-1 h-11 px-3.5 text-xs rounded-xl bg-white border border-brand-border-soft focus:outline-none focus:border-brand-primary text-brand-ink font-mono"
+            inputMode="numeric"
+            maxLength={10}
+            className={`w-full h-11 px-3.5 text-xs rounded-xl bg-white border focus:outline-none text-brand-ink font-mono ${errors.phone ? "border-red-400 focus:border-red-500" : "border-brand-border-soft focus:border-brand-primary"}`}
           />
-
-          {!isPhoneVerified && (
-            <button
-              type="button"
-              onClick={onSendOtp}
-              disabled={isSendingOtp || otpCountdown > 0}
-              className="px-4 h-11 text-xs font-bold bg-brand-primary hover:bg-[#0046A0] disabled:bg-[#A3C7E8] text-white rounded-xl transition-colors shrink-0 shadow-2xs"
-            >
-              {isSendingOtp
-                ? "جاري الإرسال..."
-                : otpCountdown > 0
-                ? `إعادة بعد (${otpCountdown}s)`
-                : otpSent
-                ? "إعادة إرسال OTP"
-                : "إرسال رمز OTP"}
-            </button>
-          )}
-        </div>
         {errors.phone && <p className="text-[11px] text-red-600">{errors.phone}</p>}
-
-        {!isPhoneVerified && otpSent && (
-          <div className="pt-2 space-y-2 border-t border-[#EAF2F8] animate-fade-in">
-            <span className="text-[11px] text-brand-copy-muted block">
-              أدخل رمز التحقق (4 أرقام) المرسل إلى جوالك:
-            </span>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                maxLength={4}
-                inputMode="numeric"
-                value={otpCode}
-                onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                placeholder="••••"
-                dir="ltr"
-                className="w-32 h-10 px-3 text-center text-sm font-bold font-mono tracking-widest rounded-xl bg-white border border-brand-border-soft focus:outline-none focus:border-brand-primary"
-              />
-              <button
-                type="button"
-                onClick={onVerifyOtp}
-                disabled={isVerifyingOtp || !otpCode}
-                className="px-4 h-10 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl transition-colors shadow-2xs"
-              >
-                {isVerifyingOtp ? "جاري الفحص..." : "تأكيد الرمز ✓"}
-              </button>
-            </div>
-            {errors.otp && <p className="text-[11px] text-red-600">{errors.otp}</p>}
-          </div>
-        )}
-
-        {otpNotice && (
-          <div className="p-2.5 rounded-xl bg-brand-surface-blue border border-brand-border-soft text-brand-dark text-[11px] flex items-center gap-1.5 animate-fade-in">
-            <span>ℹ️</span>
-            <span>{otpNotice}</span>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ interface ModalStepperHeaderProps {
     category: "أجهزة" | "كتب ومراجع";
     ownerName: string;
     ownerMajor: string;
+    ownerPhone?: string;
     depositAmount: number;
   };
   currentStep: 1 | 2;
@@ -32,6 +33,12 @@ export function ModalStepperHeader({ item, currentStep, onClose }: ModalStepperH
             المالك: <strong className="text-brand-ink">{item.ownerName}</strong> ({item.ownerMajor}) &bull; التأمين:{" "}
             <strong className="text-brand-primary">{item.depositAmount} ₪</strong>
           </p>
+          {item.ownerPhone && (
+            <div className="flex flex-wrap gap-x-3 text-[11px] text-brand-primary" dir="ltr">
+              <a href={`tel:${item.ownerPhone}`} className="underline">{item.ownerPhone}</a>
+              <a href={`https://wa.me/970${item.ownerPhone.slice(1)}`} target="_blank" rel="noreferrer" className="underline">WhatsApp</a>
+            </div>
+          )}
         </div>
 
         <button
@@ -56,7 +63,7 @@ export function ModalStepperHeader({ item, currentStep, onClose }: ModalStepperH
             {currentStep > 1 ? "✓" : "1"}
           </span>
           <span className={currentStep === 1 ? "text-brand-primary" : "text-emerald-700 font-semibold"}>
-            الخطوة 1: بيانات الطالب والتحقق
+            الخطوة 1: بيانات الطالب والتواصل
           </span>
         </div>
 

@@ -5,6 +5,7 @@ export interface DeviceItem {
   model: string;
   owner: string;
   ownerMajor: string;
+  contactPhone?: string;
   condition: "ممتازة" | "جيدة جداً" | "جيدة";
   type: "استئجار رمزي" | "إعارة مجانية" | "تبادل بأداة أخرى";
   feeText: string;

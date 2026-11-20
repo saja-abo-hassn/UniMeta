@@ -22,15 +22,6 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
     setStudentId,
     fullName,
     setFullName,
-    isPhoneVerified,
-    setIsPhoneVerified,
-    otpCode,
-    setOtpCode,
-    isSendingOtp,
-    isVerifyingOtp,
-    otpSent,
-    otpCountdown,
-    otpNotice,
     errors,
     setErrors,
     pledgeAgreed,
@@ -44,8 +35,6 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
     setHasDrawnOnCanvas,
     isSubmitting,
     submitErrorMessage,
-    handleSendOtp,
-    handleVerifyOtp,
     handleProceedToStep2,
     startDrawing,
     draw,
@@ -84,19 +73,8 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
             setNationalId={setNationalId}
             phone={phone}
             setPhone={setPhone}
-            isPhoneVerified={isPhoneVerified}
-            setIsPhoneVerified={setIsPhoneVerified}
-            otpCode={otpCode}
-            setOtpCode={setOtpCode}
-            isSendingOtp={isSendingOtp}
-            isVerifyingOtp={isVerifyingOtp}
-            otpSent={otpSent}
-            otpCountdown={otpCountdown}
-            otpNotice={otpNotice}
             errors={errors}
             setErrors={setErrors}
-            onSendOtp={handleSendOtp}
-            onVerifyOtp={handleVerifyOtp}
           />
         )}
 
@@ -139,7 +117,7 @@ export function TwoStepExchangeModal(props: TwoStepExchangeModalProps) {
             <button
               type="button"
               onClick={handleProceedToStep2}
-              disabled={!nationalId || !phone || !isPhoneVerified || !studentId}
+              disabled={!nationalId || !phone || !studentId}
               className="px-6 py-2.5 rounded-xl bg-brand-primary hover:bg-[#0046A0] disabled:bg-[#A3C7E8] text-white text-xs font-bold transition-all shadow-xs disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
             >
               <span>المتابعة إلى التعهد والتوقيع</span>

@@ -2,13 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { apiClient } from "@/src/services/api-client";
-import { reportApiError } from "@/src/services/api-result";
 import {
   StudentKycData,
   AgreementSignature,
   AgreementPledge,
   validateNationalId,
-  validatePhone,
   maskNationalId,
   maskPhone,
   getSavedStudentKyc,
@@ -36,13 +34,6 @@ export function useExchangeModal({
   const [phone, setPhone] = useState("");
   const [studentId, setStudentId] = useState("");
   const [fullName, setFullName] = useState("");
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-
-  const [otpCode, setOtpCode] = useState("");
-  const [isSendingOtp, setIsSendingOtp] = useState(false);
-  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpCountdown, setOtpCountdown] = useState(0);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -53,8 +44,6 @@ export function useExchangeModal({
   const [signatureMime, setSignatureMime] = useState<string>("image/png");
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const sendingOtpRef = useRef(false);
-  const verifyingOtpRef = useRef(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawnOnCanvas, setHasDrawnOnCanvas] = useState(false);
 
@@ -71,34 +60,22 @@ export function useExchangeModal({
     setPledgeAgreed(false);
     setSignatureDataUrl(null);
     setHasDrawnOnCanvas(false);
-    setOtpSent(false);
-    setOtpCode("");
 
     const savedKyc = apiClient.isUsingMock()
       ? getSavedStudentKyc(currentStudent.studentId || undefined)
       : null;
     if (savedKyc) {
       setNationalId(savedKyc.nationalId || "");
-      setPhone(savedKyc.phone || "");
+      setPhone((savedKyc.phone || "").replace(/\D/g, ""));
       setStudentId(savedKyc.studentId || currentStudent.studentId || "");
       setFullName(savedKyc.fullName || currentStudent.name || "");
-      setIsPhoneVerified(false);
     } else {
       setFullName(currentStudent.name || "");
       setStudentId(currentStudent.studentId || "");
       setNationalId("");
       setPhone("");
-      setIsPhoneVerified(false);
     }
   }, [isOpen, currentStudent]);
-
-  useEffect(() => {
-    if (otpCountdown <= 0) return;
-    const interval = setInterval(() => {
-      setOtpCountdown((c) => (c > 0 ? c - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [otpCountdown]);
 
   useEffect(() => {
     if (currentStep === 2 && signatureType === "canvas" && canvasRef.current) {
@@ -113,19 +90,6 @@ export function useExchangeModal({
     }
   }, [currentStep, signatureType]);
 
-  const handleSendOtp = async () => {
-    const error = new Error("التحقق برمز الجوال غير متاح في API الحالي.");
-    setErrors((prev) => ({ ...prev, otp: error.message }));
-    reportApiError(error);
-  };
-
-  const handleVerifyOtp = async () => {
-    const error = new Error("التحقق برمز الجوال غير متاح في API الحالي.");
-    setErrors((prev) => ({ ...prev, otp: error.message }));
-    reportApiError(error);
-  };
-  const otpNotice = "التحقق برمز الجوال غير متاح في API الحالي.";
-
   const handleProceedToStep2 = () => {
     const nextErrors: Record<string, string> = {};
 
@@ -134,14 +98,8 @@ export function useExchangeModal({
       nextErrors.nationalId = idCheck.error || "رقم الهوية غير صحيح.";
     }
 
-    const phoneCheck = validatePhone(phone);
-    if (!phoneCheck.valid) {
-      nextErrors.phone = phoneCheck.error || "رقم الجوال غير صحيح.";
-    }
-
-    if (!isPhoneVerified) {
-      nextErrors.otp = "يجب التحقق من رقم الجوال للمتابعة.";
-      reportApiError(new Error(nextErrors.otp));
+    if (!/^(059|056)\d{7}$/.test(phone)) {
+      nextErrors.phone = "أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.";
     }
 
     if (!studentId.trim()) {
@@ -343,15 +301,6 @@ export function useExchangeModal({
     setStudentId,
     fullName,
     setFullName,
-    isPhoneVerified,
-    setIsPhoneVerified,
-    otpCode,
-    setOtpCode,
-    isSendingOtp,
-    isVerifyingOtp,
-    otpSent,
-    otpNotice,
-    otpCountdown,
     errors,
     setErrors,
     pledgeAgreed,
@@ -365,8 +314,6 @@ export function useExchangeModal({
     setHasDrawnOnCanvas,
     isSubmitting,
     submitErrorMessage,
-    handleSendOtp,
-    handleVerifyOtp,
     handleProceedToStep2,
     startDrawing,
     draw,

@@ -5,6 +5,7 @@ import { DevicesHeader } from "./components/devices-header";
 import { DevicesKPIs } from "./components/devices-kpis";
 import { DevicesFilterBar } from "./components/devices-filter-bar";
 import { DevicesGrid } from "./components/devices-grid";
+import { apiClient } from "@/src/services/api-client";
 
 export type { DeviceItem } from "./types";
 
@@ -45,6 +46,9 @@ function MockDeviceExchangePage() {
     setNewDeviceType,
     newFeeText,
     setNewFeeText,
+    contactPhone,
+    setContactPhone,
+    contactPhoneError,
     currentStudentName,
     currentStudentMajor,
     handleAddDeviceSubmit,
@@ -80,6 +84,7 @@ function MockDeviceExchangePage() {
             category: "أجهزة",
             ownerName: requestingDevice.owner,
             ownerMajor: requestingDevice.ownerMajor,
+            ownerPhone: requestingDevice.contactPhone,
             depositAmount: parseInt(requestingDevice.deposit.replace(/\D/g, ""), 10) || 20,
             dailyRate: requestingDevice.feeText.includes("₪")
               ? parseInt(requestingDevice.feeText.replace(/\D/g, ""), 10) || 2
@@ -107,6 +112,10 @@ function MockDeviceExchangePage() {
           setNewDeviceType={setNewDeviceType}
           newFeeText={newFeeText}
           setNewFeeText={setNewFeeText}
+          contactPhone={contactPhone}
+          setContactPhone={setContactPhone}
+          contactPhoneError={contactPhoneError}
+          publishAvailable={apiClient.isUsingMock()}
           onSubmit={handleAddDeviceSubmit}
         />
       )}

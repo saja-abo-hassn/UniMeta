@@ -15,6 +15,10 @@ interface AddDeviceModalProps {
   setNewDeviceType: (type: DeviceItem["type"]) => void;
   newFeeText: string;
   setNewFeeText: (feeText: string) => void;
+  contactPhone: string;
+  setContactPhone: (phone: string) => void;
+  contactPhoneError: string;
+  publishAvailable: boolean;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -29,6 +33,10 @@ export function AddDeviceModal({
   setNewDeviceType,
   newFeeText,
   setNewFeeText,
+  contactPhone,
+  setContactPhone,
+  contactPhoneError,
+  publishAvailable,
   onSubmit,
 }: AddDeviceModalProps) {
   if (!isOpen) return null;
@@ -52,6 +60,15 @@ export function AddDeviceModal({
               placeholder="مثال: راسبيري باي 4 أو حاسبة بيانية TI-84"
               className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
             />
+          </div>
+
+          <div className="space-y-1">
+            <label className="font-bold text-brand-ink block">رقم الجوال للتواصل:</label>
+            <input type="tel" required inputMode="numeric" maxLength={10} value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+              placeholder="مثال: 0599182744" dir="ltr"
+              className={`w-full px-3.5 py-2 rounded-xl bg-white border font-semibold text-brand-ink ${contactPhoneError ? "border-red-400" : "border-brand-border-soft"}`} />
+            {contactPhoneError && <p className="text-[11px] text-red-600">{contactPhoneError}</p>}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -106,11 +123,13 @@ export function AddDeviceModal({
           >
             إلغاء
           </button>
+          {!publishAvailable && <p className="basis-full text-[11px] text-red-600">النشر متوقف حالياً: عقد الـ API لا يحفظ رقم التواصل أو تفاصيل العرض المطلوبة.</p>}
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
+            disabled={!publishAvailable}
+            className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium disabled:bg-slate-300 cursor-pointer disabled:cursor-not-allowed"
           >
-            حفظ وإدراج
+            {publishAvailable ? "حفظ وإدراج" : "النشر غير متاح حالياً"}
           </button>
         </Modal.Footer>
       </form>

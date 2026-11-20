@@ -8,6 +8,7 @@ export interface TwoStepExchangeModalProps {
     category: "أجهزة" | "كتب ومراجع";
     ownerName: string;
     ownerMajor: string;
+    ownerPhone?: string;
     depositAmount: number;
     dailyRate?: number;
     durationDays?: number;
