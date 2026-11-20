@@ -16,7 +16,13 @@ export function PublicShell({ children }: PublicShellProps) {
   const pathname = usePathname();
 
   // Landing and auth pages own their full-bleed layouts and must not inherit the public shell.
-  if (pathname === "/" || pathname === "/login" || pathname === "/register" || pathname === "/forgot-password") {
+  if (
+    pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/verify-email"
+  ) {
     return pathname === "/" ? <>{children}</> : <AppProviders>{children}</AppProviders>;
   }
 

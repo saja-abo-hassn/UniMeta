@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function VerifyEmailPage() {
   return (
     <AuthLayout
+      showBrandHeader={false}
       visualTitle="أمان حسابك، أولويتنا."
       visualSubtitle="رمز تحقق فوري للتأكد من هويتك الأكاديمية وحماية بياناتك ومشاريعك على UniMeta."
     >
