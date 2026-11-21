@@ -70,7 +70,7 @@ export function OutgoingRequestsSection({
               </div>
               <div className="flex justify-between">
                 <span className="text-brand-muted">مبلغ التأمين:</span>
-                <span className="font-bold text-brand-primary">{formatCurrency(req.deposit, "ILS")}</span>
+                <span className="font-bold text-brand-primary">{req.deposit === null ? "—" : formatCurrency(req.deposit, "ILS")}</span>
               </div>
 
               {req.signatureUrl && (

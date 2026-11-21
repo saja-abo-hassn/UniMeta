@@ -4,6 +4,7 @@ import React from "react";
 import { CourseMaterialItem, ContentStatus } from "@/src/contexts/admin-context";
 import { MAIN_CATEGORIES, MainCategoryType, ContentFormData } from "../../types";
 import { Modal } from "@/components/shared/modal";
+import { API_CONFIG } from "@/src/services/api-client";
 
 interface EditContentModalProps {
   editingItem: CourseMaterialItem | null;
@@ -11,6 +12,7 @@ interface EditContentModalProps {
   formData: ContentFormData;
   setFormData: React.Dispatch<React.SetStateAction<ContentFormData>>;
   formError: string;
+  isSaving: boolean;
   courseSuggestions: string[];
   onSubmit: (e: React.FormEvent) => void;
 }
@@ -21,13 +23,14 @@ export function EditContentModal({
   formData,
   setFormData,
   formError,
+  isSaving,
   courseSuggestions,
   onSubmit,
 }: EditContentModalProps) {
   if (!editingItem) return null;
 
   return (
-    <Modal isOpen={!!editingItem} onClose={onClose} size="lg">
+    <Modal isOpen={!!editingItem} onClose={() => { if (!isSaving) onClose(); }} size="lg">
       <form onSubmit={onSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
         <Modal.Header
           title="تعديل بيانات المحتوى"
@@ -117,7 +120,7 @@ export function EditContentModal({
               >
                 <option value="منشور">منشور للطلاب</option>
                 <option value="مسودة">مسودة</option>
-                <option value="قيد المراجعة">قيد المراجعة</option>
+                <option value="قيد المراجعة" disabled={!API_CONFIG.useMock}>قيد المراجعة</option>
               </select>
             </div>
           </div>
@@ -145,6 +148,7 @@ export function EditContentModal({
           </button>
           <button
             type="submit"
+            disabled={isSaving}
             className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
           >
             حفظ التعديلات

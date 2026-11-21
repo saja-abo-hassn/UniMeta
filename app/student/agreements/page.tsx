@@ -54,6 +54,7 @@ function MockStudentAgreementsPage() {
     handleConfirmReturn,
     handleAcceptIncoming,
     handleConfirmRejectIncoming,
+    openRejectIncoming,
     handleCancelOutgoing,
   } = useStudentAgreements();
 
@@ -180,9 +181,7 @@ function MockStudentAgreementsPage() {
         <IncomingRequestsSection
           incomingRequests={incomingRequests}
           onAcceptIncoming={handleAcceptIncoming}
-          onOpenRejectModal={(req) =>
-            setRejectModal({ open: true, request: req, reason: "" })
-          }
+          onOpenRejectModal={openRejectIncoming}
         />
       )}
 
@@ -198,7 +197,7 @@ function MockStudentAgreementsPage() {
         onConfirmRejectIncoming={handleConfirmRejectIncoming}
       />
 
-      {modifyingRequest && (
+      {modifyingRequest && modifyingRequest.category !== "—" && (
         <TwoStepExchangeModal
           isOpen={!!modifyingRequest}
           onClose={() => setModifyingRequest(null)}
@@ -209,7 +208,7 @@ function MockStudentAgreementsPage() {
             category: modifyingRequest.category,
             ownerName: modifyingRequest.ownerName,
             ownerMajor: modifyingRequest.ownerMajor,
-            depositAmount: modifyingRequest.deposit,
+            depositAmount: modifyingRequest.deposit ?? 0,
             durationText: modifyingRequest.requestedDuration,
           }}
           currentStudent={{

@@ -76,7 +76,9 @@ export function PendingContributions({
                 </div>
 
                 <div className="flex items-center gap-2 text-[11px] text-brand-muted bg-brand-surface-muted p-2 rounded-xl border border-brand-border-soft">
-                  <span>📄 {item.fileName || `${item.title}.${item.fileType.toLowerCase()}`}</span>
+                  {item.url ? (
+                    <a href={item.url} target="_blank" rel="noreferrer">📄 {item.title}.{item.fileType.toLowerCase()}</a>
+                  ) : <span>📄 {item.fileName || `${item.title}.${item.fileType.toLowerCase()}`}</span>}
                   <span>•</span>
                   <span className="font-mono">{item.fileType}</span>
                   <span>•</span>

@@ -3,6 +3,8 @@
 import { useState, useCallback } from "react";
 import { ContentUploadState } from "./types";
 import { ALLOWED_EXTENSIONS, MAX_FILE_SIZE_MB } from "../../../types";
+import { API_CONFIG } from "@/src/services/api-client";
+import { libraryFileTypes, libraryMaxFileMb } from "@/src/services/library-service";
 
 const INITIAL_STATE: ContentUploadState = {
   file: null,
@@ -19,19 +21,21 @@ export function useContentUpload() {
 
   const handleFile = useCallback((file: File) => {
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
-    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    const allowed = API_CONFIG.useMock ? ALLOWED_EXTENSIONS : libraryFileTypes;
+    const maxSize = API_CONFIG.useMock ? MAX_FILE_SIZE_MB : libraryMaxFileMb;
+    if (!allowed.includes(ext)) {
       setUploadState((prev) => ({
         ...prev,
-        error: `نوع الملف غير مدعوم (${ext}). الصيغ المدعومة: PDF, Word, PowerPoint, صور, MP4, ZIP`,
+        error: "نوع الملف غير مدعوم. الصيغ المدعومة " + allowed.join(", "),
       }));
       return false;
     }
 
     const sizeMB = file.size / (1024 * 1024);
-    if (sizeMB > MAX_FILE_SIZE_MB) {
+    if (sizeMB > maxSize) {
       setUploadState((prev) => ({
         ...prev,
-        error: `حجم الملف (${sizeMB.toFixed(1)}MB) يتجاوز الحد الأقصى المسموح به وهو ${MAX_FILE_SIZE_MB}MB`,
+        error: `حجم الملف (${sizeMB.toFixed(1)}MB) يتجاوز الحد الأقصى المسموح به وهو ${maxSize}MB`,
       }));
       return false;
     }
@@ -50,18 +54,10 @@ export function useContentUpload() {
       fileSizeFormatted: `${sizeMB.toFixed(1)} MB`,
       fileSizeBytes: file.size,
       fileTypeDetected: detected,
-      progress: 20,
-      isUploading: true,
+      progress: 100,
+      isUploading: false,
       error: undefined,
     });
-
-    setTimeout(() => {
-      setUploadState((prev) => ({ ...prev, progress: 65 }));
-    }, 180);
-
-    setTimeout(() => {
-      setUploadState((prev) => ({ ...prev, progress: 100, isUploading: false }));
-    }, 420);
 
     return true;
   }, []);

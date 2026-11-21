@@ -2,6 +2,8 @@
 
 import React, { useRef, useState } from "react";
 import { ALLOWED_EXTENSIONS, MAX_FILE_SIZE_MB } from "../../../types";
+import { API_CONFIG } from "@/src/services/api-client";
+import { libraryFileTypes, libraryMaxFileMb } from "@/src/services/library-service";
 
 interface FileDropzoneProps {
   onFileSelect: (file: File) => void;
@@ -49,7 +51,7 @@ export function FileDropzone({
         <label className="text-xs font-bold text-brand-ink block">
           رفع الملف الرقمي <span className="text-red-500">*</span>
         </label>
-        <span className="text-[10px] text-brand-muted">حد أقصى {MAX_FILE_SIZE_MB} ميجابايت</span>
+        <span className="text-[10px] text-brand-muted">حد أقصى {API_CONFIG.useMock ? MAX_FILE_SIZE_MB : libraryMaxFileMb} ميجابايت</span>
       </div>
 
       <div
@@ -68,7 +70,7 @@ export function FileDropzone({
         <input
           ref={inputRef}
           type="file"
-          accept={ALLOWED_EXTENSIONS.join(",")}
+          accept={(API_CONFIG.useMock ? ALLOWED_EXTENSIONS : libraryFileTypes).join(",")}
           onChange={handleChange}
           className="hidden"
           disabled={isUploading}
@@ -98,7 +100,7 @@ export function FileDropzone({
               اضغط لاختيار ملف أو اسحبه إلى هنا
             </p>
             <p className="text-[10px] text-brand-muted mt-0.5">
-              يدعم PDF، Word، سلايدات، صور، MP4، ZIP
+              {API_CONFIG.useMock ? "يدعم PDF، Word، سلايدات، صور، MP4، ZIP" : "يدعم PDF، DOCX، PPTX"}
             </p>
           </>
         )}

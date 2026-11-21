@@ -5,7 +5,6 @@ import { DevicesHeader } from "./components/devices-header";
 import { DevicesKPIs } from "./components/devices-kpis";
 import { DevicesFilterBar } from "./components/devices-filter-bar";
 import { DevicesGrid } from "./components/devices-grid";
-import { apiClient } from "@/src/services/api-client";
 
 export type { DeviceItem } from "./types";
 
@@ -52,6 +51,9 @@ function MockDeviceExchangePage() {
     currentStudentName,
     currentStudentMajor,
     handleAddDeviceSubmit,
+    mock,
+    busy,
+    requestDevice,
   } = useExchangeDevices();
 
   return (
@@ -67,11 +69,13 @@ function MockDeviceExchangePage() {
         setCategoryFilter={setCategoryFilter}
         typeFilter={typeFilter}
         setTypeFilter={setTypeFilter}
+        categories={mock ? undefined : [...new Set(devices.map((device) => device.category))]}
       />
 
       <DevicesGrid
         filteredDevices={filteredDevices}
-        onRequestDevice={(dev) => setRequestingDevice(dev)}
+        onRequestDevice={requestDevice}
+        busy={busy}
       />
 
       {requestingDevice && (
@@ -103,7 +107,7 @@ function MockDeviceExchangePage() {
       {isAddModalOpen && (
         <DynamicAddDeviceModal
           isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
+          onClose={() => { if (!busy) setIsAddModalOpen(false); }}
           newDeviceName={newDeviceName}
           setNewDeviceName={setNewDeviceName}
           newDeviceCategory={newDeviceCategory}
@@ -115,7 +119,8 @@ function MockDeviceExchangePage() {
           contactPhone={contactPhone}
           setContactPhone={setContactPhone}
           contactPhoneError={contactPhoneError}
-          publishAvailable={apiClient.isUsingMock()}
+          mock={mock}
+          isSaving={busy}
           onSubmit={handleAddDeviceSubmit}
         />
       )}

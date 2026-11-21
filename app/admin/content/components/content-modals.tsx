@@ -6,6 +6,7 @@ import { ContentFormData } from "../types";
 import { AddContentModal } from "./modals/add-content-modal";
 import { EditContentModal } from "./modals/edit-content-modal";
 import { DeleteContentModal } from "./modals/delete-content-modal";
+import type { CourseOption } from "./modals/add-content/course-select";
 
 export { AddContentModal, EditContentModal, DeleteContentModal };
 
@@ -16,15 +17,14 @@ interface ContentModalsProps {
   onCloseEdit: () => void;
   deleteCandidate: CourseMaterialItem | null;
   onCloseDelete: () => void;
-  onConfirmDelete: (id: string) => void;
+  onConfirmDelete: (id: string) => Promise<boolean>;
   formData: ContentFormData;
   setFormData: React.Dispatch<React.SetStateAction<ContentFormData>>;
   formError: string;
   isUploading: boolean;
-  uploadedFileName: string;
+  availableCourses: CourseOption[];
   courseSuggestions: string[];
-  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmitAdd: (e: React.FormEvent) => void;
+  onSubmitAdd: (file: File | null, subjectId: string) => Promise<boolean>;
   onSubmitEdit: (e: React.FormEvent) => void;
 }
 
@@ -40,9 +40,8 @@ export function ContentModals({
   setFormData,
   formError,
   isUploading,
-  uploadedFileName,
+  availableCourses,
   courseSuggestions,
-  onFileChange,
   onSubmitAdd,
   onSubmitEdit,
 }: ContentModalsProps) {
@@ -55,9 +54,7 @@ export function ContentModals({
         setFormData={setFormData}
         formError={formError}
         isUploading={isUploading}
-        uploadedFileName={uploadedFileName}
-        courseSuggestions={courseSuggestions}
-        onFileChange={onFileChange}
+        availableCourses={availableCourses}
         onSubmit={onSubmitAdd}
       />
 
@@ -67,6 +64,7 @@ export function ContentModals({
         formData={formData}
         setFormData={setFormData}
         formError={formError}
+        isSaving={isUploading}
         courseSuggestions={courseSuggestions}
         onSubmit={onSubmitEdit}
       />

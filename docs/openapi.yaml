@@ -6171,6 +6171,10 @@ components:
         file_size:
           type: integer
           description: Size in bytes, measured by the server.
+        download_requests:
+          type: integer
+          minimum: 0
+          description: Number of download requests. Included in the admin resource list.
         mime_type:
           type: string
           description: The canonical type of the validated format, never the client-supplied one.

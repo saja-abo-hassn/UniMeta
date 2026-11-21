@@ -3,6 +3,7 @@
 import React from "react";
 import { EducationalMaterialType } from "./types";
 import { ContentStatus } from "@/src/contexts/admin-context";
+import { API_CONFIG } from "@/src/services/api-client";
 
 interface ContentTypeSelectProps {
   type: EducationalMaterialType;
@@ -64,7 +65,7 @@ export function ContentTypeSelect({
         >
           <option value="منشور">منشور للطلاب فوراً (يظهر بالخطة والمكتبة)</option>
           <option value="مسودة">مسودة (محجوب مؤقتاً للتعديل)</option>
-          <option value="قيد المراجعة">قيد المراجعة والتدقيق الأكاديمي</option>
+          <option value="قيد المراجعة" disabled={!API_CONFIG.useMock}>قيد المراجعة والتدقيق الأكاديمي</option>
         </select>
         <p className="text-[10px] text-brand-muted">
           المحتوى المنشور فقط يظهر في مكتبة الطالب وتحديث العدادات الأكاديمية

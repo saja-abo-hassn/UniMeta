@@ -28,14 +28,50 @@ export function useUniMetaChat(initiallyOpen = false) {
   const [sessions,setSessions]=useState<ChatSession[]>([]);
   const [sessionId,setSessionId]=useState<number|null>(null);
   const [historyBusy,setHistoryBusy]=useState(false);
-  const selectSession=async(id:number|null)=>{if(isTyping||historyBusy)return;setError("");setHistoryBusy(true);try{const saved=id===null?[]:await liveChatService.messages(id);setSessionId(id);setMessages(saved);}catch(e){setError((e as Error).message);}finally{setHistoryBusy(false);}};
-  const deleteSession=async()=>{if(sessionId===null||isTyping||historyBusy)return;setHistoryBusy(true);try{await liveChatService.remove(sessionId);setSessions(s=>s.filter(x=>x.id!==sessionId));setSessionId(null);setMessages([]);setError("");}catch(e){setError((e as Error).message);}finally{setHistoryBusy(false);}};
+  const requestInFlightRef = useRef(false);
+  const changeHistory = async (action: () => Promise<void>) => {
+    if (requestInFlightRef.current) return;
+    requestInFlightRef.current = true;
+    setHistoryBusy(true);
+    setError("");
+    setRetryQuery("");
+    try {
+      await action();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "تعذر تحديث المحادثة.");
+    } finally {
+      requestInFlightRef.current = false;
+      setHistoryBusy(false);
+    }
+  };
+  const selectSession = (id: number | null) => changeHistory(async () => {
+    const saved = id === null ? [] : await liveChatService.messages(id);
+    setSessionId(id);
+    setMessages(saved);
+  });
+  const deleteSession = async () => {
+    if (sessionId === null) return;
+    await changeHistory(async () => {
+      await liveChatService.remove(sessionId);
+      setSessions((rows) => rows.filter((row) => row.id !== sessionId));
+      setSessionId(null);
+      setMessages([]);
+    });
+  };
   const [inputVal, setInputVal] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState("");
   const [retryQuery, setRetryQuery] = useState("");
-  useEffect(()=>{if(!isOpen||!user||apiClient.isUsingMock())return;let active=true;void liveChatService.sessions().then(s=>{if(active)setSessions(s);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[isOpen,user]);
-  const requestInFlightRef = useRef(false);
+  useEffect(() => {
+    if (!isOpen || !user?.id || apiClient.isUsingMock()) return;
+    let active = true;
+    void liveChatService.sessions().then((rows) => {
+      if (active && !requestInFlightRef.current) setSessions(rows);
+    }).catch((error: Error) => {
+      if (active && !requestInFlightRef.current) setError(error.message);
+    });
+    return () => { active = false; };
+  }, [isOpen, user?.id]);
 
   const windowRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -161,6 +197,10 @@ export function useUniMetaChat(initiallyOpen = false) {
     if (e) e.preventDefault();
     const query = (suggestedQuestion ?? inputVal).trim();
     if (!query || isTyping || historyBusy || requestInFlightRef.current) return;
+    if (!apiClient.isUsingMock() && Array.from(query).length > 4000) {
+      setError("الحد الأقصى لطول الرسالة 4000 حرف.");
+      return;
+    }
     requestInFlightRef.current = true;
     setError("");
     setRetryQuery("");

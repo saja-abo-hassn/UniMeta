@@ -4652,6 +4652,8 @@ export interface components {
             visibility_status: components["schemas"]["ResourceVisibility"];
             /** @description Size in bytes, measured by the server. */
             file_size: number;
+            /** @description Number of download requests. Included in the admin resource list. */
+            download_requests?: number;
             /** @description The canonical type of the validated format, never the client-supplied one. */
             mime_type: string;
             uploaded_by: number;

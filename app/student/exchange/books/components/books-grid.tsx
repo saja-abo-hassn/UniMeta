@@ -4,9 +4,16 @@ import { ExchangeBook } from "../types";
 interface BooksGridProps {
   books: ExchangeBook[];
   onRequestBook: (book: ExchangeBook) => void;
+  busy?: boolean;
 }
 
-export function BooksGrid({ books, onRequestBook }: BooksGridProps) {
+function bookPrice(book: ExchangeBook) {
+  if (book.price == null) return "—";
+  if (!book.currency) return formatCurrency(book.price, "ILS");
+  return new Intl.NumberFormat("ar", { style: "currency", currency: book.currency }).format(book.price);
+}
+
+export function BooksGrid({ books, onRequestBook, busy }: BooksGridProps) {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between text-xs text-brand-muted px-1 font-semibold">
@@ -44,6 +51,7 @@ export function BooksGrid({ books, onRequestBook }: BooksGridProps) {
                     {bk.type === "بيع" && "بيع نهائي 🏷️"}
                     {bk.type === "استئجار" && "استئجار ⏳"}
                     {bk.type === "تبادل" && "تبادل 🔄"}
+                    {bk.type === "إعارة" && "إعارة"}
                   </span>
                 </div>
 
@@ -65,7 +73,7 @@ export function BooksGrid({ books, onRequestBook }: BooksGridProps) {
                     <div className="flex items-center justify-between">
                       <span className="text-brand-muted">سعر البيع النهائي:</span>
                       <span className="text-base font-black text-emerald-700">
-                        {formatCurrency(bk.price || 0, "ILS")}
+                        {bookPrice(bk)}
                       </span>
                     </div>
                   )}
@@ -75,7 +83,7 @@ export function BooksGrid({ books, onRequestBook }: BooksGridProps) {
                       <div className="flex items-center justify-between">
                         <span className="text-brand-muted">سعر الاستئجار:</span>
                         <span className="text-base font-black text-brand-primary">
-                          {formatCurrency(bk.price || 0, "ILS")}
+                          {bookPrice(bk)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-[11px] pt-1 border-t border-brand-border-soft/60">
@@ -112,12 +120,16 @@ export function BooksGrid({ books, onRequestBook }: BooksGridProps) {
               <div className="pt-3 border-t border-brand-border-soft">
                 <button
                   type="button"
+                  disabled={busy || bk.ownOffer}
                   onClick={() => onRequestBook(bk)}
                   className="w-full py-2.5 px-4 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold transition-all shadow-xs"
                 >
+                  {bk.ownOffer ? "عرضك" : <>
                   {bk.type === "بيع" && "طلب شراء الكتاب 🏷️"}
                   {bk.type === "استئجار" && "طلب استئجار الكتاب ⏳"}
                   {bk.type === "تبادل" && "تقديم عرض تبادل 🔄"}
+                  {bk.type === "إعارة" && "طلب استعارة الكتاب"}
+                  </>}
                 </button>
               </div>
             </div>

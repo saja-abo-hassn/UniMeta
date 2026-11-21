@@ -20,7 +20,8 @@ export interface NewBookPayload {
 
 export interface AddBookModalProps {
   isOpen: boolean;
-  publishAvailable?: boolean;
+  mock: boolean;
+  isSaving: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent, payload?: NewBookPayload) => void;
   newTitle?: string;
@@ -45,7 +46,8 @@ export interface AddBookModalProps {
 
 export function AddBookModal({
   isOpen,
-  publishAvailable = true,
+  mock,
+  isSaving,
   onClose,
   onSubmit,
   newTitle = "",
@@ -68,13 +70,13 @@ export function AddBookModal({
   onNotesChange,
 }: AddBookModalProps) {
   const [localTitle, setLocalTitle] = useState(newTitle);
-  const [localCourseCode, setLocalCourseCode] = useState(newCourseCode);
+  const [localCourseCode, setLocalCourseCode] = useState(mock ? newCourseCode : "");
   const [localAuthor, setLocalAuthor] = useState(newAuthor);
   const [contactPhone, setContactPhone] = useState("");
   const [contactPhoneError, setContactPhoneError] = useState("");
   const [localType, setLocalType] = useState<BookListingType>(newType);
   const [localPrice, setLocalPrice] = useState<number>(newPrice);
-  const [localRentalPeriod, setLocalRentalPeriod] = useState(newRentalPeriod);
+  const [localRentalPeriod, setLocalRentalPeriod] = useState(mock ? newRentalPeriod : "");
   const [localExchangeTarget, setLocalExchangeTarget] = useState(newExchangeTarget);
   const [localCondition, setLocalCondition] = useState<ExchangeBook["condition"]>(newCondition);
   const [localNotes, setLocalNotes] = useState(newNotes);
@@ -83,8 +85,8 @@ export function AddBookModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!localTitle.trim()) return;
-    if (!isPalestinianMobile(contactPhone)) {
+    if (!localTitle.trim() || isSaving) return;
+    if (mock && !isPalestinianMobile(contactPhone)) {
       setContactPhoneError("أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.");
       return;
     }
@@ -169,8 +171,9 @@ export function AddBookModal({
               inputMode="numeric"
               maxLength={10}
               value={contactPhone}
+              disabled={!mock}
               onChange={(e) => { setContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10)); setContactPhoneError(""); }}
-              placeholder="مثال: 0599182744"
+              placeholder={mock ? "مثال: 0599182744" : "التواصل عبر طلب العرض"}
               dir="ltr"
               className={`w-full px-3.5 py-2.5 rounded-xl bg-white border font-semibold text-brand-ink ${contactPhoneError ? "border-red-400" : "border-brand-border-soft"}`}
             />
@@ -215,10 +218,13 @@ export function AddBookModal({
               <div className="space-y-1">
                 <label className="font-bold text-brand-ink block">المدة المقترحة:</label>
                 <input
-                  type="text"
+                  type={mock ? "text" : "number"}
+                  required={!mock}
+                  min={1}
+                  max={3650}
                   value={localRentalPeriod}
                   onChange={(e) => setLocalRentalPeriod(e.target.value)}
-                  placeholder="مثال: فصل دراسي كامل"
+                  placeholder={mock ? "مثال: فصل دراسي كامل" : "مدة الاستئجار بالأيام"}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
                 />
               </div>
@@ -271,9 +277,8 @@ export function AddBookModal({
           >
             إلغاء
           </button>
-          {!publishAvailable && <p className="basis-full text-[11px] text-red-600">النشر متوقف حالياً: عقد الـ API لا يحفظ رقم التواصل أو تفاصيل العرض المطلوبة.</p>}
-          <button type="submit" disabled={!publishAvailable} className="px-6 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium disabled:bg-slate-300 text-white font-bold shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed">
-            {publishAvailable ? "نشر الكتاب الآن" : "النشر غير متاح حالياً"}
+          <button type="submit" disabled={isSaving} className="px-6 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium disabled:bg-slate-300 text-white font-bold shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed">
+            نشر الكتاب الآن
           </button>
         </Modal.Footer>
       </form>

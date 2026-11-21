@@ -1,4 +1,6 @@
-export type BookListingType = "بيع" | "استئجار" | "تبادل";
+import type { OfferCurrency } from "@/src/services/marketplace-service";
+
+export type BookListingType = "بيع" | "استئجار" | "تبادل" | "إعارة";
 
 export interface ExchangeBook {
   id: string;
@@ -12,6 +14,8 @@ export interface ExchangeBook {
   condition: "ممتازة" | "جيدة جداً" | "جيدة";
   type: BookListingType;
   price?: number;
+  currency?: OfferCurrency;
+  ownOffer?: boolean;
   rentalPeriod?: string;
   exchangeTarget?: string;
   status: "متاح فوراً" | "قيد الاستعارة" | "محجوز";

@@ -93,7 +93,7 @@ export function IncomingRequestsSection({
                   onClick={() => onAcceptIncoming(req)}
                   className="px-5 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs sm:text-sm font-bold transition-all shadow-xs"
                 >
-                  قبول الطلب وتفعيل العقد
+                  {req.offerType ? "قبول الطلب وإعداد الاتفاقية" : "قبول الطلب وتفعيل العقد"}
                 </button>
 
                 <button

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useNotifications } from "@/src/contexts/notifications-context";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 import { useAdmin } from "@/src/contexts/admin-context";
@@ -8,17 +8,27 @@ import { useAuth } from "@/src/contexts/auth-context";
 import { apiClient } from "@/src/services/api-client";
 import { materialsService } from "@/src/services/materials-service";
 import { reportApiError, requireData } from "@/src/services/api-result";
+import { libraryFileTypes, libraryMaterial, libraryMaxFileMb, libraryService, type LibraryContribution, type ResourceType } from "@/src/services/library-service";
 import { isCourseInMajor } from "@/src/data/course-majors-mapping";
 import { initialCourses } from "../data/initial-courses-data";
 import { LibraryCategory, LibraryFile, LibraryCourse } from "../types";
 import type { CourseMaterialItem } from "@/src/types/admin";
+
+const contributionTypes: Record<LibraryCategory, ResourceType> = {
+  books: "APPROVED_REFERENCE",
+  summaries: "SUMMARY",
+  exams: "EXAM_MODEL",
+  other: "LECTURE",
+};
 
 export function useStudentLibrary() {
   const { notify } = useNotifications();
   const { selectedPlan, hasPlanSelected, isLoaded: isPlanLoaded } = useStudyPlan();
   const { materials: adminMaterials, addMaterial } = useAdmin();
   const { user } = useAuth();
+  const mock = apiClient.isUsingMock();
   const [liveCatalog, setLiveCatalog] = useState<Awaited<ReturnType<typeof materialsService.getLibraryCatalog>>["data"]>(null);
+  const [contributions, setContributions] = useState<{ userId: string; rows: LibraryContribution[] } | null>(null);
   const [isLoading, setIsLoading] = useState(!apiClient.isUsingMock());
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -41,7 +51,19 @@ export function useStudentLibrary() {
     return () => { active = false; };
   }, [user?.id]);
 
-  const materials: CourseMaterialItem[] = apiClient.isUsingMock()
+  useEffect(() => {
+    if (mock || !user?.id) return;
+    const userId = user.id;
+    let active = true;
+    void libraryService.contributions(false).then((rows) => {
+      if (active) setContributions({ userId, rows });
+    }).catch((error: unknown) => {
+      if (active) reportApiError(error);
+    });
+    return () => { active = false; };
+  }, [mock, user?.id]);
+
+  const materials: CourseMaterialItem[] = useMemo(() => mock
     ? adminMaterials
     : (liveCatalog?.materials ?? []).map((item) => ({
         ...item,
@@ -55,9 +77,9 @@ export function useStudentLibrary() {
         author: item.author ?? "غير متاح",
         fileName: undefined,
         status: "منشور" as const,
-        description: undefined,
+        description: item.description,
         url: `/api/backend/library/resources/${item.id}/download`,
-      }));
+      })), [mock, adminMaterials, liveCatalog]);
 
   const courses = useMemo<LibraryCourse[]>(() => {
     const courseMap = new Map<string, LibraryCourse>();
@@ -86,7 +108,7 @@ export function useStudentLibrary() {
       });
     });
 
-    if (hasPlanSelected) selectedPlan.courses.forEach((pc) => {
+    if (mock && hasPlanSelected) selectedPlan.courses.forEach((pc) => {
       const code = pc.code.toUpperCase();
       if (!courseMap.has(code)) {
         courseMap.set(code, {
@@ -128,9 +150,9 @@ export function useStudentLibrary() {
 
       if (courseEntry) {
         let category: LibraryCategory = "other";
-        if (m.category === "summaries" || m.category === "الملخصات") category = "summaries";
+        if (["summaries", "الملخصات", "الملاحظات الدراسية"].includes(m.category)) category = "summaries";
         else if (m.category === "exams" || m.category === "النماذج السابقة") category = "exams";
-        else if (m.category === "resources" || m.category === "books" || m.category === "الكتب") category = "books";
+        else if (["resources", "books", "الكتب", "المراجع"].includes(m.category)) category = "books";
         else if (m.category === "lectures" || m.category === "الفيديوهات" || m.category === "other") category = "other";
 
         const existingFile = courseEntry.files.find((f) => f.id === m.id);
@@ -142,7 +164,7 @@ export function useStudentLibrary() {
             author: m.author,
             fileType: m.fileType.toLowerCase().includes("pdf")
               ? "PDF"
-              : m.fileType.toLowerCase().includes("wordprocessingml") || m.fileType.toLowerCase().includes("msword")
+              : m.fileType === "DOCX" || m.fileType.toLowerCase().includes("wordprocessingml") || m.fileType.toLowerCase().includes("msword")
               ? "DOCX"
               : m.fileType.toLowerCase().includes("presentationml") || m.fileType.toLowerCase().includes("powerpoint")
               ? "SLIDES"
@@ -159,7 +181,7 @@ export function useStudentLibrary() {
     });
 
     return Array.from(courseMap.values());
-  }, [selectedPlan, hasPlanSelected, materials, liveCatalog]);
+  }, [mock, selectedPlan, hasPlanSelected, materials, liveCatalog]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
@@ -170,16 +192,27 @@ export function useStudentLibrary() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const [uploadTitle, setUploadTitle] = useState("");
-  const [uploadCourseCode, setUploadCourseCode] = useState("ENCS3310");
+  const [selectedUploadCode, setUploadCourseCode] = useState(mock ? "ENCS3310" : "");
+  const uploadCourseCode = courses.some((course) => course.code === selectedUploadCode)
+    ? selectedUploadCode : courses[0]?.code ?? "";
   const [uploadCategory, setUploadCategory] = useState<LibraryCategory>("summaries");
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadFileName, setUploadFileName] = useState("");
   const [uploadFileSize, setUploadFileSize] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitting = useRef(false);
 
   const currentStudentName = user?.name || "";
 
   const myContributions = useMemo(() => {
-    if (!apiClient.isUsingMock()) return [];
+    if (!mock) {
+      if (!contributions || contributions.userId !== user?.id) return [];
+      const subjects = new Map(liveCatalog?.subjects.map((subject) => [subject.id, subject]));
+      return contributions.rows.map((item) => ({
+        ...libraryMaterial(item, subjects),
+        description: item.review_reason ?? item.description ?? undefined,
+      }));
+    }
     return materials.filter(
       (m) =>
         m.studentName === currentStudentName ||
@@ -188,7 +221,7 @@ export function useStudentLibrary() {
         m.status === "قيد المراجعة" ||
         m.status === "مرفوض"
     );
-  }, [materials, currentStudentName]);
+  }, [mock, contributions, liveCatalog, user?.id, materials, currentStudentName]);
 
   const filteredCourses = useMemo(() => {
     return courses.filter((c) => {
@@ -227,6 +260,11 @@ export function useStudentLibrary() {
   };
 
   const handleFileSelect = (file: File) => {
+    if (submitting.current) return;
+    if (!mock && (!libraryFileTypes.includes("." + file.name.split(".").pop()?.toLowerCase()) || file.size > libraryMaxFileMb * 1024 * 1024)) {
+      reportApiError(new Error("اختر ملف PDF أو DOCX أو PPTX بحجم لا يتجاوز " + libraryMaxFileMb + " ميجابايت."));
+      return;
+    }
     setUploadFile(file);
     setUploadFileName(file.name);
     setUploadFileSize(`${(file.size / (1024 * 1024)).toFixed(1)} MB`);
@@ -241,15 +279,37 @@ export function useStudentLibrary() {
     setUploadFileSize("");
   };
 
-  const handleUploadSubmit = (e: React.FormEvent) => {
+  const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!uploadTitle.trim()) return;
+    if (!uploadTitle.trim() || submitting.current) return;
 
-    if (!apiClient.isUsingMock()) {
-      reportApiError(new Error("عقد مساهمة المكتبة في OpenAPI لا يحدد حقول الملف المطلوبة بعد؛ لم يُرسل الطلب."));
-      return;
-    }
-
+    if (!mock) {
+      const subject = liveCatalog?.subjects.find((item) => item.subject_code === uploadCourseCode);
+      if (!subject || !uploadFile || !user?.id) {
+        reportApiError(new Error("اختر مادة من المكتبة وأرفق ملفاً قبل الإرسال."));
+        return;
+      }
+      const userId = user.id;
+      submitting.current = true;
+      setIsSubmitting(true);
+      try {
+        const saved = await libraryService.contribute({
+          subject_id: subject.id,
+          title: uploadTitle.trim(),
+          resource_type: contributionTypes[uploadCategory],
+        }, uploadFile);
+        setContributions((previous) => ({
+          userId,
+          rows: [saved, ...(previous?.userId === userId ? previous.rows.filter((row) => row.id !== saved.id) : [])],
+        }));
+      } catch (error) {
+        reportApiError(error);
+        return;
+      } finally {
+        submitting.current = false;
+        setIsSubmitting(false);
+      }
+    } else {
     const matchedCourse = courses.find((c) => c.code.toUpperCase() === uploadCourseCode.toUpperCase());
 
     const catMap: Record<LibraryCategory, string> = {
@@ -275,6 +335,7 @@ export function useStudentLibrary() {
       status: "قيد المراجعة",
       description: `مساهمة طلابية مقدمة للمراجعة الأكاديمية بواسطة ${currentStudentName}`,
     });
+    }
 
     notify({
       type: "library",
@@ -336,6 +397,7 @@ export function useStudentLibrary() {
     uploadFile,
     uploadFileName,
     uploadFileSize,
+    isSubmitting,
     handleFileSelect,
     handleClearFile,
     handleUploadSubmit,

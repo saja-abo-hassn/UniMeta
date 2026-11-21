@@ -5,7 +5,7 @@ import type { components } from "../../types/api";
 
 export interface StudentLibraryCatalog {
   subjects: components["schemas"]["StudentLibrarySubject"][];
-  materials: MockMaterial[];
+  materials: (MockMaterial & { description?: string })[];
 }
 
 class MaterialsService {
@@ -36,6 +36,7 @@ class MaterialsService {
             AUTHORIZED_DIGITAL_BOOK: "الكتب",
           } as Record<string, MockMaterial["category"]>)[resource.resource_type] ?? "المراجع",
           fileType: resource.mime_type,
+          description: resource.description ?? undefined,
           fileSize: `${(resource.file_size / 1024 / 1024).toFixed(2)} MB`,
           date: resource.created_at,
         }));

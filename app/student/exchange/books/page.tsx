@@ -5,7 +5,6 @@ import { BooksHeader } from "./components/books-header";
 import { BooksKPIs } from "./components/books-kpis";
 import { BooksFilterBar } from "./components/books-filter-bar";
 import { BooksGrid } from "./components/books-grid";
-import { apiClient } from "@/src/services/api-client";
 
 export type { BookListingType, ExchangeBook } from "./types";
 
@@ -36,25 +35,10 @@ function MockBookExchangePage() {
     setRequestingBook,
     isAddBookModalOpen,
     setIsAddBookModalOpen,
-    newTitle,
-    setNewTitle,
-    newCourseCode,
-    setNewCourseCode,
-    newAuthor,
-    setNewAuthor,
-    newType,
-    setNewType,
-    newPrice,
-    setNewPrice,
-    newRentalPeriod,
-    setNewRentalPeriod,
-    newExchangeTarget,
-    setNewExchangeTarget,
-    newCondition,
-    setNewCondition,
-    newNotes,
-    setNewNotes,
     handleAddBookSubmit,
+    mock,
+    busy,
+    requestBook,
   } = useExchangeBooks();
 
   return (
@@ -74,7 +58,8 @@ function MockBookExchangePage() {
 
       <BooksGrid
         books={filteredBooks}
-        onRequestBook={(bk) => setRequestingBook(bk)}
+        onRequestBook={requestBook}
+        busy={busy}
       />
 
       {requestingBook && (
@@ -111,8 +96,9 @@ function MockBookExchangePage() {
       {isAddBookModalOpen && (
         <AddBookModal
           isOpen={isAddBookModalOpen}
-          publishAvailable={apiClient.isUsingMock()}
-          onClose={() => setIsAddBookModalOpen(false)}
+          mock={mock}
+          isSaving={busy}
+          onClose={() => { if (!busy) setIsAddBookModalOpen(false); }}
           onSubmit={handleAddBookSubmit}
         />
       )}

@@ -6,6 +6,7 @@ import { ContentTypeSelect } from "./content-type-select";
 import { FileDropzone } from "./file-dropzone";
 import { FilePreview } from "./file-preview";
 import { ContentFormValues, ContentFormErrors, ContentUploadState } from "./types";
+import { API_CONFIG } from "@/src/services/api-client";
 
 interface ContentFormProps {
   values: ContentFormValues;
@@ -115,12 +116,13 @@ export function ContentForm({
           <input
             id="content-author-input"
             type="text"
+            disabled={!API_CONFIG.useMock}
             value={values.author}
             onChange={(e) => {
               const val = e.target.value;
               onValuesChange((prev) => ({ ...prev, author: val }));
             }}
-            placeholder="مثال: د. أحمد / المكتب الأكاديمي"
+            placeholder={API_CONFIG.useMock ? "مثال: د. أحمد / المكتب الأكاديمي" : "أضف اسم المُعد في الوصف"}
             className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
           />
         </div>
@@ -132,13 +134,14 @@ export function ContentForm({
           <input
             id="content-url-input"
             type="url"
+            disabled={!API_CONFIG.useMock}
             dir="ltr"
             value={values.url}
             onChange={(e) => {
               const val = e.target.value;
               onValuesChange((prev) => ({ ...prev, url: val }));
             }}
-            placeholder="https://drive.google.com/..."
+            placeholder={API_CONFIG.useMock ? "https://drive.google.com/..." : "أرفق الملف مباشرة"}
             className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-mono text-brand-ink focus:outline-none focus:border-brand-primary"
           />
         </div>

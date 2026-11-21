@@ -7,7 +7,7 @@ import { Modal } from "@/components/shared/modal";
 interface DeleteContentModalProps {
   deleteCandidate: CourseMaterialItem | null;
   onClose: () => void;
-  onConfirmDelete: (id: string) => void;
+  onConfirmDelete: (id: string) => Promise<boolean>;
 }
 
 export function DeleteContentModal({
@@ -43,9 +43,8 @@ export function DeleteContentModal({
         </button>
         <button
           type="button"
-          onClick={() => {
-            onConfirmDelete(deleteCandidate.id);
-            onClose();
+          onClick={async () => {
+            if (await onConfirmDelete(deleteCandidate.id)) onClose();
           }}
           className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
         >

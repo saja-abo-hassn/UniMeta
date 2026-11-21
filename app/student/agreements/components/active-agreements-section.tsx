@@ -122,7 +122,7 @@ export function ActiveAgreementsSection({
                     <span className="font-mono text-xs text-brand-ink" dir="ltr">
                       {agreement.returnDeadline}
                     </span>
-                    {agreement.status !== "مكتملة" && (
+                    {agreement.returnDeadline !== "—" && agreement.status !== "مكتملة" && (
                       <span
                         className={`text-[10px] font-bold block ${
                           agreement.daysRemaining <= 2 ? "text-amber-600" : "text-brand-hover-medium"
@@ -135,7 +135,7 @@ export function ActiveAgreementsSection({
                 </td>
 
                 <td className="py-4 px-3 font-bold text-brand-primary">
-                  {formatCurrency(agreement.depositAmount, "ILS")}
+                  {agreement.live?.depositLabel ?? formatCurrency(agreement.depositAmount, "ILS")}
                 </td>
 
                 <td className="py-4 px-3">
@@ -148,13 +148,13 @@ export function ActiveAgreementsSection({
                         : "bg-slate-100 text-brand-muted border border-brand-border-soft"
                     }`}
                   >
-                    {agreement.status}
+                    {agreement.live?.statusLabel ?? agreement.status}
                   </span>
                 </td>
 
                 <td className="py-4 px-3">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    {agreement.status !== "مكتملة" && (
+                    {!agreement.live && agreement.status !== "مكتملة" && (
                       <>
                         <button
                           type="button"
@@ -172,7 +172,7 @@ export function ActiveAgreementsSection({
                         </button>
                       </>
                     )}
-                    {agreement.status === "مكتملة" && (
+                    {!agreement.live && agreement.status === "مكتملة" && (
                       <span className="text-[11px] text-brand-muted font-medium">
                         تم استرداد التأمين ✓
                       </span>

@@ -103,7 +103,7 @@ export function MaterialsTable({
                     <div className="flex items-center gap-1.5 text-xs text-brand-muted">
                       <span>{item.fileSize}</span>
                       <span>•</span>
-                      <span className="text-brand-primary font-bold">{item.downloads} تحميل</span>
+                      <span className="text-brand-primary font-bold">{item.downloads < 0 ? "—" : item.downloads + " تحميل"}</span>
                     </div>
                   </td>
                   <td className="py-3 px-3.5">

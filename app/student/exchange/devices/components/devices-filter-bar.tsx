@@ -9,6 +9,7 @@ interface DevicesFilterBarProps {
   setCategoryFilter: (category: string) => void;
   typeFilter: string;
   setTypeFilter: (type: string) => void;
+  categories?: string[];
 }
 
 export function DevicesFilterBar({
@@ -18,6 +19,7 @@ export function DevicesFilterBar({
   setCategoryFilter,
   typeFilter,
   setTypeFilter,
+  categories = ["متحكمات ومستشعرات", "حواسيب وشاشات", "أدوات قياس ومعدات", "أجهزة شبكات"],
 }: DevicesFilterBarProps) {
   return (
     <section className="p-4 sm:p-5 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-3">
@@ -44,10 +46,7 @@ export function DevicesFilterBar({
             className="px-3 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
           >
             <option value="all">كافة الفئات</option>
-            <option value="متحكمات ومستشعرات">متحكمات ومستشعرات</option>
-            <option value="حواسيب وشاشات">حواسيب وشاشات</option>
-            <option value="أدوات قياس ومعدات">أدوات قياس ومعدات</option>
-            <option value="أجهزة شبكات">أجهزة شبكات</option>
+            {categories.map((category) => <option key={category} value={category}>{category}</option>)}
           </select>
 
           <select
@@ -59,6 +58,7 @@ export function DevicesFilterBar({
             <option value="إعارة مجانية">إعارة مجانية</option>
             <option value="استئجار رمزي">استئجار رمزي</option>
             <option value="تبادل بأداة أخرى">تبادل بأداة أخرى</option>
+            <option value="بيع">بيع</option>
           </select>
         </div>
       </div>

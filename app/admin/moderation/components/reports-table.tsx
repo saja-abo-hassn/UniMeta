@@ -1,10 +1,11 @@
 import { AdminReportItem } from "@/src/contexts/admin-context";
+import { reportLabels, type ModerationReport } from "../hooks/use-admin-moderation";
 import { TARGET_TYPE_BADGES, STATUS_CONFIG } from "../types";
 
 interface ReportsTableProps {
-  reports: AdminReportItem[];
-  onSelectReport: (report: AdminReportItem) => void;
-  onOpenActionModal: (report: AdminReportItem) => void;
+  reports: ModerationReport[];
+  onSelectReport: (report: ModerationReport) => void;
+  onOpenActionModal: (report: ModerationReport) => void;
   onDeleteCandidate: (report: AdminReportItem) => void;
 }
 
@@ -80,7 +81,7 @@ export function ReportsTable({
                     <td className="py-3.5 px-3.5">
                       <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border inline-flex items-center gap-1.5 ${statusCfg.badge}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
-                        <span>{statusCfg.label}</span>
+                        <span>{item.serverStatus ? reportLabels[item.serverStatus] : statusCfg.label}</span>
                       </span>
                     </td>
                     <td className="py-3.5 px-3.5 text-center">
@@ -97,6 +98,7 @@ export function ReportsTable({
                         <button
                           type="button"
                           onClick={() => onOpenActionModal(item)}
+                          disabled={item.serverStatus === "CLOSED"}
                           className="px-2.5 py-1.5 rounded-lg bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold transition-colors shadow-2xs"
                           title="اتخاذ إجراء إداري"
                         >
@@ -106,6 +108,7 @@ export function ReportsTable({
                         <button
                           type="button"
                           onClick={() => onDeleteCandidate(item)}
+                          disabled={!!item.serverStatus}
                           className="p-1.5 rounded-lg border border-red-200 bg-white text-red-600 hover:bg-red-50 text-xs transition-colors"
                           title="حذف سجل البلاغ"
                         >

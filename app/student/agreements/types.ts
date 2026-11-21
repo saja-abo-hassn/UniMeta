@@ -1,7 +1,7 @@
 export interface AgreementItem {
   id: string;
   itemName: string;
-  category: "أجهزة" | "كتب ومراجع";
+  category: "أجهزة" | "كتب ومراجع" | "—";
   itemImage?: string;
   otherParty: {
     name: string;
@@ -16,18 +16,19 @@ export interface AgreementItem {
   dailyRate?: number;
   status: "نشطة" | "بانتظار الإرجاع" | "مكتملة";
   notes?: string;
+  live?: { statusLabel: string; depositLabel: string };
 }
 
 export interface OutgoingRequestItem {
   id: string;
   itemName: string;
-  category: "أجهزة" | "كتب ومراجع";
+  category: "أجهزة" | "كتب ومراجع" | "—";
   ownerName: string;
   ownerMajor: string;
   requestedDuration: string;
   proposedStartDate: string;
-  deposit: number;
-  status: "قيد المراجعة" | "تمت الموافقة" | "مرفوض" | "طلب تعديل";
+  deposit: number | null;
+  status: "قيد المراجعة" | "تمت الموافقة" | "مرفوض" | "طلب تعديل" | "مسحوب" | "ملغى";
   requestDate: string;
   rejectionReason?: string;
   modificationNote?: string;
@@ -46,5 +47,7 @@ export interface IncomingRequestItem {
   proposedStartDate: string;
   requestDate: string;
   message?: string;
+  offerId?: number;
+  offerType?: import("@/src/services/marketplace-service").OfferType;
 }
 

@@ -1,15 +1,22 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useAdmin, CourseMaterialItem, ContentStatus } from "@/src/contexts/admin-context";
+import { apiClient } from "@/src/services/api-client";
+import { reportApiError } from "@/src/services/api-result";
+import { libraryMaterial, libraryService, type LibraryContribution, type LibraryResource, type LibrarySubject, type ResourceType } from "@/src/services/library-service";
 import {
-  MAIN_CATEGORIES,
   MainCategoryType,
   normalizeCategory,
-  ALLOWED_EXTENSIONS,
-  MAX_FILE_SIZE_MB,
   ContentFormData,
 } from "../types";
+
+const resourceTypes: Record<MainCategoryType, ResourceType> = {
+  "الكتب": "APPROVED_REFERENCE",
+  "الملخصات": "SUMMARY",
+  "النماذج السابقة": "EXAM_MODEL",
+  "الفيديوهات": "LECTURE",
+};
 
 function makeManualCourseCode(courseName: string): string {
   const normalized = courseName.trim().replace(/\s+/g, " ").toLocaleLowerCase();
@@ -20,8 +27,44 @@ function makeManualCourseCode(courseName: string): string {
   return `MAN-${(hash >>> 0).toString(36).toUpperCase()}`;
 }
 
-export function useAdminContent() {
-  const { courses, materials, addMaterial, updateMaterial, deleteMaterial, toggleMaterialStatus } = useAdmin();
+export function useAdminContent(includeContributions = true) {
+  const { courses, materials: mockMaterials, addMaterial, updateMaterial, deleteMaterial: deleteMock, toggleMaterialStatus: toggleMock } = useAdmin();
+  const mock = apiClient.isUsingMock();
+  const [subjects, setSubjects] = useState<LibrarySubject[]>([]);
+  const [resources, setResources] = useState<LibraryResource[]>([]);
+  const [contributions, setContributions] = useState<LibraryContribution[]>([]);
+  const [isLoading, setIsLoading] = useState(!mock);
+  const [loadError, setLoadError] = useState("");
+  const operation = useRef(false);
+  const subjectsById = useMemo(() => new Map(subjects.map((subject) => [subject.id, subject])), [subjects]);
+  const materials = useMemo(() => mock ? mockMaterials
+    : resources.map((resource) => libraryMaterial(resource, subjectsById)), [mock, mockMaterials, resources, subjectsById]);
+  const pendingMaterials = mock ? materials.filter((item) => item.status === "قيد المراجعة")
+    : contributions.filter((item) => item.status === "PENDING").map((item) => ({
+      ...libraryMaterial(item, subjectsById),
+      url: "/api/backend/admin/library/contributions/" + item.id + "/download",
+    }));
+
+  useEffect(() => {
+    if (mock) return;
+    let active = true;
+    void Promise.all([libraryService.adminSubjects(), libraryService.adminResources()])
+      .then(([catalog, rows]) => {
+        if (!active) return;
+        setSubjects(catalog);
+        setResources(rows);
+      }).catch((error: Error) => {
+        if (active) setLoadError(error.message);
+      }).finally(() => {
+        if (active) setIsLoading(false);
+      });
+    if (includeContributions) void libraryService.contributions(true).then((rows) => {
+      if (active) setContributions(rows);
+    }).catch((error: unknown) => {
+      if (active) reportApiError(error);
+    });
+    return () => { active = false; };
+  }, [mock, includeContributions]);
 
   const [activeCategory, setActiveCategory] = useState<"all" | MainCategoryType>("all");
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<string>("all");
@@ -39,16 +82,16 @@ export function useAdminContent() {
     category: "الملخصات",
     fileType: "PDF",
     fileSize: "2.5 MB",
-    author: "المكتب الأكاديمي",
+    author: mock ? "المكتب الأكاديمي" : "",
     status: "منشور",
     description: "",
     url: "",
   });
   const [formError, setFormError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState("");
 
   const courseSuggestions = useMemo(() => {
+    if (!mock) return [...new Set(subjects.map((subject) => subject.subject_name))];
     const set = new Set<string>();
     courses.forEach((c) => {
       if (c.nameAr) set.add(c.nameAr);
@@ -62,7 +105,20 @@ export function useAdminContent() {
     set.add("الفيزياء العامة 1");
     set.add("الكيمياء العامة");
     return Array.from(set);
-  }, [courses, materials]);
+  }, [mock, subjects, courses, materials]);
+
+  const availableCourses = useMemo(() => {
+    if (!mock) return subjects.map((subject) => ({
+      id: String(subject.id), code: subject.subject_code, name: subject.subject_name,
+    }));
+    const options = courses.map((course) => ({ id: course.id || course.code, code: course.code, name: course.nameAr }));
+    courseSuggestions.forEach((name, index) => {
+      if (!options.some((option) => option.name === name)) {
+        options.push({ id: "suggestion-" + index, code: "CRS-" + (100 + index), name });
+      }
+    });
+    return options;
+  }, [mock, subjects, courses, courseSuggestions]);
 
   const existingSubjects = useMemo(() => {
     const map = new Map<string, number>();
@@ -111,6 +167,7 @@ export function useAdminContent() {
   }, [materials, selectedSubjectFilter, activeStatus]);
 
   const handleOpenAdd = () => {
+    if (!mock && isLoading) return;
     setFormData({
       courseName: selectedSubjectFilter !== "all" ? selectedSubjectFilter : "",
       courseCode: "",
@@ -118,13 +175,12 @@ export function useAdminContent() {
       category: activeCategory !== "all" ? activeCategory : "الملخصات",
       fileType: "PDF",
       fileSize: "2.5 MB",
-      author: "المكتب الأكاديمي",
+      author: mock ? "المكتب الأكاديمي" : "",
       status: "منشور",
       description: "",
       url: "",
     });
     setFormError("");
-    setUploadedFileName("");
     setIsAddModalOpen(true);
   };
 
@@ -143,59 +199,67 @@ export function useAdminContent() {
       url: item.url || "",
     });
     setFormError("");
-    setUploadedFileName("");
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setFormError("");
-    const fileName = file.name.toLowerCase();
-    const ext = "." + fileName.split(".").pop();
-
-    if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      setFormError(`صيغة الملف غير مدعومة (${ext}). الصيغ المسموحة هي: PDF, Word, PowerPoint, صور, MP4, ZIP.`);
-      return;
+  const saveResource = async (file?: File, item?: CourseMaterialItem, selectedId?: string) => {
+    if (operation.current) return false;
+    const matches = subjects.filter((subject) => selectedId
+      ? String(subject.id) === selectedId
+      : subject.subject_name === formData.courseName.trim() && subject.subject_code.toUpperCase() === formData.courseCode.trim().toUpperCase());
+    if (matches.length !== 1) {
+      setFormError("اختر مادة موجودة في المكتبة وتأكد من مطابقة اسمها ورمزها.");
+      return false;
+    }
+    if (formData.status !== "منشور" && formData.status !== "مسودة") {
+      setFormError("اختر منشور أو مسودة. المراجعة تخص مساهمات الطلاب.");
+      return false;
+    }
+    if (!item && (!file || formData.url.trim() || formData.author.trim())) {
+      setFormError("ارفع ملفاً واترك حقلي الرابط والمُعد فارغين. يمكنك كتابة معلومات المُعد في الوصف.");
+      return false;
     }
 
-    const fileSizeMB = file.size / (1024 * 1024);
-    if (fileSizeMB > MAX_FILE_SIZE_MB) {
-      setFormError(`حجم الملف كبير جداً (${fileSizeMB.toFixed(1)} ميجابايت). الحد الأقصى المسموح به هو ${MAX_FILE_SIZE_MB} ميجابايت.`);
-      return;
-    }
-
-    let detectedType: "PDF" | "DOCX" | "SLIDES" | "IMAGE" | "ZIP" | "VIDEO" | "LINK" = "PDF";
-    if (ext === ".pdf") detectedType = "PDF";
-    else if (ext === ".docx" || ext === ".doc") detectedType = "DOCX";
-    else if (ext === ".pptx" || ext === ".ppt") detectedType = "SLIDES";
-    else if (ext === ".png" || ext === ".jpg" || ext === ".jpeg") detectedType = "IMAGE";
-    else if (ext === ".mp4") detectedType = "VIDEO";
-    else if (ext === ".zip") detectedType = "ZIP";
-
+    const original = item && resources.find((resource) => String(resource.id) === item.id);
+    const fields = {
+      subject_id: matches[0].id,
+      title: formData.title.trim(),
+      description: formData.description.trim() || null,
+      resource_type: original && item && normalizeCategory(item.category) === formData.category
+        ? original.resource_type : resourceTypes[formData.category],
+      visibility_status: formData.status === "منشور" ? "VISIBLE" as const : "HIDDEN" as const,
+    };
+    operation.current = true;
     setIsUploading(true);
-    setUploadedFileName(file.name);
-
-    setTimeout(() => {
+    setFormError("");
+    try {
+      if (item) {
+        const saved = await libraryService.updateResource(item.id, fields);
+        setResources((rows) => rows.map((row) => row.id === saved.id ? { ...row, ...saved } : row));
+        setEditingItem(null);
+      } else if (file) {
+        const saved = await libraryService.createResource(fields, file);
+        setResources((rows) => [...rows, { ...saved, download_requests: 0 }]);
+        setIsAddModalOpen(false);
+      }
+      return true;
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "تعذر حفظ المحتوى.");
+      return false;
+    } finally {
+      operation.current = false;
       setIsUploading(false);
-      setFormData((prev) => ({
-        ...prev,
-        fileSize: `${fileSizeMB.toFixed(1)} MB`,
-        fileType: detectedType,
-        title: prev.title || file.name.replace(/\.[^/.]+$/, ""),
-      }));
-    }, 500);
+    }
   };
 
-  const handleSubmitAdd = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitAdd = async (file: File | null, selectedId: string) => {
+    if (!mock) return saveResource(file ?? undefined, undefined, selectedId);
     if (!formData.courseName.trim()) {
       setFormError("يرجى كتابة اسم المادة الدراسية (مثال: تشريح الإنسان، برمجة الويب، هندسة البرمجيات...).");
-      return;
+      return false;
     }
     if (!formData.title.trim()) {
       setFormError("يرجى إدخال عنوان المادة أو الملف التعليمي.");
-      return;
+      return false;
     }
 
     const normalizedCourseName = formData.courseName.trim().replace(/\s+/g, " ").toLocaleLowerCase();
@@ -223,11 +287,16 @@ export function useAdminContent() {
     });
 
     setIsAddModalOpen(false);
+    return true;
   };
 
   const handleSubmitEdit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingItem) return;
+    if (!mock) {
+      void saveResource(undefined, editingItem);
+      return;
+    }
 
     if (!formData.courseName.trim()) {
       setFormError("يرجى كتابة اسم المادة الدراسية.");
@@ -254,8 +323,62 @@ export function useAdminContent() {
     setEditingItem(null);
   };
 
+  const deleteMaterial = async (id: string) => {
+    if (mock) {
+      deleteMock(id);
+      return true;
+    }
+    if (operation.current) return false;
+    operation.current = true;
+    try {
+      await libraryService.deleteResource(id);
+      setResources((rows) => rows.filter((row) => String(row.id) !== id));
+      return true;
+    } catch (error) {
+      reportApiError(error);
+      return false;
+    } finally {
+      operation.current = false;
+    }
+  };
+
+  const toggleMaterialStatus = async (id: string, status: ContentStatus) => {
+    if (mock) return toggleMock(id, status);
+    if (operation.current) return;
+    operation.current = true;
+    try {
+      const saved = await libraryService.updateResource(id, { visibility_status: status === "منشور" ? "VISIBLE" : "HIDDEN" });
+      setResources((rows) => rows.map((row) => row.id === saved.id ? { ...row, ...saved } : row));
+    } catch (error) {
+      reportApiError(error);
+    } finally {
+      operation.current = false;
+    }
+  };
+
+  const reviewContribution = async (id: string, decision: "APPROVED" | "REJECTED") => {
+    if (mock) return toggleMock(id, decision === "APPROVED" ? "منشور" : "مرفوض");
+    if (operation.current || isLoading) return;
+    const reason = window.prompt("سبب قرار المراجعة")?.trim();
+    if (!reason) return;
+    operation.current = true;
+    try {
+      await libraryService.review(id, decision, reason);
+      setContributions((rows) => rows.filter((row) => String(row.id) !== id));
+      if (decision === "APPROVED") setResources(await libraryService.adminResources());
+    } catch (error) {
+      reportApiError(error);
+    } finally {
+      operation.current = false;
+    }
+  };
+
   return {
     materials,
+    resources,
+    pendingMaterials,
+    isLoading,
+    loadError,
     activeCategory,
     setActiveCategory,
     selectedSubjectFilter,
@@ -274,18 +397,18 @@ export function useAdminContent() {
     setFormData,
     formError,
     isUploading,
-    uploadedFileName,
+    availableCourses,
     courseSuggestions,
     existingSubjects,
     filteredMaterials,
     categoryCounts,
     handleOpenAdd,
     handleOpenEdit,
-    handleFileChange,
     handleSubmitAdd,
     handleSubmitEdit,
     deleteMaterial,
     toggleMaterialStatus,
+    reviewContribution,
   };
 }
 

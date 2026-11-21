@@ -6,14 +6,15 @@ import { DeviceItem } from "../types";
 interface DevicesGridProps {
   filteredDevices: DeviceItem[];
   onRequestDevice: (device: DeviceItem) => void;
+  busy?: boolean;
 }
 
-export function DevicesGrid({ filteredDevices, onRequestDevice }: DevicesGridProps) {
+export function DevicesGrid({ filteredDevices, onRequestDevice, busy }: DevicesGridProps) {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between text-xs text-brand-muted px-1 font-semibold">
         <span>نتائج الأجهزة ({filteredDevices.length})</span>
-        <span>يتم توثيق كل طلب إعارة تلقائياً في قسم &quot;اتفاقياتي&quot;</span>
+        <span>تُنشأ الاتفاقية بعد قبول صاحب العرض للطلب</span>
       </div>
 
       {filteredDevices.length === 0 ? (
@@ -96,7 +97,7 @@ export function DevicesGrid({ filteredDevices, onRequestDevice }: DevicesGridPro
               <div className="pt-3 border-t border-brand-border-soft">
                 <button
                   type="button"
-                  disabled={dev.status !== "متاح فوراً"}
+                  disabled={busy || dev.ownOffer || dev.status !== "متاح فوراً"}
                   onClick={() => onRequestDevice(dev)}
                   className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all ${
                     dev.status === "متاح فوراً"
@@ -104,7 +105,8 @@ export function DevicesGrid({ filteredDevices, onRequestDevice }: DevicesGridPro
                       : "bg-slate-100 text-brand-subtle cursor-not-allowed"
                   }`}
                 >
-                  {dev.status === "متاح فوراً" ? "طلب استئجار / استعارة" : "الجهاز غير متاح حالياً"}
+                  {dev.ownOffer ? "عرضك" : dev.status !== "متاح فوراً" ? "الجهاز غير متاح حالياً"
+                    : dev.type === "بيع" ? "طلب شراء" : dev.type === "تبادل بأداة أخرى" ? "تقديم عرض تبادل" : "طلب استئجار / استعارة"}
                 </button>
               </div>
             </div>

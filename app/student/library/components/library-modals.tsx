@@ -3,6 +3,8 @@
 import React, { useRef } from "react";
 import { LibraryCategory, LibraryFile, LibraryCourse } from "../types";
 import { Modal } from "@/components/shared/modal";
+import { apiClient } from "@/src/services/api-client";
+import { libraryFileTypes, libraryMaxFileMb } from "@/src/services/library-service";
 
 interface LibraryModalsProps {
   courses: LibraryCourse[];
@@ -19,6 +21,7 @@ interface LibraryModalsProps {
   setUploadCategory: (category: LibraryCategory) => void;
   uploadFileName?: string;
   uploadFileSize?: string;
+  isSubmitting: boolean;
   onFileSelect?: (file: File) => void;
   onClearFile?: () => void;
   onUploadSubmit: (e: React.FormEvent) => void;
@@ -39,6 +42,7 @@ export function LibraryModals({
   setUploadCategory,
   uploadFileName,
   uploadFileSize,
+  isSubmitting,
   onFileSelect,
   onClearFile,
   onUploadSubmit,
@@ -192,7 +196,8 @@ export function LibraryModals({
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              accept=".pdf,.docx,.doc,.pptx,.ppt,.zip,.mp4,.png,.jpg"
+              accept={apiClient.isUsingMock() ? ".pdf,.docx,.doc,.pptx,.ppt,.zip,.mp4,.png,.jpg" : libraryFileTypes.join(",")}
+              disabled={isSubmitting}
               className="hidden"
             />
 
@@ -220,6 +225,7 @@ export function LibraryModals({
                     <button
                       type="button"
                       onClick={onClearFile}
+                      disabled={isSubmitting}
                       className="text-[11px] text-red-600 hover:bg-red-50 font-bold px-2 py-1 rounded-lg"
                     >
                       إلغاء
@@ -234,7 +240,7 @@ export function LibraryModals({
               >
                 <span className="text-2xl block mb-1">☁️</span>
                 <p className="text-xs font-bold text-brand-primary">انقر لاختيار الملف (PDF, Word, PPT)</p>
-                <p className="text-[10px] text-brand-muted">الحد الأقصى 25 ميجابايت</p>
+                <p className="text-[10px] text-brand-muted">الحد الأقصى {apiClient.isUsingMock() ? 25 : libraryMaxFileMb} ميجابايت</p>
               </div>
             )}
           </Modal.Body>
@@ -249,6 +255,7 @@ export function LibraryModals({
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               className="px-5 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer transition-colors"
             >
               إرسال للمراجعة

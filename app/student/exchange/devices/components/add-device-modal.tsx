@@ -18,7 +18,8 @@ interface AddDeviceModalProps {
   contactPhone: string;
   setContactPhone: (phone: string) => void;
   contactPhoneError: string;
-  publishAvailable: boolean;
+  mock: boolean;
+  isSaving: boolean;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -36,7 +37,8 @@ export function AddDeviceModal({
   contactPhone,
   setContactPhone,
   contactPhoneError,
-  publishAvailable,
+  mock,
+  isSaving,
   onSubmit,
 }: AddDeviceModalProps) {
   if (!isOpen) return null;
@@ -64,9 +66,9 @@ export function AddDeviceModal({
 
           <div className="space-y-1">
             <label className="font-bold text-brand-ink block">رقم الجوال للتواصل:</label>
-            <input type="tel" required inputMode="numeric" maxLength={10} value={contactPhone}
+            <input type="tel" required={mock} disabled={!mock} inputMode="numeric" maxLength={10} value={contactPhone}
               onChange={(e) => setContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-              placeholder="مثال: 0599182744" dir="ltr"
+              placeholder={mock ? "مثال: 0599182744" : "التواصل عبر طلب العرض"} dir="ltr"
               className={`w-full px-3.5 py-2 rounded-xl bg-white border font-semibold text-brand-ink ${contactPhoneError ? "border-red-400" : "border-brand-border-soft"}`} />
             {contactPhoneError && <p className="text-[11px] text-red-600">{contactPhoneError}</p>}
           </div>
@@ -101,14 +103,15 @@ export function AddDeviceModal({
             </div>
           </div>
 
-          {newDeviceType === "استئجار رمزي" && (
+          {(newDeviceType === "استئجار رمزي" || (!mock && newDeviceType === "تبادل بأداة أخرى")) && (
             <div className="space-y-1">
-              <label className="font-bold text-brand-ink block">بدل الإيجار أو الشروط:</label>
+              <label className="font-bold text-brand-ink block">{mock ? "بدل الإيجار أو الشروط:" : newDeviceType === "تبادل بأداة أخرى" ? "الأداة المطلوبة بالمقابل" : "السعر بالشيكل / المدة بالأيام"}</label>
               <input
                 type="text"
                 value={newFeeText}
                 onChange={(e) => setNewFeeText(e.target.value)}
-                placeholder="مثال: 15 ₪ / أسبوع مع تأمين"
+                required={!mock}
+                placeholder={mock ? "مثال: 15 ₪ / أسبوع مع تأمين" : newDeviceType === "تبادل بأداة أخرى" ? "مثال: راسبيري باي 4" : "15 / 7"}
                 className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
               />
             </div>
@@ -123,13 +126,12 @@ export function AddDeviceModal({
           >
             إلغاء
           </button>
-          {!publishAvailable && <p className="basis-full text-[11px] text-red-600">النشر متوقف حالياً: عقد الـ API لا يحفظ رقم التواصل أو تفاصيل العرض المطلوبة.</p>}
           <button
             type="submit"
-            disabled={!publishAvailable}
+            disabled={isSaving}
             className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium disabled:bg-slate-300 cursor-pointer disabled:cursor-not-allowed"
           >
-            {publishAvailable ? "حفظ وإدراج" : "النشر غير متاح حالياً"}
+            حفظ وإدراج
           </button>
         </Modal.Footer>
       </form>

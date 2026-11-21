@@ -15,10 +15,16 @@ const DynamicContentModals = dynamic(
   { ssr: false }
 );
 
-export default function AdminContentPage() { return <MockAdminContentPage/>; }
-function MockAdminContentPage() {
+export default function AdminContentPage() {
+  return <PermissionGuard permission="manage_content"><AdminContent /></PermissionGuard>;
+}
+
+function AdminContent() {
   const {
     materials,
+    pendingMaterials,
+    isLoading,
+    loadError,
     activeCategory,
     setActiveCategory,
     selectedSubjectFilter,
@@ -37,31 +43,28 @@ function MockAdminContentPage() {
     setFormData,
     formError,
     isUploading,
-    uploadedFileName,
+    availableCourses,
     courseSuggestions,
     existingSubjects,
     filteredMaterials,
     categoryCounts,
     handleOpenAdd,
     handleOpenEdit,
-    handleFileChange,
     handleSubmitAdd,
     handleSubmitEdit,
     deleteMaterial,
     toggleMaterialStatus,
+    reviewContribution,
   } = useAdminContent();
 
-  const pendingMaterials = materials.filter((m) => m.status === "قيد المراجعة");
-
   return (
-    <PermissionGuard permission="manage_content">
       <div className="space-y-6" dir="rtl">
         <ContentHeader onOpenAdd={handleOpenAdd} />
 
         <PendingContributions
           materials={pendingMaterials}
-          onApprove={(id) => toggleMaterialStatus(id, "منشور")}
-          onReject={(id) => toggleMaterialStatus(id, "مرفوض")}
+          onApprove={(id) => reviewContribution(id, "APPROVED")}
+          onReject={(id) => reviewContribution(id, "REJECTED")}
         />
 
         <ContentFilterBar
@@ -79,13 +82,15 @@ function MockAdminContentPage() {
           setActiveStatus={setActiveStatus}
         />
 
-        <MaterialsTable
+        {isLoading ? <p role="status">جارٍ تحميل محتوى المكتبة…</p>
+          : loadError ? <p role="alert">{loadError}</p>
+          : <MaterialsTable
           materials={filteredMaterials}
           onOpenAdd={handleOpenAdd}
           onOpenEdit={handleOpenEdit}
           onDeleteClick={setDeleteCandidate}
           onToggleStatus={toggleMaterialStatus}
-        />
+        />}
 
         <DynamicContentModals
           isAddModalOpen={isAddModalOpen}
@@ -99,13 +104,11 @@ function MockAdminContentPage() {
           setFormData={setFormData}
           formError={formError}
           isUploading={isUploading}
-          uploadedFileName={uploadedFileName}
+          availableCourses={availableCourses}
           courseSuggestions={courseSuggestions}
-          onFileChange={handleFileChange}
           onSubmitAdd={handleSubmitAdd}
           onSubmitEdit={handleSubmitEdit}
         />
       </div>
-    </PermissionGuard>
   );
 }

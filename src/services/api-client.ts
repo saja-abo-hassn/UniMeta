@@ -86,10 +86,10 @@ class ApiClient {
     return headers;
   }
 
-  private async request<T>(endpoint: string, init: RequestInit): Promise<LaravelResponse<T>> {
+  private async request<T>(endpoint: string, init: RequestInit, timeoutMs = 30_000): Promise<LaravelResponse<T>> {
     try {
       const timeoutSignal =
-        typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(30_000) : undefined;
+        typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(timeoutMs) : undefined;
       const headers = new Headers({ ...this.getHeaders(), ...init.headers });
       if (init.body instanceof FormData) headers.delete("Content-Type");
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -162,12 +162,12 @@ class ApiClient {
   /**
    * Standard POST request
    */
-  public async post<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
+  public async post<T = unknown>(endpoint: string, body?: unknown, timeoutMs?: number): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for POST ${endpoint}`);
     }
 
-    return this.request<T>(endpoint, { method: "POST", body: body ? JSON.stringify(body) : undefined });
+    return this.request<T>(endpoint, { method: "POST", body: body ? JSON.stringify(body) : undefined }, timeoutMs);
   }
 
   public async patch<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {

@@ -53,6 +53,7 @@ function MockStudentLibraryPage() {
     setUploadCategory,
     uploadFileName,
     uploadFileSize,
+    isSubmitting,
     handleFileSelect,
     handleClearFile,
     handleUploadSubmit,
@@ -95,7 +96,7 @@ function MockStudentLibraryPage() {
 
       {!isLoading && courses.length === 0 && (
         <p role="status" className="p-4 rounded-2xl bg-white border border-brand-border-soft text-sm text-brand-muted">
-          لا توجد مواد منشورة لخطة دراستك حالياً.
+          لا توجد مواد في المكتبة حالياً.
         </p>
       )}
 
@@ -139,6 +140,7 @@ function MockStudentLibraryPage() {
         onDownload={handleDownload}
         isUploadModalOpen={isUploadModalOpen}
         onCloseUpload={() => {
+          if (isSubmitting) return;
           setIsUploadModalOpen(false);
           handleClearFile();
         }}
@@ -150,6 +152,7 @@ function MockStudentLibraryPage() {
         setUploadCategory={setUploadCategory}
         uploadFileName={uploadFileName}
         uploadFileSize={uploadFileSize}
+        isSubmitting={isSubmitting}
         onFileSelect={handleFileSelect}
         onClearFile={handleClearFile}
         onUploadSubmit={handleUploadSubmit}

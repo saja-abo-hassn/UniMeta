@@ -1,15 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { PagePlaceholder } from "@/components/placeholders/page-placeholder";
 import { TableContainer, Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/shared/table";
 import { Button } from "@/components/shared/button";
 import { PermissionGuard } from "@/components/admin/permission-guard";
 import { apiClient } from "@/src/services/api-client";
 import type { components } from "@/types/api";
+import { useAdminContent } from "../content/hooks/use-admin-content";
 
 type LibraryResource = components["schemas"]["LibraryResource"];
-type LibrarySubject = components["schemas"]["LibrarySubject"];
 type ResourceRow = { id: string; title: string; course: string; type: string; status: string; date: string };
+const ContentModals = dynamic(() => import("../content/components/content-modals").then((m) => m.ContentModals), { ssr: false });
 
 const resourceTypes: Record<LibraryResource["resource_type"], string> = {
   SUMMARY: "ملخص",
@@ -20,60 +22,42 @@ const resourceTypes: Record<LibraryResource["resource_type"], string> = {
   AUTHORIZED_DIGITAL_BOOK: "كتاب رقمي مصرح",
 };
 
-export default function AdminLibraryPage() { return <MockAdminLibraryPage/>; }
-function MockAdminLibraryPage() {
+export default function AdminLibraryPage() {
+  return <PermissionGuard permission="manage_content"><AdminLibrary /></PermissionGuard>;
+}
+
+function AdminLibrary() {
   const mockResources: ResourceRow[] = [
     { id: "RES-101", title: "سلايدات المحاضرة 1-4: الخوارزميات", course: "ENCS2340", type: "محاضرة", status: "منشور للطلاب", date: "2026-10-28" },
     { id: "RES-102", title: "ملخص مراجعة شامل لمساق نظم التشغيل", course: "ENCS3330", type: "ملخص", status: "منشور للطلاب", date: "2026-10-25" },
     { id: "RES-103", title: "نموذج امتحان نصفي 2024 - قواعد البيانات", course: "ENCS3320", type: "امتحان سابق", status: "مسودة غير منشورة", date: "2026-11-01" },
   ];
-  const [resources, setResources] = useState<ResourceRow[]>(apiClient.isUsingMock() ? mockResources : []);
-  const [isLoading, setIsLoading] = useState(!apiClient.isUsingMock());
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (apiClient.isUsingMock()) return;
-    let active = true;
-    const load = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const [resourceResponse, subjectResponse] = await Promise.all([
-          apiClient.all<LibraryResource>("/admin/library/resources"),
-          apiClient.all<LibrarySubject>("/admin/library/subjects"),
-        ]);
-        if (resourceResponse.errors || subjectResponse.errors || !resourceResponse.data || !subjectResponse.data) {
-          throw new Error(resourceResponse.message || subjectResponse.message || "تعذر تحميل بيانات المكتبة.");
-        }
-        const subjectById = new Map(subjectResponse.data.map((subject) => [subject.id, subject]));
-        const rows = resourceResponse.data.map((resource): ResourceRow => ({
-          id: String(resource.id),
-          title: resource.title,
-          course: subjectById.get(resource.subject_id)?.subject_code ?? "—",
-          type: resourceTypes[resource.resource_type],
-          status: resource.visibility_status === "VISIBLE" ? "منشور للطلاب" : "مسودة غير منشورة",
-          date: resource.created_at.slice(0, 10),
-        }));
-        if (active) setResources(rows);
-      } catch (loadError) {
-        if (active) setError(loadError instanceof Error ? loadError.message : "تعذر تحميل بيانات المكتبة.");
-      } finally {
-        if (active) setIsLoading(false);
-      }
+  const mock = apiClient.isUsingMock();
+  const content = useAdminContent(false);
+  const [query, setQuery] = useState("");
+  const [type, setType] = useState("");
+  const { isLoading, loadError: error } = content;
+  const materialsById = new Map(content.materials.map((item) => [item.id, item]));
+  const resources = (mock ? mockResources : content.resources.map((resource): ResourceRow => {
+    const id = String(resource.id);
+    return {
+      id,
+      title: resource.title,
+      course: materialsById.get(id)?.courseCode || "—",
+      type: resourceTypes[resource.resource_type],
+      status: resource.visibility_status === "VISIBLE" ? "منشور للطلاب" : "مسودة غير منشورة",
+      date: resource.created_at.slice(0, 10),
     };
-    void load();
-    return () => { active = false; };
-  }, []);
+  })).filter((row) => (!type || row.type === type) && (row.title + " " + row.course).toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
-    <PermissionGuard permission="manage_content">
     <PagePlaceholder
       title="إدارة المكتبة الرقمية"
       description="إدارة المواد الدراسية ورفع المراجع والملخصات، والتحكم في نشر الملفات للطلاب أو حجبها."
       area="admin"
-      serviceNotReadyNotice="نظام رفع الملفات وإدارة المواد الدراسية الفعلي قيد التطوير للمرحلة الخامسة. الملفات المنشورة تظهر تلقائياً في حسابات الطلاب لنفس المساق."
+      serviceNotReadyNotice={mock ? "الملفات المنشورة تظهر تلقائياً في مكتبة الطلاب." : undefined}
       actions={
-        <Button variant="primary" size="sm" disabled>
+        <Button variant="primary" size="sm" disabled={mock || isLoading || !!error} onClick={content.handleOpenAdd}>
           + رفع مصدر أو مرجع جديد
         </Button>
       }
@@ -83,15 +67,14 @@ function MockAdminLibraryPage() {
           <input
             type="text"
             placeholder="ابحث بالعنوان أو رمز المساق..."
-            disabled
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
             className="w-full sm:w-80 text-xs p-2.5 rounded-lg bg-brand-light/60 border border-brand-secondary/30"
           />
           <div className="flex items-center gap-2">
-            <select disabled className="text-xs p-2 rounded-lg bg-brand-light border border-brand-secondary/30">
-              <option>جميع أنواع الملفات</option>
-              <option>ملخصات</option>
-              <option>سلايدات</option>
-              <option>امتحانات سابقة</option>
+            <select value={type} onChange={(event) => setType(event.target.value)} className="text-xs p-2 rounded-lg bg-brand-light border border-brand-secondary/30">
+              <option value="">جميع أنواع الملفات</option>
+              {Object.entries(resourceTypes).map(([key, label]) => <option key={key} value={label}>{label}</option>)}
             </select>
           </div>
         </div>
@@ -135,8 +118,12 @@ function MockAdminLibraryPage() {
                   <TableCell>
                     <button
                       type="button"
-                      disabled
-                      className="text-xs text-brand-primary font-medium opacity-50 cursor-not-allowed"
+                      disabled={mock}
+                      onClick={() => {
+                        const item = materialsById.get(res.id);
+                        if (item) content.handleOpenEdit(item);
+                      }}
+                      className="text-xs text-brand-primary font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       تعديل / حجب
                     </button>
@@ -149,9 +136,25 @@ function MockAdminLibraryPage() {
             </TableBody>
           </Table>
         </TableContainer>
+        <ContentModals
+          isAddModalOpen={content.isAddModalOpen}
+          onCloseAdd={() => content.setIsAddModalOpen(false)}
+          editingItem={content.editingItem}
+          onCloseEdit={() => content.setEditingItem(null)}
+          deleteCandidate={null}
+          onCloseDelete={() => {}}
+          onConfirmDelete={content.deleteMaterial}
+          formData={content.formData}
+          setFormData={content.setFormData}
+          formError={content.formError}
+          isUploading={content.isUploading}
+          availableCourses={content.availableCourses}
+          courseSuggestions={content.courseSuggestions}
+          onSubmitAdd={content.handleSubmitAdd}
+          onSubmitEdit={content.handleSubmitEdit}
+        />
       </div>
     </PagePlaceholder>
-    </PermissionGuard>
   );
 }
 

@@ -4,19 +4,21 @@ import React from "react";
 import { AdminReportItem } from "@/src/contexts/admin-context";
 import { TARGET_TYPE_BADGES, STATUS_CONFIG } from "../types";
 import { Modal } from "@/components/shared/modal";
+import { reportActions, reportLabels, type ModerationReport } from "../hooks/use-admin-moderation";
 
 interface ModerationModalsProps {
-  selectedReport: AdminReportItem | null;
+  selectedReport: ModerationReport | null;
   onCloseDetails: () => void;
-  onOpenActionFromDetails: (report: AdminReportItem) => void;
+  onOpenActionFromDetails: (report: ModerationReport) => void;
 
-  actionModalReport: AdminReportItem | null;
+  actionModalReport: ModerationReport | null;
   actionType: "resolve" | "warning" | "delete_content";
   onActionTypeChange: (type: "resolve" | "warning" | "delete_content") => void;
   actionNote: string;
   onActionNoteChange: (note: string) => void;
   onCloseAction: () => void;
   onSubmitAction: (e: React.FormEvent) => void;
+  isSaving: boolean;
 
   deleteCandidate: AdminReportItem | null;
   onCloseDelete: () => void;
@@ -34,10 +36,12 @@ export function ModerationModals({
   onActionNoteChange,
   onCloseAction,
   onSubmitAction,
+  isSaving,
   deleteCandidate,
   onCloseDelete,
   onConfirmDelete,
 }: ModerationModalsProps) {
+  const actions = actionModalReport?.serverStatus ? reportActions[actionModalReport.serverStatus] : null;
   return (
     <>
       <Modal isOpen={!!selectedReport} onClose={onCloseDetails} size="md">
@@ -61,7 +65,7 @@ export function ModerationModals({
                   </div>
                 </div>
                 <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${STATUS_CONFIG[selectedReport.status].badge}`}>
-                  {STATUS_CONFIG[selectedReport.status].label}
+                  {selectedReport.serverStatus ? reportLabels[selectedReport.serverStatus] : STATUS_CONFIG[selectedReport.status].label}
                 </span>
               </div>
 
@@ -97,7 +101,7 @@ export function ModerationModals({
               >
                 إغلاق
               </button>
-              {selectedReport.status === "مفتوح" && (
+              {(selectedReport.serverStatus ? selectedReport.serverStatus !== "CLOSED" : selectedReport.status === "مفتوح") && (
                 <button
                   type="button"
                   onClick={() => onOpenActionFromDetails(selectedReport)}
@@ -126,13 +130,14 @@ export function ModerationModals({
                 <div className="space-y-2">
                   <label className="p-3 rounded-2xl border border-brand-border-soft bg-brand-surface-muted flex items-center justify-between cursor-pointer hover:bg-white">
                     <div>
-                      <span className="text-xs font-bold text-brand-ink block">حل البلاغ وإغلاقه</span>
-                      <span className="text-[10px] text-brand-muted">المحتوى سليم أو تم تسوية الخلاف</span>
+                      <span className="text-xs font-bold text-brand-ink block">{actions?.resolve ? reportLabels[actions.resolve] : "حل البلاغ وإغلاقه"}</span>
+                      <span className="text-[10px] text-brand-muted">{actions ? "تحديث حالة البلاغ" : "المحتوى سليم أو تم تسوية الخلاف"}</span>
                     </div>
                     <input
                       type="radio"
                       name="actionType"
                       checked={actionType === "resolve"}
+                      disabled={!!actions && !actions.resolve}
                       onChange={() => onActionTypeChange("resolve")}
                       className="w-4 h-4 text-brand-primary"
                     />
@@ -140,13 +145,14 @@ export function ModerationModals({
 
                   <label className="p-3 rounded-2xl border border-brand-border-soft bg-brand-surface-muted flex items-center justify-between cursor-pointer hover:bg-white">
                     <div>
-                      <span className="text-xs font-bold text-brand-primary block">إرسال تنذير للطالب المبلغ عنه</span>
-                      <span className="text-[10px] text-brand-muted">تنبيه حول مخالفة سياسات التبادل</span>
+                      <span className="text-xs font-bold text-brand-primary block">{actions ? actions.warning ? reportLabels[actions.warning] : "لا يوجد إجراء إضافي" : "إرسال تنذير للطالب المبلغ عنه"}</span>
+                      <span className="text-[10px] text-brand-muted">{actions ? "" : "تنبيه حول مخالفة سياسات التبادل"}</span>
                     </div>
                     <input
                       type="radio"
                       name="actionType"
                       checked={actionType === "warning"}
+                      disabled={!!actions && !actions.warning}
                       onChange={() => onActionTypeChange("warning")}
                       className="w-4 h-4 text-brand-primary"
                     />
@@ -161,6 +167,7 @@ export function ModerationModals({
                       type="radio"
                       name="actionType"
                       checked={actionType === "delete_content"}
+                      disabled={!!actions}
                       onChange={() => onActionTypeChange("delete_content")}
                       className="w-4 h-4 text-red-600"
                     />
@@ -177,7 +184,7 @@ export function ModerationModals({
                   required
                   value={actionNote}
                   onChange={(e) => onActionNoteChange(e.target.value)}
-                  placeholder="اكتب التوضيح الذي سيتم توثيقه في السجل وإرساله كإشعار رسمي..."
+                  placeholder="اكتب سبب القرار الذي سيتم توثيقه في السجل"
                   className="w-full px-3 py-2 rounded-xl border border-brand-border-soft bg-white text-xs font-medium text-brand-ink focus:outline-none focus:border-brand-primary"
                 />
               </div>
@@ -193,6 +200,7 @@ export function ModerationModals({
               </button>
               <button
                 type="submit"
+                disabled={isSaving || (!!actions && !actions[actionType])}
                 className="px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold shadow-xs cursor-pointer"
               >
                 تنفيذ القرار وتوثيقه

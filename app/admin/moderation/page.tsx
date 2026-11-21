@@ -12,8 +12,10 @@ const DynamicModerationModals = dynamic(
   { ssr: false }
 );
 
-export default function AdminModerationPage() { return <MockAdminModerationPage/>; }
-function MockAdminModerationPage() {
+export default function AdminModerationPage() {
+  return <PermissionGuard permission="manage_reports"><AdminModeration /></PermissionGuard>;
+}
+function AdminModeration() {
   const {
     counts,
     filteredReports,
@@ -35,10 +37,10 @@ function MockAdminModerationPage() {
     setDeleteCandidate,
     handleActionSubmit,
     deleteReport,
+    isSaving,
   } = useAdminModeration();
 
   return (
-    <PermissionGuard permission="manage_reports">
       <div className="space-y-6 animate-fade-in" dir="rtl">
         <ModerationHeader />
 
@@ -70,6 +72,8 @@ function MockAdminModerationPage() {
           onCloseDetails={() => setSelectedReport(null)}
           onOpenActionFromDetails={(report) => {
             setActionModalReport(report);
+            setActionType("resolve");
+            setActionNote("");
             setSelectedReport(null);
           }}
           actionModalReport={actionModalReport}
@@ -77,8 +81,9 @@ function MockAdminModerationPage() {
           onActionTypeChange={setActionType}
           actionNote={actionNote}
           onActionNoteChange={setActionNote}
-          onCloseAction={() => setActionModalReport(null)}
+          onCloseAction={() => { if (!isSaving) setActionModalReport(null); }}
           onSubmitAction={handleActionSubmit}
+          isSaving={isSaving}
           deleteCandidate={deleteCandidate}
           onCloseDelete={() => setDeleteCandidate(null)}
           onConfirmDelete={(id) => {
@@ -87,6 +92,5 @@ function MockAdminModerationPage() {
           }}
         />
       </div>
-    </PermissionGuard>
   );
 }
