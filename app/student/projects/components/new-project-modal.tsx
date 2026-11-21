@@ -40,16 +40,15 @@ export function NewProjectModal({
   onNeededRoleChange,
 }: NewProjectModalProps) {
   const [majors,setMajors]=useState<Major[]>([]);
-  const [majorsLoading,setMajorsLoading]=useState(false);
+  const [majorsLoading,setMajorsLoading]=useState(!apiClient.isUsingMock());
   const [majorsError,setMajorsError]=useState<string | null>(null);
   useEffect(()=>{
     if(apiClient.isUsingMock()||!isOpen)return;
     let active = true;
-    setMajorsLoading(true);
-    setMajorsError(null);
     void apiClient.all<Major>("/majors").then(requireData).then((items)=>{
       if (!active) return;
       setMajors(items);
+      setMajorsError(null);
       if (items.length === 0) setMajorsError("لا توجد تخصصات متاحة لهذه الكلية حالياً.");
     }).catch((error: unknown)=>{
       if (!active) return;

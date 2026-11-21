@@ -15,7 +15,8 @@ export function ProjectDetailsView({ id }: { id: string }) {
   const { user } = useStudentUser();
   const [liveProject, setLiveProject] = useState<GraduationProject | null>(null);
   const project = apiClient.isUsingMock() ? initialGraduationProjects.find((p) => p.id === id) ?? null : liveProject;
-  const [isLoading, setIsLoading] = useState(!apiClient.isUsingMock());
+  const [loadedProjectId, setLoadedProjectId] = useState<string | null>(null);
+  const isLoading = !apiClient.isUsingMock() && loadedProjectId !== id;
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deleteNotice, setDeleteNotice] = useState<string | null>(null);
@@ -30,12 +31,10 @@ export function ProjectDetailsView({ id }: { id: string }) {
   useEffect(() => {
     if (apiClient.isUsingMock()) return;
     let active = true;
-    setIsLoading(true);
-    setLoadError(null);
     void projectsService.get(id)
-      .then((result) => { if (active) setLiveProject(result); })
+      .then((result) => { if (active) { setLiveProject(result); setLoadError(null); } })
       .catch((error: unknown) => { if (active) setLoadError(error instanceof Error ? error.message : "تعذر تحميل تفاصيل المشروع."); })
-      .finally(() => { if (active) setIsLoading(false); });
+      .finally(() => { if (active) setLoadedProjectId(id); });
     return () => { active = false; };
   }, [id]);
 
