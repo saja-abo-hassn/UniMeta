@@ -144,19 +144,7 @@ export function AcademicStatsProvider({ children }: { children: React.ReactNode 
   }, [selectedPlanId, hasPlanSelected, courseGrades, customCourses, courseOverrides, isLoaded]);
 
   const selectedPlan = useMemo(() => {
-    return plans.find((p) => p.id === selectedPlanId) || {
-      ...initialStudyPlans[0],
-      id: "",
-      major: "لم يتم اختيار خطة",
-      college: "—",
-      degree: "غير محدد" as const,
-      courses: [],
-      totalCredits: 0,
-      compulsoryCredits: 0,
-      electiveCredits: 0,
-      semestersCount: 0,
-      hourlyRate: 0,
-    };
+    return plans.find((p) => p.id === selectedPlanId) || plans[0] || { ...initialStudyPlans[0], id: "", courses: [], totalCredits: 0, hourlyRate: 0 };
   }, [plans, selectedPlanId]);
 
   const {
@@ -181,7 +169,7 @@ export function AcademicStatsProvider({ children }: { children: React.ReactNode 
     if (live) {
       await academicService.select(planId);
       const data = await academicService.load();
-      setSelectedPlanId(data.selectedPlanId); setHasPlanSelectedState(Boolean(data.selectedPlanId)); setCourseGrades(data.grades);
+      setSelectedPlanId(data.selectedPlanId); setHasPlanSelectedState(true); setCourseGrades(data.grades);
       return;
     }
     if (plans.some((p) => p.id === planId)) {

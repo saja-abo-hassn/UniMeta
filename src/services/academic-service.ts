@@ -1,12 +1,11 @@
 import { apiClient } from "./api-client";
 import { requireData } from "./api-result";
 import { StudyPlan } from "../data/study-plans-data";
-import type { components } from "../../types/api";
 
-type Plan = components["schemas"]["AcademicPlan"];
-type PlanCourse = components["schemas"]["PlanCourse"];
-type Requirement = components["schemas"]["RequirementCategory"];
-type Attempt = components["schemas"]["StudentCourseAttempt"];
+interface Plan { id: number; major_id: number; plan_name: string; total_required_hours: number; }
+interface PlanCourse { course_id: number; course_code: string; course_name: string; credit_hours: number; description: string | null; requirement_category_id:number|null; }
+interface Requirement {id:number;scope:string;kind:string;required_hours:number;}
+interface Attempt { id: number; course_id: number; attempt_number: number; grade: string | null; }
 interface PlanDetails { college:string|null; degree:string|null; semesters_count:number|null; tuition_rate:{hourly_rate:string}|null; course_semesters:{course_id:number;semester:number|null}[]; }
 
 const courseIds = new Map<string, number>();

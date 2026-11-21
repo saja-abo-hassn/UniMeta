@@ -1,29 +1,5 @@
 # UniMeta backend contract gaps
 
-## Student academic plan and course relationship (review 2026-11-21)
-
-### Confirmed frontend issue and fix
-
-The documented unassigned-student state is `GET /students/me/academic-plan` returning HTTP 200 with `{ "data": null }`. It is an ordinary state, not an API error. The frontend correctly read the null assignment, but then selected `plans[0]` as its display fallback. That made the first available curriculum appear to be the student's plan and allowed its courses to flow into academic calculations before assignment. The current branch removes that fallback, returns no plan courses until an assignment exists, and keeps the available plan catalog visible in the plan chooser. The chooser now waits for its API load to finish before showing the empty/search state.
-
-`PUT /students/me/academic-plan` is documented and accepts `{ "academic_plan_id": number }`; the frontend calls it and reloads the assignment. The service then obtains curriculum from `GET /academic-plans/{id}/courses` and the student's own attempts from `GET /students/me/courses`. This is the supported plan-and-curriculum relationship; none of these endpoints is classified as missing. Mock tests now cover null assignment and reload after choosing a plan. No production write or authenticated student-data inspection was performed, so real-server persistence and the affected student's record remain unverified.
-
-### API boundary: curriculum, attempts, and enrollment
-
-The OpenAPI contract calls `/students/me/courses` records **student-entered unofficial course attempts**. A record has `course_id`, `attempt_number`, nullable `grade`, optional `semester_label`, and `source: STUDENT_ENTERED`. A null grade means no final grade was entered; it does not mean failed, passed, selected, or enrolled. `POST /students/me/courses` records an attempt for an existing catalog `course_id`; `PATCH /students/me/courses/{id}` edits its grade/semester label. Neither operation is a course-registration/selection endpoint. The current UI's `grade >= 60` completed-hours calculation is only a frontend estimate, not an official pass status. The dashboard now labels that estimate and shows `—` for semester registered hours because no registration data is exposed by the contract.
-
-| Endpoint | Method | Request / response in OpenAPI | Page / frontend behavior | Status / request to Alaa |
-|---|---|---|---|---|
-| `/students/me/academic-plan` | GET | Response `data: {academic_plan_id, major_id} \| null` | Student plan context; `data: null` means the student has not assigned a plan | Contract is present and handles no-plan state. No backend change requested. |
-| `/students/me/academic-plan` | PUT | Body `{academic_plan_id}`; response `data: {academic_plan_id, major_id}` | Plan chooser saves assignment, then reloads context | Contract is present. Test write only with authorized staging account. |
-| `/academic-plans` | GET | `data: AcademicPlan[]` (`id`, `major_id`, `plan_name`, `plan_year`, `total_required_hours`) | Plan chooser lists available plans | Contract is present. No backend change requested. |
-| `/academic-plans/{id}/courses` | GET | `data: PlanCourse[]` with course id/code/name/credit hours/requirement category id | Supplies the selected curriculum | Contract exists; the schema explicitly says fields are provisional. Confirm the canonical fields and relationship if backend payload differs. |
-| `/students/me/courses` | GET / POST | GET returns own `StudentCourseAttempt[]`; POST requires existing `course_id`, optional `grade` and `semester_label`, returns created attempt | Existing frontend maps grades to plan courses; manual arbitrary course creation is kept mock-only and no longer closes as if saved in live mode | This API is attempts, not enrollment. Alaa: confirm whether selected/registered courses are intended to be represented at all. If yes, document a separate registration contract and status semantics; do not overload attempts. |
-| `/students/me/courses/{id}` | PATCH | Body includes `grade` and/or `semester_label`; returns updated attempt | Updates an existing attempt for grade entry | Contract is present. It does not provide pass/fail or registration status. |
-| `/academic-plans/{id}/details` | GET | Referenced completion schema is generic in `docs/openapi.yaml` and generated types | Current client reads college, degree, semesters, tuition rate, and per-course semester metadata | Alaa: document the exact `data` shape and make sure it matches runtime before relying on these fields. |
-
-**What remains unverified:** no staging URL/account was provided for a real student read/write cycle. The mocks prove frontend behavior only. A real refresh/re-login persistence check requires staging; do not use a production account for PUT/POST/PATCH. If the affected student still receives a null assignment from the API after choosing a plan in an authorized staging run, send Alaa the redacted request timestamp/request id and GET/PUT responses for those two routes. If GET returns the assigned `academic_plan_id`, the remaining issue is in client/cache state; if it returns null after a successful PUT, inspect Laravel assignment persistence and logs.
-
 This handoff uses `docs/openapi.yaml` as the endpoint and schema source of truth. Runtime statuses below are from the earlier read-only API probe during this task. No POST, PUT, PATCH, or DELETE request was sent to the published server after the explicit no-write instruction. Any status not listed as observed remains unverified.
 
 ## Requested API review

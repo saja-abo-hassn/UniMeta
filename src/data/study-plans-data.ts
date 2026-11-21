@@ -22,7 +22,7 @@ export interface StudyPlan {
   id: string;
   major: string;
   college: string;
-  degree: "بكالوريوس" | "ماجستير" | "غير محدد";
+  degree: "بكالوريوس" | "ماجستير";
   totalCredits: number;
   compulsoryCredits: number;
   electiveCredits: number;

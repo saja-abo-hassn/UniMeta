@@ -18,8 +18,6 @@ export function useAcademicCalculations({
   courseGrades,
 }: AcademicCalculationsInput) {
   const allCourses = useMemo(() => {
-    if (!hasPlanSelected) return [];
-
     const planCourses = selectedPlan.courses.map((course) => {
       const override = courseOverrides[course.code];
       if (override) {
@@ -47,7 +45,7 @@ export function useAcademicCalculations({
     });
 
     return [...planCourses, ...customs];
-  }, [hasPlanSelected, selectedPlan, customCourses, courseOverrides]);
+  }, [selectedPlan, customCourses, courseOverrides]);
 
   const completedCourses = useMemo(() => {
     return allCourses.filter((course) => {
