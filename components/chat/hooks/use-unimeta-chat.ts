@@ -33,6 +33,7 @@ export function useUniMetaChat(initiallyOpen = false) {
   const [inputVal, setInputVal] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState("");
+  const [retryQuery, setRetryQuery] = useState("");
   useEffect(()=>{if(!isOpen||!user||apiClient.isUsingMock())return;let active=true;void liveChatService.sessions().then(s=>{if(active)setSessions(s);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[isOpen,user]);
   const requestInFlightRef = useRef(false);
 
@@ -127,9 +128,11 @@ export function useUniMetaChat(initiallyOpen = false) {
   }, [mascotState]);
 
   useEffect(() => {
-    if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    if (!isOpen) return;
+    const scrollContainer = messagesEndRef.current?.parentElement;
+    if (!scrollContainer) return;
+    const distanceToBottom = scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight;
+    if (distanceToBottom < 120) messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, isTyping, isOpen]);
 
   useEffect(() => {
@@ -160,14 +163,15 @@ export function useUniMetaChat(initiallyOpen = false) {
     if (!query || isTyping || historyBusy || requestInFlightRef.current) return;
     requestInFlightRef.current = true;
     setError("");
+    setRetryQuery("");
     if(!apiClient.isUsingMock()&&!user){
       setIsTyping(true);setError("");clearAllTimers();dispatchMascot({type:"SEND_MESSAGE"});
-      void liveChatService.publicSend(query,messages).then(saved=>{setMessages(prev=>[...prev,...saved]);setInputVal("");dispatchMascot({type:"RECEIVE_ANSWER"});}).catch(e=>setError((e as Error).message)).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;});
+      void liveChatService.publicSend(query,messages).then(saved=>{setMessages(prev=>[...prev,...saved]);setInputVal("");setRetryQuery("");dispatchMascot({type:"RECEIVE_ANSWER"});}).catch(e=>{setRetryQuery(query);setError((e as Error).message);}).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;});
       return;
     }
     if(!apiClient.isUsingMock()){
       setIsTyping(true);setError("");clearAllTimers();dispatchMascot({type:"SEND_MESSAGE"});
-      void (async()=>{let id=sessionId;if(id===null){const created=await liveChatService.create(query);id=created.id;setSessionId(id);setSessions(s=>[created,...s]);}const saved=await liveChatService.send(id,query);setMessages(prev=>[...prev,...saved]);setInputVal("");dispatchMascot({type:"RECEIVE_ANSWER"});})().catch(e=>setError((e as Error).message)).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;});
+      void (async()=>{let id=sessionId;if(id===null){const created=await liveChatService.create(query);id=created.id;setSessionId(id);setSessions(s=>[created,...s]);}const saved=await liveChatService.send(id,query);setMessages(prev=>[...prev,...saved]);setInputVal("");setRetryQuery("");dispatchMascot({type:"RECEIVE_ANSWER"});})().catch(e=>{setRetryQuery(query);setError((e as Error).message);}).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;});
       return;
     }
 
@@ -190,6 +194,7 @@ export function useUniMetaChat(initiallyOpen = false) {
       setMessages((prev) => [...prev, assistantMsg]);
       dispatchMascot({ type: "RECEIVE_ANSWER" });
     } catch (requestError) {
+      setRetryQuery(query);
       setError(
         requestError instanceof Error
           ? requestError.message
@@ -214,6 +219,7 @@ export function useUniMetaChat(initiallyOpen = false) {
     inputVal,
     isTyping,
     error,
+    retryQuery,
     windowRef,
     buttonRef,
     messagesEndRef,
