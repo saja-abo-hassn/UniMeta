@@ -1,8 +1,55 @@
 import { apiClient, LaravelResponse } from "./api-client";
 import { MOCK_MATERIALS, MockMaterial } from "./mock-backend/mock-materials";
 import { requireData } from "./api-result";
+import type { components } from "../../types/api";
+
+export interface StudentLibraryCatalog {
+  subjects: components["schemas"]["StudentLibrarySubject"][];
+  materials: MockMaterial[];
+}
 
 class MaterialsService {
+  async getLibraryCatalog(): Promise<LaravelResponse<StudentLibraryCatalog>> {
+    if (apiClient.isUsingMock()) {
+      return apiClient.createSuccessResponse({ subjects: [], materials: MOCK_MATERIALS });
+    }
+
+    try {
+      const subjects = requireData(
+        await apiClient.all<components["schemas"]["StudentLibrarySubject"]>("/library/subjects")
+      );
+      const resources = await Promise.all(subjects.map(async (subject) => {
+        const items = requireData(
+          await apiClient.all<components["schemas"]["StudentLibraryResource"]>(`/library/subjects/${subject.id}/resources`)
+        );
+        return items.map((resource) => ({
+          id: String(resource.id),
+          title: resource.title,
+          courseName: subject.subject_name,
+          courseCode: subject.subject_code,
+          category: ({
+            SUMMARY: "الملخصات",
+            LECTURE: "المحاضرات",
+            STUDY_NOTE: "الملاحظات الدراسية",
+            EXAM_MODEL: "النماذج السابقة",
+            APPROVED_REFERENCE: "المراجع",
+            AUTHORIZED_DIGITAL_BOOK: "الكتب",
+          } as Record<string, MockMaterial["category"]>)[resource.resource_type] ?? "المراجع",
+          fileType: resource.mime_type,
+          fileSize: `${(resource.file_size / 1024 / 1024).toFixed(2)} MB`,
+          date: resource.created_at,
+        }));
+      }));
+      return apiClient.createSuccessResponse({ subjects, materials: resources.flat() });
+    } catch (error) {
+      return apiClient.createErrorResponse<StudentLibraryCatalog>(
+        (error as Error).message,
+        { api: ["تعذر تحميل المكتبة"] },
+        null
+      );
+    }
+  }
+
   async getMaterials(category?: string): Promise<LaravelResponse<MockMaterial[]>> {
     if (!apiClient.isUsingMock()) {
       try {

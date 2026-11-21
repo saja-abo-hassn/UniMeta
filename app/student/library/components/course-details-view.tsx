@@ -53,7 +53,9 @@ export function CourseDetailsView({
                 {activeCourse.code}
               </span>
               <span className="text-xs text-brand-muted">
-                {activeCourse.level} · {activeCourse.semester}
+                {activeCourse.majorName
+                  ? `التخصص: ${activeCourse.majorName}`
+                  : `${activeCourse.level} · ${activeCourse.semester}`}
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink">

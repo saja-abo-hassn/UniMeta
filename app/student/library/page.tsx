@@ -4,7 +4,6 @@ import React from "react";
 import { apiClient } from "@/src/services/api-client";
 import dynamic from "next/dynamic";
 import { useStudentLibrary } from "./hooks/use-student-library";
-import { NoPlanView } from "./components/no-plan-view";
 import { LibraryHeader } from "./components/library-header";
 import { ActivePlanBanner } from "./components/active-plan-banner";
 import { CoursesGrid } from "./components/courses-grid";
@@ -25,7 +24,6 @@ function MockStudentLibraryPage() {
     courses,
     selectedPlan,
     hasPlanSelected,
-    isPlanLoaded,
     isLoading,
     loadError,
     searchQuery,
@@ -61,7 +59,7 @@ function MockStudentLibraryPage() {
     myContributions,
   } = useStudentLibrary();
 
-  if (!isPlanLoaded) {
+  if (isLoading) {
     return (
       <div className="space-y-6 animate-fade-in" dir="rtl" aria-busy="true">
         <LibraryHeader onOpenUpload={() => setIsUploadModalOpen(true)} />
@@ -72,18 +70,16 @@ function MockStudentLibraryPage() {
     );
   }
 
-  if (!hasPlanSelected) {
-    return <NoPlanView />;
-  }
-
   return (
     <div className="space-y-6 animate-fade-in" dir="rtl">
       <LibraryHeader onOpenUpload={() => setIsUploadModalOpen(true)} />
 
-      <ActivePlanBanner
-        selectedPlan={selectedPlan}
-        totalCoursesCount={courses.length}
-      />
+      {hasPlanSelected && (
+        <ActivePlanBanner
+          selectedPlan={selectedPlan}
+          totalCoursesCount={courses.length}
+        />
+      )}
 
       {isLoading && (
         <div role="status" aria-label="جارٍ تحميل مواد المكتبة" aria-busy="true" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">

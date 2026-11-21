@@ -17,6 +17,7 @@ export interface LibraryCourse {
   code: string;
   nameAr: string;
   nameEn: string;
+  majorName?: string;
   instructor: string;
   level: string;
   semester: string;

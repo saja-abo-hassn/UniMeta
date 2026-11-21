@@ -18,7 +18,7 @@ export function useStudentLibrary() {
   const { selectedPlan, hasPlanSelected, isLoaded: isPlanLoaded } = useStudyPlan();
   const { materials: adminMaterials, addMaterial } = useAdmin();
   const { user } = useAuth();
-  const [liveMaterials, setLiveMaterials] = useState<Awaited<ReturnType<typeof materialsService.getMaterials>>["data"]>([]);
+  const [liveCatalog, setLiveCatalog] = useState<Awaited<ReturnType<typeof materialsService.getLibraryCatalog>>["data"]>(null);
   const [isLoading, setIsLoading] = useState(!apiClient.isUsingMock());
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -29,9 +29,9 @@ export function useStudentLibrary() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
     setLoadError(null);
-    void materialsService.getMaterials().then((response) => {
-      const items = requireData(response);
-      if (active) setLiveMaterials(items);
+    void materialsService.getLibraryCatalog().then((response) => {
+      const catalog = requireData(response);
+      if (active) setLiveCatalog(catalog);
     }).catch((error: unknown) => {
       if (active) setLoadError(error instanceof Error ? error.message : "تعذر تحميل مواد المكتبة.");
       reportApiError(error);
@@ -43,7 +43,7 @@ export function useStudentLibrary() {
 
   const materials: CourseMaterialItem[] = apiClient.isUsingMock()
     ? adminMaterials
-    : (liveMaterials ?? []).map((item) => ({
+    : (liveCatalog?.materials ?? []).map((item) => ({
         ...item,
         courseId: "",
         fileType: item.fileType.toLowerCase().includes("word") ? "DOCX" as const
@@ -62,7 +62,7 @@ export function useStudentLibrary() {
   const courses = useMemo<LibraryCourse[]>(() => {
     const courseMap = new Map<string, LibraryCourse>();
 
-    if (apiClient.isUsingMock()) {
+    if (apiClient.isUsingMock() && hasPlanSelected) {
       initialCourses.forEach((c) => {
         const inPlan = selectedPlan.courses.some((pc) => pc.code.toLowerCase() === c.code.toLowerCase());
         const inMajor = isCourseInMajor(c.code, selectedPlan.major);
@@ -72,7 +72,21 @@ export function useStudentLibrary() {
       });
     }
 
-    selectedPlan.courses.forEach((pc) => {
+    liveCatalog?.subjects.forEach((subject) => {
+      const code = subject.subject_code.toUpperCase();
+      courseMap.set(code, {
+        code: subject.subject_code,
+        nameAr: subject.subject_name,
+        nameEn: subject.subject_code,
+        majorName: subject.major.name,
+        instructor: "غير متاح",
+        level: "جميع المستويات",
+        semester: "—",
+        files: [],
+      });
+    });
+
+    if (hasPlanSelected) selectedPlan.courses.forEach((pc) => {
       const code = pc.code.toUpperCase();
       if (!courseMap.has(code)) {
         courseMap.set(code, {
@@ -145,7 +159,7 @@ export function useStudentLibrary() {
     });
 
     return Array.from(courseMap.values());
-  }, [selectedPlan, materials]);
+  }, [selectedPlan, hasPlanSelected, materials, liveCatalog]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
