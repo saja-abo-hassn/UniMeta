@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import { apiClient } from "@/src/services/api-client";
 import { requireData, reportApiError } from "@/src/services/api-result";
 import { Modal } from "@/components/shared/modal";
+import type { components } from "@/types/api";
+
+type Major = components["schemas"]["Major"];
 
 interface NewProjectModalProps {
   isOpen: boolean;
@@ -36,10 +39,24 @@ export function NewProjectModal({
   newNeededRole,
   onNeededRoleChange,
 }: NewProjectModalProps) {
-  const [majors,setMajors]=useState<{id:number;name:string}[]>([]);
+  const [majors,setMajors]=useState<Major[]>([]);
+  const [majorsLoading,setMajorsLoading]=useState(!apiClient.isUsingMock());
+  const [majorsError,setMajorsError]=useState<string | null>(null);
   useEffect(()=>{
     if(apiClient.isUsingMock()||!isOpen)return;
-    void apiClient.all<{id:number;name:string}>("/majors").then(requireData).then(setMajors).catch(reportApiError);
+    let active = true;
+    void apiClient.all<Major>("/majors").then(requireData).then((items)=>{
+      if (!active) return;
+      setMajors(items);
+      setMajorsError(null);
+      if (items.length === 0) setMajorsError("لا توجد تخصصات متاحة لهذه الكلية حالياً.");
+    }).catch((error: unknown)=>{
+      if (!active) return;
+      setMajors([]);
+      setMajorsError(error instanceof Error ? `تعذر تحميل التخصصات: ${error.message}` : "تعذر تحميل التخصصات حالياً.");
+      reportApiError(error);
+    }).finally(()=>{ if(active)setMajorsLoading(false); });
+    return ()=>{active=false;};
   },[isOpen]);
   if (!isOpen) return null;
 
@@ -73,12 +90,13 @@ export function NewProjectModal({
                 onChange={(e) => onMajorChange(e.target.value)}
                 className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               >
-                {!apiClient.isUsingMock() ? <><option value="">بدون تخصص محدد</option>{majors.map(m=><option key={m.id} value={m.name}>{m.name}</option>)}</> : <><option value="هندسة البرمجيات ونظم المعلومات">هندسة البرمجيات ونظم المعلومات</option>
+                {!apiClient.isUsingMock() ? <><option value="">{majorsLoading ? "جارٍ تحميل التخصصات…" : majorsError ?? "اختر التخصص"}</option>{majors.map(m=><option key={m.id} value={m.name}>{m.name}</option>)}</> : <><option value="هندسة البرمجيات ونظم المعلومات">هندسة البرمجيات ونظم المعلومات</option>
                 <option value="علوم الحاسوب">علوم الحاسوب</option>
                 <option value="هندسة أنظمة الحاسوب">هندسة أنظمة الحاسوب</option>
                 <option value="الوسائط المتعددة">الوسائط المتعددة</option>
                 <option value="هندسة الميكاترونكس">هندسة الميكاترونكس</option></>}
               </select>
+              {!apiClient.isUsingMock() && majorsError && <p className="text-[11px] text-red-600">{majorsError}</p>}
             </div>
 
             <div className="space-y-1">

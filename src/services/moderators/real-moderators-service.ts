@@ -1,12 +1,12 @@
 import { ModeratorUser, AdminPermission, ModeratorStatus } from "@/src/types/admin";
 import { apiClient, LaravelResponse } from "../api-client";
 import { InviteModeratorDTO, ModeratorsServiceContract } from "./types";
+import { ADMIN_PERMISSION_KEYS, normalizePermissions } from "@/src/lib/admin-access";
 
-const permissionKeys = ["manage_content", "manage_agreements", "manage_reports", "manage_members", "view_sensitive"];
 function permissionsForApi(permissions: Record<string, boolean>) {
-  const unsupported = Object.entries(permissions).filter(([key, enabled]) => enabled && !permissionKeys.includes(key));
+  const unsupported = Object.entries(permissions).filter(([key, enabled]) => enabled && !ADMIN_PERMISSION_KEYS.includes(key as (typeof ADMIN_PERMISSION_KEYS)[number]));
   if (unsupported.length) throw new Error("هذه الصلاحيات غير مدعومة حاليًا: " + unsupported.map(([key]) => key).join(", "));
-  return Object.fromEntries(permissionKeys.filter(key => key in permissions).map(key => [key, Boolean(permissions[key])]));
+  return normalizePermissions(permissions);
 }
 interface Invitation {
   id: number; name: string; email: string; title: string | null; department: string | null;
@@ -18,7 +18,7 @@ function pendingModerator(invitation: Invitation): ModeratorUser {
     id: `invitation-${invitation.id}`, name: invitation.name, email: invitation.email,
     title: invitation.title, assignedDepartment: invitation.department ?? "", role: "moderator",
     status: "دعوة معلّقة", createdAt: invitation.created_at, inviteExpiresAt: invitation.expires_at,
-    permissions: invitation.permissions as ModeratorUser["permissions"],
+    permissions: normalizePermissions(invitation.permissions),
   };
 }
 function tokenFromUrl(url: string) { return new URL(url).pathname.split("/").pop() || ""; }

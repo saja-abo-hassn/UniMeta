@@ -128,7 +128,7 @@ export function CoursesGrid({
                         {c.code}
                       </span>
                       <span className="text-[11px] font-semibold text-brand-muted">
-                        {c.level}
+                        {c.majorName ? `التخصص: ${c.majorName}` : c.level}
                       </span>
                     </div>
 

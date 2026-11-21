@@ -1,20 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { apiClient } from "@/src/services/api-client";
+import { projectsService } from "@/src/services/projects-service";
+import { useStudentUser } from "@/src/hooks/use-student-user";
 import { initialGraduationProjects } from "@/src/data/graduation-projects-data";
+import type { GraduationProject } from "@/src/data/graduation-projects-data";
 import { useNotifications } from "@/src/contexts/notifications-context";
 import { Modal } from "@/components/shared/modal";
-import { apiClient } from "@/src/services/api-client";
-import { LiveProjectDetails } from "@/components/integration/live-project-details";
 
 export function ProjectDetailsView({ id }: { id: string }) {
-  return apiClient.isUsingMock() ? <MockProjectDetailsView id={id}/> : <LiveProjectDetails id={id}/>;
-}
-function MockProjectDetailsView({ id }: { id: string }) {
   const { notify } = useNotifications();
-  const project = initialGraduationProjects.find((p) => p.id === id);
+  const { user } = useStudentUser();
+  const [liveProject, setLiveProject] = useState<GraduationProject | null>(null);
+  const project = apiClient.isUsingMock() ? initialGraduationProjects.find((p) => p.id === id) ?? null : liveProject;
+  const [loadedProjectId, setLoadedProjectId] = useState<string | null>(null);
+  const isLoading = !apiClient.isUsingMock() && loadedProjectId !== id;
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deleteNotice, setDeleteNotice] = useState<string | null>(null);
 
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [applicantRole, setApplicantRole] = useState("");
@@ -23,11 +28,37 @@ function MockProjectDetailsView({ id }: { id: string }) {
   const [stageError, setStageError] = useState("");
   const [hasApplied, setHasApplied] = useState(false);
 
+  useEffect(() => {
+    if (apiClient.isUsingMock()) return;
+    let active = true;
+    void projectsService.get(id)
+      .then((result) => { if (active) { setLiveProject(result); setLoadError(null); } })
+      .catch((error: unknown) => { if (active) setLoadError(error instanceof Error ? error.message : "تعذر تحميل تفاصيل المشروع."); })
+      .finally(() => { if (active) setLoadedProjectId(id); });
+    return () => { active = false; };
+  }, [id]);
+
+  if (isLoading) {
+    return <div className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs text-center text-sm text-brand-muted" dir="rtl">جارٍ تحميل تفاصيل المشروع…</div>;
+  }
+
   if (!project) {
-    notFound();
+    return (
+      <div className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-3 text-center" dir="rtl">
+        <h1 className="text-lg font-bold text-brand-ink">{loadError ? "تعذر تحميل المشروع" : "المشروع غير موجود"}</h1>
+        {loadError && <p className="text-sm text-red-600">{loadError}</p>}
+        <Link href="/student/projects" className="inline-flex px-4 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold">العودة إلى المشاريع</Link>
+      </div>
+    );
   }
 
   const isLookingForMembers = project.status === "يبحث عن شركاء";
+  const isOwner = Boolean(project.ownerId && user?.id && String(user.id) === project.ownerId);
+  const prepareDeleteConfirmation = async () => {
+    const result = await projectsService.remove(project.id);
+    setDeleteNotice(result.message);
+    setIsDeleteConfirmOpen(true);
+  };
 
   const handleApplySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,9 +94,10 @@ function MockProjectDetailsView({ id }: { id: string }) {
           <span>العودة لكافة مشاريع التخرج</span>
         </Link>
 
-        <span className="text-xs text-brand-muted font-semibold">
-          العام الأكاديمي: {project.academicYear}
-        </span>
+        <div className="flex items-center gap-3">
+          {isOwner && <button type="button" onClick={() => void prepareDeleteConfirmation()} className="text-xs font-bold text-red-600 underline">حذف الإعلان</button>}
+          <span className="text-xs text-brand-muted font-semibold">{project.academicYear && `العام الأكاديمي: ${project.academicYear}`}</span>
+        </div>
       </div>
 
       {/* Main Project Hero Card */}
@@ -382,6 +414,19 @@ function MockProjectDetailsView({ id }: { id: string }) {
             </button>
           </Modal.Footer>
         </form>
+      </Modal>
+
+      <Modal isOpen={isDeleteConfirmOpen} onClose={() => setIsDeleteConfirmOpen(false)} size="sm">
+        <Modal.Header title="تأكيد حذف الإعلان" onClose={() => setIsDeleteConfirmOpen(false)} />
+        <Modal.Body className="p-5 space-y-3 text-xs">
+          <p className="text-brand-ink">هل تريد حذف إعلان «{project.title}»؟</p>
+          <p className="text-red-600">الحذف غير متاح حالياً؛ OpenAPI لا يعرّف مسار DELETE لإعلانات المشاريع.</p>
+          {deleteNotice && <p role="status" className="text-brand-muted">{deleteNotice}</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <button type="button" onClick={() => setIsDeleteConfirmOpen(false)} className="px-4 py-2 rounded-xl border border-brand-border-soft text-brand-ink font-semibold">إلغاء</button>
+          <button type="button" disabled className="px-4 py-2 rounded-xl bg-slate-300 text-white font-bold cursor-not-allowed" title="لا يوجد endpoint DELETE موثق">الحذف غير متاح</button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

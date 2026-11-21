@@ -82,8 +82,8 @@ export function LoginForm() {
         setSuccessMessage(response.message || "تم تسجيل الدخول بنجاح!");
         // Brief moment to show success message then navigate
         setTimeout(() => {
-          const userRole = response.data?.user?.role;
-          if (userRole === "admin" || userRole === "super_admin" || userRole === "moderator") {
+          const userRole = response.data?.user?.adminRole;
+          if (userRole === "super_admin" || userRole === "moderator") {
             router.push("/admin");
           } else {
             router.push("/student");

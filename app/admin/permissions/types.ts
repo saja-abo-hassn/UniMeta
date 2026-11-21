@@ -11,6 +11,6 @@ export const PERMISSION_COLUMNS: PermissionDef[] = [
   { key: "manage_agreements", label: "الاتفاقيات والعهد", description: "مراجعة واعتماد عقود الإعارة والتأمين" },
   { key: "manage_reports", label: "الإشراف والبلاغات", description: "متابعة شكاوى الطلاب وحجب المحتوى المخالف" },
   { key: "manage_members", label: "إدارة الأعضاء", description: "متابعة الحسابات وتغيير حالة الطلاب" },
-  { key: "manage_settings", label: "إعدادات المنصة", description: "تعديل إعدادات وسياسات المنصة" },
+  { key: "view_sensitive", label: "البيانات الحساسة", description: "عرض بيانات الهوية والتوقيعات الحساسة" },
 ];
 

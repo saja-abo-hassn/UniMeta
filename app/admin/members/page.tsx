@@ -1,7 +1,4 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LiveAdminAccounts } from "@/components/integration/live-admin";
-
 import React from "react";
 import dynamic from "next/dynamic";
 import { PermissionGuard } from "@/components/admin/permission-guard";
@@ -23,7 +20,7 @@ const DynamicMemberStatusModal = dynamic(
   { ssr: false }
 );
 
-export default function AdminMembersPage() { return apiClient.isUsingMock() ? <MockAdminMembersPage/> : <LiveAdminAccounts/>; }
+export default function AdminMembersPage() { return <MockAdminMembersPage/>; }
 function MockAdminMembersPage() {
   const {
     filteredMembers,

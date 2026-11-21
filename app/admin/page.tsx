@@ -1,7 +1,4 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LiveAdminOverview } from "@/components/integration/live-admin";
-
 import React, { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useAdmin } from "@/src/contexts/admin-context";
@@ -10,6 +7,8 @@ import { AdminOverviewHeader } from "./components/admin-overview-header";
 import { AdminKPIs } from "./components/admin-kpis";
 import { AdminAgreementsReview } from "./components/admin-agreements-review";
 import { AdminQuickModules } from "./components/admin-quick-modules";
+import { useAdminOverview } from "@/src/hooks/use-admin-overview";
+import { apiClient } from "@/src/services/api-client";
 
 const DynamicAdminRejectionModal = dynamic(
   () => import("./components/admin-rejection-modal").then((m) => m.AdminRejectionModal),
@@ -21,8 +20,9 @@ const DynamicAdminAgreementDetailsModal = dynamic(
   { ssr: false }
 );
 
-export default function AdminOverviewPage() { return apiClient.isUsingMock() ? <MockAdminOverviewPage/> : <LiveAdminOverview/>; }
+export default function AdminOverviewPage() { return <MockAdminOverviewPage/>; }
 function MockAdminOverviewPage() {
+  const { data: liveOverview, isLoading: overviewLoading, error: overviewError } = useAdminOverview();
   const {
     currentUser,
     agreements,
@@ -40,14 +40,14 @@ function MockAdminOverviewPage() {
   const [rejectionReasonInput, setRejectionReasonInput] = useState("");
   const [detailsAgreement, setDetailsAgreement] = useState<AdminAgreementItem | null>(null);
 
-  const pendingAgreementsCount = agreements.filter((a) => a.status === "قيد الانتظار").length;
-  const activeAgreementsCount = agreements.filter((a) => a.status === "موافق عليها").length;
+  const pendingAgreementsCount = !apiClient.isUsingMock() ? liveOverview?.pendingAgreements ?? 0 : agreements.filter((a) => a.status === "قيد الانتظار").length;
+  const activeAgreementsCount = !apiClient.isUsingMock() ? liveOverview?.activeLoans ?? 0 : agreements.filter((a) => a.status === "موافق عليها").length;
   const reviewMaterialsCount = materials.filter((m) => m.status === "قيد المراجعة").length;
   const publishedMaterialsCount = materials.filter((m) => m.status === "منشور").length;
-  const openReportsCount = reports.filter((r) => r.status === "مفتوح").length;
-  const totalStudents = members.length;
+  const openReportsCount = !apiClient.isUsingMock() ? liveOverview?.openReports ?? 0 : reports.filter((r) => r.status === "مفتوح").length;
+  const totalStudents = !apiClient.isUsingMock() ? liveOverview?.totalStudents ?? 0 : members.length;
 
-  const activeNow = useMemo(() => {
+  const mockActiveNow = useMemo(() => {
     return members.filter((m) => {
       const last = (m.lastActive || "").toLowerCase();
       return (
@@ -60,6 +60,7 @@ function MockAdminOverviewPage() {
       );
     }).length;
   }, [members]);
+  const activeNow = !apiClient.isUsingMock() ? liveOverview?.activeNow ?? null : mockActiveNow;
 
   const coveredCoursesCount = useMemo(() => {
     const publishedCodes = new Set(
@@ -96,6 +97,8 @@ function MockAdminOverviewPage() {
 
   return (
     <div className="space-y-7" dir="rtl">
+      {overviewLoading && <p className="text-sm text-brand-muted" role="status" aria-busy="true">جارٍ تحميل مؤشرات لوحة الإدارة...</p>}
+      {overviewError && <p className="p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700" role="alert">{overviewError}</p>}
       <AdminOverviewHeader
         currentUser={currentUser}
         pendingAgreementsCount={pendingAgreementsCount}

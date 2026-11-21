@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminHeader } from "@/components/admin/admin-header";
-import { authService } from "@/src/services/auth-service";
 import { useAuth } from "@/src/contexts/auth-context";
 
 export interface AdminShellProps {
@@ -13,11 +12,7 @@ export interface AdminShellProps {
 export function AdminShell({ children }: AdminShellProps) {
   const { user, isLoading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    if (sessionStorage.getItem("unimeta_logged_out") === "true") return false;
-    return authService.isAuthenticated();
-  });
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   // Strict route protection guard against back navigation after logout
   useEffect(() => {
@@ -29,7 +24,7 @@ export function AdminShell({ children }: AdminShellProps) {
         window.location.replace("/login");
         return false;
       }
-      if (!["moderator", "super_admin", "admin"].includes(user.role)) {
+      if (!user.adminRole) {
         setIsAuthorized(false);
         window.location.replace("/403");
         return false;
@@ -69,7 +64,7 @@ export function AdminShell({ children }: AdminShellProps) {
   }, [isLoading, user]);
 
   // Prevent flash of protected admin UI when logged out or returning via browser back
-  if (!isAuthorized) {
+  if (isLoading || !isAuthorized) {
     return (
       <div className="min-h-screen bg-[#F4FAFF] flex items-center justify-center" dir="rtl">
         <div className="flex flex-col items-center gap-3 text-center p-6 animate-fade-in">

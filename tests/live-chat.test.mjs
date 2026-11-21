@@ -38,3 +38,10 @@ test('visitor provider failure is surfaced instead of adding an invented reply',
  const chat=service({post:async()=>({status:503,data:null,errors:{http:['503']}})});
  await assert.rejects(chat.publicSend('Hello',[]),/غير متاحة/);
 });
+
+test('visitor chat preserves upstream 500 status and rejects undocumented empty answer payloads',async()=>{
+ const failing=service({post:async()=>({status:500,data:null,errors:{http:['500']},message:'Server error'})});
+ await assert.rejects(failing.publicSend('Hello',[]),/HTTP 500/);
+ const malformed=service({post:async()=>({status:200,data:{sources:[]},errors:null})});
+ await assert.rejects(malformed.publicSend('Hello',[]),/لا تحتوي على نص إجابة/);
+});

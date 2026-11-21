@@ -100,6 +100,12 @@ export function BooksGrid({ books, onRequestBook }: BooksGridProps) {
                     <span>المالك: <strong className="text-brand-ink">{bk.owner}</strong></span>
                     <span>الحالة: <strong className="text-brand-primary">{bk.condition}</strong></span>
                   </div>
+                  {bk.contactPhone && (
+                    <div className="flex items-center gap-3 text-[11px] text-brand-primary" dir="ltr">
+                      <a href={`tel:${bk.contactPhone}`} className="underline">{bk.contactPhone}</a>
+                      <a href={`https://wa.me/970${bk.contactPhone.slice(1)}`} target="_blank" rel="noreferrer" className="underline">WhatsApp</a>
+                    </div>
+                  )}
                 </div>
               </div>
 

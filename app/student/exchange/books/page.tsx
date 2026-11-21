@@ -1,13 +1,11 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LiveMarketplace } from "@/components/integration/live-marketplace";
-
 import dynamic from "next/dynamic";
 import { useExchangeBooks } from "./hooks/use-exchange-books";
 import { BooksHeader } from "./components/books-header";
 import { BooksKPIs } from "./components/books-kpis";
 import { BooksFilterBar } from "./components/books-filter-bar";
 import { BooksGrid } from "./components/books-grid";
+import { apiClient } from "@/src/services/api-client";
 
 export type { BookListingType, ExchangeBook } from "./types";
 
@@ -21,7 +19,7 @@ const DynamicTwoStepExchangeModal = dynamic(
 
 import { AddBookModal } from "./components/add-book-modal";
 
-export default function BookExchangePage() { return apiClient.isUsingMock() ? <MockBookExchangePage/> : <LiveMarketplace kind="BOOK"/>; }
+export default function BookExchangePage() { return <MockBookExchangePage/>; }
 function MockBookExchangePage() {
   const {
     books,
@@ -89,6 +87,7 @@ function MockBookExchangePage() {
             category: "كتب ومراجع",
             ownerName: requestingBook.owner,
             ownerMajor: requestingBook.ownerMajor,
+            ownerPhone: requestingBook.contactPhone,
             depositAmount: requestingBook.price
               ? Math.max(10, Math.round(requestingBook.price * 0.8))
               : 10,
@@ -112,6 +111,7 @@ function MockBookExchangePage() {
       {isAddBookModalOpen && (
         <AddBookModal
           isOpen={isAddBookModalOpen}
+          publishAvailable={apiClient.isUsingMock()}
           onClose={() => setIsAddBookModalOpen(false)}
           onSubmit={handleAddBookSubmit}
         />

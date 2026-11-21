@@ -29,12 +29,16 @@ export function useOnboardingTour() {
     : "unimeta_onboarding_done_guest";
 
   useEffect(() => {
+    // This browser-only flag prevents tour measurement before the client mounts.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Read the browser preference after hydration, then subscribe for changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrefersReducedMotion(mediaQuery.matches);
     const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mediaQuery.addEventListener("change", handler);
@@ -130,6 +134,8 @@ export function useOnboardingTour() {
 
     const el = getVisibleElement(currentTourStep.selector);
     if (el) {
+      // Measure the active DOM target after the tour step changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTargetRect(measureElement(el));
 
       el.scrollIntoView({
@@ -264,6 +270,8 @@ export function useOnboardingTour() {
 
   useEffect(() => {
     if (isOpen) {
+      // Reposition the open tour card after its measured target changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCardPos(computeCardPosition());
     }
   }, [isOpen, targetRect, computeCardPosition]);

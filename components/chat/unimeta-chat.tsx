@@ -37,6 +37,7 @@ function IdentityChat({initiallyOpen}:{initiallyOpen:boolean}) {
     inputVal,
     isTyping,
     error,
+    retryQuery,
     windowRef,
     buttonRef,
     messagesEndRef,
@@ -59,7 +60,7 @@ function IdentityChat({initiallyOpen}:{initiallyOpen:boolean}) {
             role="dialog"
             aria-modal="false"
             aria-labelledby="unimeta-chat-title"
-            className="pointer-events-auto relative z-10 w-[calc(100vw-2rem)] sm:w-[370px] h-[480px] max-h-[calc(100dvh-7.5rem)] bg-white/98 backdrop-blur-xl rounded-3xl shadow-2xl border border-brand-border-soft flex flex-col overflow-visible animate-fade-in-scale focus-ring"
+            className="pointer-events-auto relative z-10 w-[calc(100vw-1.5rem)] sm:w-[370px] h-[min(480px,calc(100dvh-7.5rem))] bg-white/98 backdrop-blur-xl rounded-3xl shadow-2xl border border-brand-border-soft flex flex-col overflow-visible animate-fade-in-scale focus-ring"
             dir="rtl"
           >
             <PeekingMascot
@@ -107,9 +108,10 @@ function IdentityChat({initiallyOpen}:{initiallyOpen:boolean}) {
             </header>
 
             {error && (
-              <p role="alert" className="mx-4 mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-700">
-                {error}
-              </p>
+              <div role="alert" className="mx-4 mt-2 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-700">
+                <p className="min-w-0 break-words">{error}</p>
+                {retryQuery && <button type="button" onClick={() => void handleSend(undefined, retryQuery)} disabled={isTyping||historyBusy} className="shrink-0 rounded-lg border border-red-200 bg-white px-2.5 py-1.5 font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50">إعادة المحاولة</button>}
+              </div>
             )}
 
             {!apiClient.isUsingMock()&&user&&<div className="p-2 flex gap-2"><select aria-label="المحادثة" disabled={isTyping||historyBusy} value={sessionId??""} onChange={e=>void selectSession(e.target.value?Number(e.target.value):null)} className="border rounded-lg p-1 text-xs flex-1"><option value="">محادثة جديدة</option>{sessions.map(s=><option key={s.id} value={s.id}>{s.title??`محادثة ${s.id}`}</option>)}</select>{sessionId!==null&&<button disabled={isTyping||historyBusy} onClick={()=>void deleteSession()} className="text-xs text-red-700">حذف المحادثة</button>}</div>}
@@ -130,7 +132,7 @@ function IdentityChat({initiallyOpen}:{initiallyOpen:boolean}) {
                   value={inputVal}
                   onChange={handleInputChange}
                   placeholder="اسأل UniMeta عن خطتك، المعدل، المواد..."
-                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-brand-border-soft bg-white text-xs text-slate-800 placeholder-slate-400 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all"
+                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-brand-border-soft bg-white text-sm text-slate-800 placeholder-slate-400 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all"
                 />
                 <button
                   type="submit"

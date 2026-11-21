@@ -76,17 +76,17 @@ export function LibraryModals({
                 <span className="text-4xl mb-2">📄</span>
                 <p className="font-bold text-brand-ink text-sm">{previewFile.title}</p>
                 <p className="text-brand-muted text-xs mt-1">
-                  الحجم: {previewFile.fileSize} • التنزيلات: {previewFile.downloads}
+                  الحجم: {previewFile.fileSize} • التنزيلات: {previewFile.downloads ?? "غير متاح"}
                 </p>
                 <p className="text-[11px] text-brand-hover-medium mt-2">
-                  الملف معتمد أكاديمياً ومتاح للعرض المباشر أو التنزيل
+                  {previewFile.url ? "المعاينة غير متاحة؛ يمكنك تنزيل الملف للاطلاع." : "الملف معتمد أكاديمياً ومتاح للعرض المباشر أو التنزيل"}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="p-3 rounded-xl bg-brand-surface-muted border border-brand-border-soft">
                   <span className="text-brand-muted block text-[10px]">المُعد:</span>
-                  <span className="font-bold text-brand-ink">{previewFile.author}</span>
+                  <span className="font-bold text-brand-ink">{previewFile.author || "غير متاح"}</span>
                 </div>
                 <div className="p-3 rounded-xl bg-brand-surface-muted border border-brand-border-soft">
                   <span className="text-brand-muted block text-[10px]">تاريخ الرفع:</span>

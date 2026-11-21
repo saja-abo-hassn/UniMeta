@@ -6,10 +6,7 @@ import { NoPlanView } from "./components/no-plan-view";
 import { GpaHeaderBanner } from "./components/gpa-header-banner";
 import { GpaKPIs } from "./components/gpa-kpis";
 import { AcademicYearCard } from "./components/academic-year-card";
-import { apiClient } from "@/src/services/api-client";
-import { LiveGpa } from "@/components/integration/live-gpa";
-
-export default function GpaCalculatorPage() { return apiClient.isUsingMock() ? <MockGpaCalculatorPage/> : <StudentShell><LiveGpa/></StudentShell>; }
+export default function GpaCalculatorPage() { return <MockGpaCalculatorPage/>; }
 function MockGpaCalculatorPage() {
   const {
     selectedPlan,

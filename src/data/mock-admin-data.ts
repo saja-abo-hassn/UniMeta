@@ -23,12 +23,9 @@ export const initialModerators: ModeratorUser[] = [
     permissions: {
       manage_content: true,
       manage_agreements: true,
-      manage_exams: true,
-      manage_finances: true,
       manage_reports: true,
       manage_members: true,
-      manage_moderators: true,
-      manage_settings: true,
+      view_sensitive: true,
     },
   },
   {
@@ -42,12 +39,9 @@ export const initialModerators: ModeratorUser[] = [
     permissions: {
       manage_content: true,
       manage_agreements: false,
-      manage_exams: true,
-      manage_finances: false,
       manage_reports: true,
       manage_members: true,
-      manage_moderators: false,
-      manage_settings: false,
+      view_sensitive: false,
     },
   },
   {
@@ -61,12 +55,9 @@ export const initialModerators: ModeratorUser[] = [
     permissions: {
       manage_content: true,
       manage_agreements: false,
-      manage_exams: false,
-      manage_finances: false,
       manage_reports: true,
       manage_members: true,
-      manage_moderators: false,
-      manage_settings: false,
+      view_sensitive: false,
     },
   },
 ];

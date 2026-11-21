@@ -3,11 +3,13 @@
 import React, { useState } from "react";
 import { BookListingType, ExchangeBook } from "../types";
 import { Modal } from "@/components/shared/modal";
+import { isPalestinianMobile } from "@/src/lib/palestinian-phone";
 
 export interface NewBookPayload {
   title: string;
   courseCode: string;
   author: string;
+  contactPhone: string;
   type: BookListingType;
   price?: number;
   rentalPeriod?: string;
@@ -18,6 +20,7 @@ export interface NewBookPayload {
 
 export interface AddBookModalProps {
   isOpen: boolean;
+  publishAvailable?: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent, payload?: NewBookPayload) => void;
   newTitle?: string;
@@ -42,6 +45,7 @@ export interface AddBookModalProps {
 
 export function AddBookModal({
   isOpen,
+  publishAvailable = true,
   onClose,
   onSubmit,
   newTitle = "",
@@ -66,6 +70,8 @@ export function AddBookModal({
   const [localTitle, setLocalTitle] = useState(newTitle);
   const [localCourseCode, setLocalCourseCode] = useState(newCourseCode);
   const [localAuthor, setLocalAuthor] = useState(newAuthor);
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactPhoneError, setContactPhoneError] = useState("");
   const [localType, setLocalType] = useState<BookListingType>(newType);
   const [localPrice, setLocalPrice] = useState<number>(newPrice);
   const [localRentalPeriod, setLocalRentalPeriod] = useState(newRentalPeriod);
@@ -78,6 +84,11 @@ export function AddBookModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!localTitle.trim()) return;
+    if (!isPalestinianMobile(contactPhone)) {
+      setContactPhoneError("أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.");
+      return;
+    }
+    setContactPhoneError("");
 
     if (onTitleChange) onTitleChange(localTitle);
     if (onCourseCodeChange) onCourseCodeChange(localCourseCode);
@@ -93,6 +104,7 @@ export function AddBookModal({
       title: localTitle,
       courseCode: localCourseCode,
       author: localAuthor,
+      contactPhone,
       type: localType,
       price: localPrice,
       rentalPeriod: localRentalPeriod,
@@ -147,6 +159,22 @@ export function AddBookModal({
                 className="w-full px-3.5 py-2.5 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted focus:outline-none focus:border-brand-primary"
               />
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="font-bold text-brand-ink block">رقم الجوال للتواصل:</label>
+            <input
+              type="tel"
+              required
+              inputMode="numeric"
+              maxLength={10}
+              value={contactPhone}
+              onChange={(e) => { setContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10)); setContactPhoneError(""); }}
+              placeholder="مثال: 0599182744"
+              dir="ltr"
+              className={`w-full px-3.5 py-2.5 rounded-xl bg-white border font-semibold text-brand-ink ${contactPhoneError ? "border-red-400" : "border-brand-border-soft"}`}
+            />
+            {contactPhoneError && <p className="text-[11px] text-red-600">{contactPhoneError}</p>}
           </div>
 
           <div className="space-y-1">
@@ -243,11 +271,9 @@ export function AddBookModal({
           >
             إلغاء
           </button>
-          <button
-            type="submit"
-            className="px-6 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white font-bold shadow-xs transition-all cursor-pointer"
-          >
-            نشر الكتاب الآن
+          {!publishAvailable && <p className="basis-full text-[11px] text-red-600">النشر متوقف حالياً: عقد الـ API لا يحفظ رقم التواصل أو تفاصيل العرض المطلوبة.</p>}
+          <button type="submit" disabled={!publishAvailable} className="px-6 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium disabled:bg-slate-300 text-white font-bold shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed">
+            {publishAvailable ? "نشر الكتاب الآن" : "النشر غير متاح حالياً"}
           </button>
         </Modal.Footer>
       </form>

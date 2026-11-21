@@ -85,6 +85,12 @@ export function DevicesGrid({ filteredDevices, onRequestDevice }: DevicesGridPro
                     <span className="text-[10px] text-brand-muted block">{dev.ownerMajor}</span>
                   </div>
                 </div>
+                {dev.contactPhone && (
+                  <div className="flex items-center gap-3 text-[11px] text-brand-primary" dir="ltr">
+                    <a href={`tel:${dev.contactPhone}`} className="underline">{dev.contactPhone}</a>
+                    <a href={`https://wa.me/970${dev.contactPhone.slice(1)}`} target="_blank" rel="noreferrer" className="underline">WhatsApp</a>
+                  </div>
+                )}
               </div>
 
               <div className="pt-3 border-t border-brand-border-soft">

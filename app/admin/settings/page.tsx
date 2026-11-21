@@ -1,13 +1,9 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LivePlatformSettings } from "@/components/integration/live-configuration";
-
-
 import React, { useState, useEffect } from "react";
 import { useAdmin, AdminSettingsData } from "@/src/contexts/admin-context";
 import { PermissionGuard } from "@/components/admin/permission-guard";
 
-export default function AdminSettingsPage() { return apiClient.isUsingMock() ? <MockAdminSettingsPage/> : <LivePlatformSettings/>; }
+export default function AdminSettingsPage() { return <MockAdminSettingsPage/>; }
 function MockAdminSettingsPage() {
   const { currentUser, settings, updateSettings, updateAdminProfile } = useAdmin();
 
@@ -26,6 +22,8 @@ function MockAdminSettingsPage() {
   const [adminAvatarUrl, setAdminAvatarUrl] = useState(currentUser.avatarUrl || "");
 
   useEffect(() => {
+    // Synchronize this form with the auth profile when the current admin changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAdminName(currentUser.name);
     setAdminTitle(currentUser.title || "");
     setAdminAvatarUrl(currentUser.avatarUrl || "");
@@ -48,7 +46,7 @@ function MockAdminSettingsPage() {
   };
 
   return (
-    <PermissionGuard permission="manage_settings">
+    <PermissionGuard superAdminOnly>
       <div className="space-y-6 animate-fade-in" dir="rtl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">

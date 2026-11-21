@@ -10,6 +10,7 @@ import {
 } from "@/src/data/mock-admin-data";
 import { getStoredUsers } from "./mock-backend/mock-users";
 import { AdminRole, AdminAgreementItem, CourseMaterialItem, AdminReportItem, AdminMemberItem } from "@/src/types/admin";
+import type { components } from "@/types/api";
 
 export interface AdminMeData {
   id: string;
@@ -22,7 +23,7 @@ export interface AdminMeData {
 
 export interface AdminOverviewData {
   totalStudents: number;
-  activeNow: number;
+  activeNow: number | null;
   pendingAgreements: number;
   activeLoans: number;
   contentCount: number;
@@ -62,10 +63,10 @@ class AdminService {
 
   async getOverview(): Promise<LaravelResponse<AdminOverviewData>> {
     if (!apiClient.isUsingMock()) {
-      const response = await apiClient.get<Record<string, number>>("/admin/dashboard/overview");
+      const response = await apiClient.get<components["schemas"]["AdminOverview"]>("/admin/dashboard/overview");
       const d = response.data;
       return { ...response, data: d ? {
-        totalStudents: d.total_students, activeNow: d.active_now ?? 0,
+        totalStudents: d.total_students, activeNow: null,
         pendingAgreements: d.pending_agreements ?? 0, activeLoans: d.active_agreements ?? 0,
         contentCount: d.content_count ?? 0, coveredCourses: d.covered_courses ?? 0,
         totalCourses: d.total_courses ?? 0, openReports: d.open_reports ?? 0,

@@ -31,36 +31,42 @@ export const adminNavItems: AdminNavItem[] = [
     title: "إدارة المحتوى والمواد",
     path: "/admin/content",
     icon: "content",
+    requiredPermission: "manage_content",
   },
   {
     id: "agreements",
     title: "الاتفاقيات والعهد",
     path: "/admin/agreements",
     icon: "agreements",
+    requiredPermission: "manage_agreements",
   },
   {
     id: "moderation",
     title: "الإشراف والبلاغات",
     path: "/admin/moderation",
     icon: "reports",
+    requiredPermission: "manage_reports",
   },
   {
     id: "members",
     title: "الأعضاء النشطون",
     path: "/admin/members",
     icon: "users",
+    requiredPermission: "manage_members",
   },
   {
     id: "permissions",
     title: "الصلاحيات والمشرفون",
     path: "/admin/permissions",
     icon: "shield",
+    superAdminOnly: true,
   },
   {
     id: "settings",
     title: "إعدادات المنصة",
     path: "/admin/settings",
     icon: "settings",
+    superAdminOnly: true,
   },
 ];
 
@@ -80,7 +86,7 @@ function getInitials(name: string): string {
 
 export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
-  const { currentUser, agreements, reports } = useAdmin();
+  const { currentUser, agreements, reports, hasPermission } = useAdmin();
 
   const pendingAgreements = agreements.filter((a) => a.status === "قيد الانتظار").length;
   const pendingReports = reports.filter((r) => r.status === "مفتوح").length;
@@ -151,8 +157,10 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
     }
   };
 
-  // All 7 admin navigation sections are permanently visible and accessible
-  const visibleNavItems = adminNavItems;
+  const visibleNavItems = adminNavItems.filter((item) => {
+    if (item.superAdminOnly) return currentUser.role === "super_admin";
+    return !item.requiredPermission || hasPermission(item.requiredPermission);
+  });
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 

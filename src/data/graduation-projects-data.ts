@@ -15,6 +15,7 @@ export type ProjectScope = "مشروع 1" | "مشروع 2" | "مشروع 1 و 2"
 
 export interface GraduationProject {
   id: string;
+  ownerId?: string;
   title: string;
   major: string;
   department: string;

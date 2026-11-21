@@ -26,6 +26,7 @@ export interface AuthSessionData {
     studentId?: string;
     faculty?: string;
     role: "student" | "admin" | "super_admin" | "moderator";
+    adminRole?: "super_admin" | "moderator" | null;
     title?: string | null;
     avatarUrl?: string | null;
     emailVerified?: boolean;

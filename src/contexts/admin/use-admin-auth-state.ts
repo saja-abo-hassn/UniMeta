@@ -10,7 +10,7 @@ import { requireData, reportApiError } from "@/src/services/api-result";
 import { useAuth } from "../auth-context";
 
 export function useAdminAuthState() {
-  const { user: sessionUser } = useAuth();
+  const { user: sessionUser, adminRole, permissions: sessionPermissions, can } = useAuth();
   const [currentUserRole, setCurrentUserRole] = useState<AdminRole>(() => {
     if (apiClient.isUsingMock() && typeof window !== "undefined") {
       try {
@@ -71,24 +71,23 @@ export function useAdminAuthState() {
 
   useEffect(() => {
     if (apiClient.isUsingMock()) return;
+    // Clear the previous account's moderator list before loading the new profile's data.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setModerators([]);
-    if (sessionUser?.role !== "admin" && sessionUser?.role !== "super_admin") return;
+    if (adminRole !== "super_admin") return;
     let active = true;
     moderatorsService.list().then(requireData).then(items => {
       if (active) setModerators(items);
     }).catch(reportApiError);
     return () => { active = false; };
-  }, [authProfileTick, sessionUser?.id, sessionUser?.role]);
+  }, [authProfileTick, adminRole, sessionUser?.id]);
 
   const currentUser = useMemo<ModeratorUser>(() => {
     void authProfileTick;
     const authUser = authService.getCurrentUser();
-    const effectiveRole: AdminRole =
-      authUser?.role === "moderator"
-        ? "moderator"
-        : authUser?.role === "admin" || authUser?.role === "super_admin"
-        ? "super_admin"
-        : currentUserRole;
+    const effectiveRole: AdminRole = apiClient.isUsingMock()
+      ? (authUser?.role === "moderator" ? "moderator" : currentUserRole)
+      : (adminRole ?? "moderator");
 
     const baseName =
       authUser?.name ||
@@ -112,17 +111,14 @@ export function useAdminAuthState() {
       status: "نشط",
       createdAt: "2026-01-01",
       permissions: {
-        manage_content: true,
-        manage_agreements: true,
-        manage_exams: true,
-        manage_finances: effectiveRole === "super_admin",
-        manage_reports: true,
-        manage_members: true,
-        manage_moderators: effectiveRole === "super_admin",
-        manage_settings: effectiveRole === "super_admin",
+        manage_content: sessionPermissions?.manage_content === true,
+        manage_agreements: sessionPermissions?.manage_agreements === true,
+        manage_reports: sessionPermissions?.manage_reports === true,
+        manage_members: sessionPermissions?.manage_members === true,
+        view_sensitive: sessionPermissions?.view_sensitive === true,
       },
     };
-  }, [authProfileTick, currentUserRole]);
+  }, [adminRole, authProfileTick, currentUserRole, sessionPermissions]);
 
   const updateAdminProfile = useCallback(
     (updates: { name?: string; title?: string | null; avatarUrl?: string | null }) => {
@@ -137,14 +133,11 @@ export function useAdminAuthState() {
   );
 
   const hasPermission = useCallback(
-    (_permission: AdminPermission): boolean => {
-      if (!apiClient.isUsingMock()) {
-        const user=authService.getCurrentUser();
-        return user?.role==="super_admin" || user?.role==="admin" || (user?.role==="moderator" && user.permissions?.[_permission]===true);
-      }
-      return true;
+    (permission: AdminPermission): boolean => {
+      if (apiClient.isUsingMock()) return true;
+      return can(permission);
     },
-    []
+    [can]
   );
 
   const switchRole = useCallback((role: AdminRole) => {

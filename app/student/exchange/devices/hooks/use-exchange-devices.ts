@@ -6,6 +6,8 @@ import { useStudentUser } from "@/src/hooks/use-student-user";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 import { DeviceItem } from "../types";
 import { initialDevices } from "../data/initial-devices";
+import { apiClient } from "@/src/services/api-client";
+import { isPalestinianMobile } from "@/src/lib/palestinian-phone";
 
 export function useExchangeDevices() {
   const { notify } = useNotifications();
@@ -28,6 +30,8 @@ export function useExchangeDevices() {
   const [newDeviceCategory, setNewDeviceCategory] = useState<DeviceItem["category"]>("متحكمات ومستشعرات");
   const [newDeviceType, setNewDeviceType] = useState<DeviceItem["type"]>("إعارة مجانية");
   const [newFeeText, setNewFeeText] = useState("مجاناً للطلاب");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactPhoneError, setContactPhoneError] = useState("");
 
   const filteredDevices = devices.filter((d) => {
     const q = searchQuery.toLowerCase().trim();
@@ -45,7 +49,12 @@ export function useExchangeDevices() {
 
   const handleAddDeviceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!apiClient.isUsingMock()) return;
     if (!newDeviceName.trim()) return;
+    if (!isPalestinianMobile(contactPhone)) {
+      setContactPhoneError("أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.");
+      return;
+    }
 
     const newDevice: DeviceItem = {
       id: `dev-${Date.now()}`,
@@ -54,6 +63,7 @@ export function useExchangeDevices() {
       model: "Custom Tool",
       owner: currentStudentName,
       ownerMajor: currentStudentMajor,
+      contactPhone,
       condition: "ممتازة",
       type: newDeviceType,
       feeText: newFeeText || "مجاناً",
@@ -75,6 +85,8 @@ export function useExchangeDevices() {
 
     setIsAddModalOpen(false);
     setNewDeviceName("");
+    setContactPhone("");
+    setContactPhoneError("");
   };
 
   return {
@@ -99,6 +111,9 @@ export function useExchangeDevices() {
     setNewDeviceType,
     newFeeText,
     setNewFeeText,
+    contactPhone,
+    setContactPhone: (value: string) => { setContactPhone(value); setContactPhoneError(""); },
+    contactPhoneError,
     currentStudentName,
     currentStudentMajor,
     handleAddDeviceSubmit,

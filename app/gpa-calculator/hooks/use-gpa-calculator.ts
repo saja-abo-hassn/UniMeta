@@ -109,6 +109,8 @@ export function useGpaCalculator() {
   }, [yearsData, selectedPlan.id]);
 
   useEffect(() => {
+    // Reconcile the local editable plan with grade updates from the shared academic context.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setYearsData((prev) =>
       prev.map((yr) => ({
         ...yr,

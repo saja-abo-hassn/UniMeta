@@ -31,6 +31,8 @@ export function useStudentTasks() {
   useEffect(() => {
     if (!apiClient.isUsingMock()) {
       let active = true;
+      // Clear tasks from a prior account before loading the authenticated student's list.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTasks([]);setIsLoaded(false);
       if (!user) {setIsLoaded(true);return;}
       void apiClient.all<BackendTask>("/tasks").then(requireData).then(items=>{if(active)setTasks(items.map(toTask));}).catch(reportApiError).finally(()=>{if(active)setIsLoaded(true);});

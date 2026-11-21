@@ -24,11 +24,11 @@ export function ActivePlanBanner({ selectedPlan, totalCoursesCount }: ActivePlan
               {selectedPlan.degree}
             </span>
             <span className="text-[10px] font-semibold text-brand-primary bg-white px-2 py-0.5 rounded-full border border-brand-border-soft">
-              {totalCoursesCount} مواد متاحة
+              {totalCoursesCount} مواد بالمكتبة
             </span>
           </div>
           <p className="text-xs text-brand-muted mt-0.5">
-            تُعرض المواد والملفات المعتمدة المرتبطة بخطتك الأكاديمية المختارة. عند تغيير التخصص، يتم تحديث المقررات وملفاتها تلقائيًا.
+            المكتبة تعرض المواد المتاحة لجميع الطلاب، بغض النظر عن التخصص أو الخطة الدراسية المختارة.
           </p>
         </div>
       </div>

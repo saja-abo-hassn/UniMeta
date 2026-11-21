@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   cacheComponents: true,
   partialPrefetching: true,
+  experimental: { cpus: 2 },
 };
 
 export default nextConfig;

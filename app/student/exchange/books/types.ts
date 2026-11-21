@@ -8,6 +8,7 @@ export interface ExchangeBook {
   author: string;
   owner: string;
   ownerMajor: string;
+  contactPhone?: string;
   condition: "ممتازة" | "جيدة جداً" | "جيدة";
   type: BookListingType;
   price?: number;

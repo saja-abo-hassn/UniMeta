@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/src/contexts/auth-context";
+import { apiClient } from "@/src/services/api-client";
 import {
   StudentKycData,
   AgreementSignature,
   AgreementPledge,
   validateNationalId,
-  validatePhone,
   maskNationalId,
   maskPhone,
   getSavedStudentKyc,
@@ -28,7 +27,6 @@ export function useExchangeModal({
   onSuccess,
 }: TwoStepExchangeModalProps) {
   const { notify } = useNotifications();
-  const { user, verifyEmail, resendVerificationCode, refreshProfile } = useAuth();
 
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 
@@ -36,15 +34,6 @@ export function useExchangeModal({
   const [phone, setPhone] = useState("");
   const [studentId, setStudentId] = useState("");
   const [fullName, setFullName] = useState("");
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-
-  const [otpCode, setOtpCode] = useState("");
-  const [isSendingOtp, setIsSendingOtp] = useState(false);
-  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [showAgreementEmailNotice, setShowAgreementEmailNotice] = useState(false);
-  const [otpCountdown, setOtpCountdown] = useState(0);
-  const [otpNotice, setOtpNotice] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -55,8 +44,6 @@ export function useExchangeModal({
   const [signatureMime, setSignatureMime] = useState<string>("image/png");
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const sendingOtpRef = useRef(false);
-  const verifyingOtpRef = useRef(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawnOnCanvas, setHasDrawnOnCanvas] = useState(false);
 
@@ -66,38 +53,29 @@ export function useExchangeModal({
   useEffect(() => {
     if (!isOpen) return;
 
+    // Reset modal state on each open; the dialog is reused for different offers.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentStep(1);
     setSubmitErrorMessage(null);
     setPledgeAgreed(false);
     setSignatureDataUrl(null);
     setHasDrawnOnCanvas(false);
-    setOtpSent(false);
-    setShowAgreementEmailNotice(false);
-    setOtpCode("");
 
-    const savedKyc = getSavedStudentKyc(currentStudent.studentId || undefined);
+    const savedKyc = apiClient.isUsingMock()
+      ? getSavedStudentKyc(currentStudent.studentId || undefined)
+      : null;
     if (savedKyc) {
       setNationalId(savedKyc.nationalId || "");
-      setPhone(savedKyc.phone || "");
+      setPhone((savedKyc.phone || "").replace(/\D/g, ""));
       setStudentId(savedKyc.studentId || currentStudent.studentId || "");
       setFullName(savedKyc.fullName || currentStudent.name || "");
-      setIsEmailVerified(user?.emailVerified === true);
     } else {
       setFullName(currentStudent.name || "");
       setStudentId(currentStudent.studentId || "");
       setNationalId("");
       setPhone("");
-      setIsEmailVerified(user?.emailVerified === true);
     }
-  }, [isOpen, currentStudent, user?.emailVerified]);
-
-  useEffect(() => {
-    if (otpCountdown <= 0) return;
-    const interval = setInterval(() => {
-      setOtpCountdown((c) => (c > 0 ? c - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [otpCountdown]);
+  }, [isOpen, currentStudent]);
 
   useEffect(() => {
     if (currentStep === 2 && signatureType === "canvas" && canvasRef.current) {
@@ -112,88 +90,6 @@ export function useExchangeModal({
     }
   }, [currentStep, signatureType]);
 
-  const handleSendOtp = async () => {
-    if (sendingOtpRef.current) return;
-    const email = user?.email?.trim();
-    if (!email) {
-      setErrors((prev) => ({ ...prev, otp: "تعذر العثور على البريد الإلكتروني للحساب. سجّل الدخول مجددًا." }));
-      return;
-    }
-
-    setErrors((prev) => {
-      const copy = { ...prev };
-      delete copy.otp;
-      return copy;
-    });
-
-    sendingOtpRef.current = true;
-    setIsSendingOtp(true);
-    setOtpNotice(null);
-
-    try {
-      const result = await resendVerificationCode(email);
-      setIsSendingOtp(false);
-      if (!result.errors && result.status !== undefined && result.status >= 200 && result.status < 300) {
-        setOtpSent(true);
-        setOtpCountdown(60);
-        setOtpNotice("تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-        setShowAgreementEmailNotice(true);
-      } else {
-        setErrors((prev) => ({ ...prev, otp: "تعذر إرسال رمز التحقق إلى البريد الإلكتروني. يرجى المحاولة مجددًا." }));
-      }
-    } catch {
-      setIsSendingOtp(false);
-      setErrors((prev) => ({ ...prev, otp: "تعذر إرسال رمز التحقق إلى البريد الإلكتروني. يرجى المحاولة مجددًا." }));
-    } finally {
-      sendingOtpRef.current = false;
-    }
-  };
-
-  const handleVerifyOtp = async () => {
-    if (verifyingOtpRef.current) return;
-    const submittedCode = otpCode.replace(/\D/g, "");
-    if (submittedCode.length !== 6) {
-      setErrors((prev) => ({ ...prev, otp: "يرجى إدخال رمز التحقق المكوّن من 6 أرقام." }));
-      return;
-    }
-
-    verifyingOtpRef.current = true;
-    setIsVerifyingOtp(true);
-    setErrors((prev) => {
-      const copy = { ...prev };
-      delete copy.otp;
-      return copy;
-    });
-
-    try {
-      const email = user?.email?.trim();
-      if (!email || !/^\d{6}$/.test(submittedCode)) {
-        setIsVerifyingOtp(false);
-        setErrors((prev) => ({ ...prev, otp: "يرجى إدخال رمز التحقق المكوّن من 6 أرقام." }));
-        return;
-      }
-
-      const result = await verifyEmail(email, submittedCode);
-      setIsVerifyingOtp(false);
-      if (!result.errors && result.status !== undefined && result.status >= 200 && result.status < 300) {
-        const refreshedUser = await refreshProfile();
-        if (refreshedUser?.emailVerified === false) {
-          setErrors((prev) => ({ ...prev, otp: "لم يؤكد الخادم حالة البريد بعد. حدّث الصفحة أو أعد المحاولة." }));
-          return;
-        }
-        setIsEmailVerified(true);
-        setOtpNotice("تم التحقق من البريد الإلكتروني.");
-      } else {
-        setErrors((prev) => ({ ...prev, otp: result.message || "رمز التحقق غير صحيح أو منتهي الصلاحية." }));
-      }
-    } catch {
-      setIsVerifyingOtp(false);
-      setErrors((prev) => ({ ...prev, otp: "تعذر التحقق من الرمز. يرجى المحاولة مجددًا." }));
-    } finally {
-      verifyingOtpRef.current = false;
-    }
-  };
-
   const handleProceedToStep2 = () => {
     const nextErrors: Record<string, string> = {};
 
@@ -202,12 +98,9 @@ export function useExchangeModal({
       nextErrors.nationalId = idCheck.error || "رقم الهوية غير صحيح.";
     }
 
-    const phoneCheck = validatePhone(phone);
-    if (!phoneCheck.valid) {
-      nextErrors.phone = phoneCheck.error || "رقم الجوال غير صحيح.";
+    if (!/^(059|056)\d{7}$/.test(phone)) {
+      nextErrors.phone = "أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.";
     }
-
-    if (!isEmailVerified) nextErrors.otp = "يجب التحقق من البريد الإلكتروني للمتابعة.";
 
     if (!studentId.trim()) {
       nextErrors.studentId = "الرقم الجامعي إجباري.";
@@ -320,6 +213,12 @@ export function useExchangeModal({
     setIsSubmitting(true);
     setSubmitErrorMessage(null);
 
+    if (!apiClient.isUsingMock()) {
+      setIsSubmitting(false);
+      setSubmitErrorMessage("API الحالي يقبل رسالة الطلب فقط ولا يدعم بيانات التحقق والتعهد والتوقيع المطلوبة هنا.");
+      return;
+    }
+
     const studentKyc: StudentKycData = {
       nationalId: nationalId.trim(),
       maskedNationalId: maskNationalId(nationalId),
@@ -398,21 +297,10 @@ export function useExchangeModal({
     setNationalId,
     phone,
     setPhone,
-    email: user?.email || "",
     studentId,
     setStudentId,
     fullName,
     setFullName,
-    isEmailVerified,
-    otpCode,
-    setOtpCode,
-    isSendingOtp,
-    isVerifyingOtp,
-    otpSent,
-    otpCountdown,
-    otpNotice,
-    showAgreementEmailNotice,
-    setShowAgreementEmailNotice,
     errors,
     setErrors,
     pledgeAgreed,
@@ -426,8 +314,6 @@ export function useExchangeModal({
     setHasDrawnOnCanvas,
     isSubmitting,
     submitErrorMessage,
-    handleSendOtp,
-    handleVerifyOtp,
     handleProceedToStep2,
     startDrawing,
     draw,

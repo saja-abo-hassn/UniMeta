@@ -36,13 +36,10 @@ export function useAdminPermissions() {
     permissions: {
       manage_content: true,
       manage_agreements: false,
-      manage_exams: false,
-      manage_finances: false,
       manage_reports: true,
       manage_members: false,
-      manage_moderators: false,
-      manage_settings: false,
-    } as Record<AdminPermission, boolean>,
+      view_sensitive: false,
+    },
   });
   const [formError, setFormError] = useState("");
 
@@ -135,12 +132,9 @@ export function useAdminPermissions() {
         permissions: {
           manage_content: true,
           manage_agreements: false,
-          manage_exams: false,
-          manage_finances: false,
           manage_reports: true,
           manage_members: false,
-          manage_moderators: false,
-          manage_settings: false,
+          view_sensitive: false,
         },
       });
       setFormError("");

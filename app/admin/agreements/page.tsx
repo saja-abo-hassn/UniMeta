@@ -1,8 +1,4 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LiveAgreements } from "@/components/integration/live-agreements";
-
-
 import React from "react";
 import dynamic from "next/dynamic";
 import { PermissionGuard } from "@/components/admin/permission-guard";
@@ -41,7 +37,7 @@ const AuditLogDrawer = dynamic(
   { ssr: false }
 );
 
-export default function AdminAgreementsPage() { return apiClient.isUsingMock() ? <MockAdminAgreementsPage/> : <LiveAgreements admin/>; }
+export default function AdminAgreementsPage() { return <MockAdminAgreementsPage/>; }
 function MockAdminAgreementsPage() {
   const {
     currentUser,
@@ -77,7 +73,7 @@ function MockAdminAgreementsPage() {
   } = useAdminAgreements();
 
   return (
-    <PermissionGuard superAdminOnly>
+    <PermissionGuard permission="manage_agreements">
       <div className="space-y-6" dir="rtl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">

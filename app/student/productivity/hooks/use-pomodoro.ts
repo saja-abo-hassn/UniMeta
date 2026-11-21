@@ -46,6 +46,8 @@ function useMockPomodoro() {
     try {
       const storedSettings = localStorage.getItem("unimeta_pomodoro_settings");
       if (storedSettings) {
+        // Restore browser-only timer settings after hydration.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSettings(JSON.parse(storedSettings));
       }
       const storedStats = localStorage.getItem("unimeta_pomodoro_stats");
@@ -62,6 +64,8 @@ function useMockPomodoro() {
 
   useEffect(() => {
     if (isClientLoaded && !timerRunning && !sessionStartedFlag) {
+      // Recalculate the stopped timer when the selected session or its duration changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (sessionType === "focus") setSecondsLeft(settings.studyMinutes * 60);
       else if (sessionType === "shortBreak") setSecondsLeft(settings.shortBreakMinutes * 60);
       else if (sessionType === "longBreak") setSecondsLeft(settings.longBreakMinutes * 60);
@@ -90,9 +94,9 @@ function useMockPomodoro() {
   }, [tasks, isClientLoaded]);
 
   const settingsRef = useRef(settings);
-  settingsRef.current = settings;
   const statsRef = useRef(stats);
-  statsRef.current = stats;
+  useEffect(() => { settingsRef.current = settings; }, [settings]);
+  useEffect(() => { statsRef.current = stats; }, [stats]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;

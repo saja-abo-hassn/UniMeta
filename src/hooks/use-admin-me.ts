@@ -26,6 +26,8 @@ export function useAdminMe() {
   }, []);
 
   useEffect(() => {
+    // Fetch the current admin profile on mount and auth changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchMe();
 
     const handleAuthChange = () => {

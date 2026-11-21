@@ -1,7 +1,4 @@
 "use client";
-import { apiClient } from "@/src/services/api-client";
-import { LiveLibrary } from "@/components/integration/live-library";
-
 import React from "react";
 import dynamic from "next/dynamic";
 import { PermissionGuard } from "@/components/admin/permission-guard";
@@ -18,7 +15,7 @@ const DynamicContentModals = dynamic(
   { ssr: false }
 );
 
-export default function AdminContentPage() { return apiClient.isUsingMock() ? <MockAdminContentPage/> : <LiveLibrary admin/>; }
+export default function AdminContentPage() { return <MockAdminContentPage/>; }
 function MockAdminContentPage() {
   const {
     materials,

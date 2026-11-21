@@ -1,38 +1,99 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNotifications } from "@/src/contexts/notifications-context";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 import { useAdmin } from "@/src/contexts/admin-context";
-import { authService } from "@/src/services/auth-service";
+import { useAuth } from "@/src/contexts/auth-context";
+import { apiClient } from "@/src/services/api-client";
+import { materialsService } from "@/src/services/materials-service";
+import { reportApiError, requireData } from "@/src/services/api-result";
 import { isCourseInMajor } from "@/src/data/course-majors-mapping";
 import { initialCourses } from "../data/initial-courses-data";
 import { LibraryCategory, LibraryFile, LibraryCourse } from "../types";
+import type { CourseMaterialItem } from "@/src/types/admin";
 
 export function useStudentLibrary() {
   const { notify } = useNotifications();
-  const { selectedPlan, hasPlanSelected } = useStudyPlan();
-  const { materials, addMaterial } = useAdmin();
+  const { selectedPlan, hasPlanSelected, isLoaded: isPlanLoaded } = useStudyPlan();
+  const { materials: adminMaterials, addMaterial } = useAdmin();
+  const { user } = useAuth();
+  const [liveCatalog, setLiveCatalog] = useState<Awaited<ReturnType<typeof materialsService.getLibraryCatalog>>["data"]>(null);
+  const [isLoading, setIsLoading] = useState(!apiClient.isUsingMock());
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (apiClient.isUsingMock()) return;
+    let active = true;
+    // Enter the loading state when the authenticated student changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsLoading(true);
+    setLoadError(null);
+    void materialsService.getLibraryCatalog().then((response) => {
+      const catalog = requireData(response);
+      if (active) setLiveCatalog(catalog);
+    }).catch((error: unknown) => {
+      if (active) setLoadError(error instanceof Error ? error.message : "تعذر تحميل مواد المكتبة.");
+      reportApiError(error);
+    }).finally(() => {
+      if (active) setIsLoading(false);
+    });
+    return () => { active = false; };
+  }, [user?.id]);
+
+  const materials: CourseMaterialItem[] = apiClient.isUsingMock()
+    ? adminMaterials
+    : (liveCatalog?.materials ?? []).map((item) => ({
+        ...item,
+        courseId: "",
+        fileType: item.fileType.toLowerCase().includes("word") ? "DOCX" as const
+          : item.fileType.toLowerCase().includes("presentation") ? "SLIDES" as const
+          : item.fileType.toLowerCase().includes("image") ? "IMAGE" as const
+          : item.fileType.toLowerCase().includes("zip") ? "ZIP" as const
+          : item.fileType.toLowerCase().includes("video") ? "VIDEO" as const : "PDF" as const,
+        downloads: item.downloads ?? 0,
+        author: item.author ?? "غير متاح",
+        fileName: undefined,
+        status: "منشور" as const,
+        description: undefined,
+        url: `/api/backend/library/resources/${item.id}/download`,
+      }));
 
   const courses = useMemo<LibraryCourse[]>(() => {
     const courseMap = new Map<string, LibraryCourse>();
 
-    initialCourses.forEach((c) => {
-      const inPlan = selectedPlan.courses.some((pc) => pc.code.toLowerCase() === c.code.toLowerCase());
-      const inMajor = isCourseInMajor(c.code, selectedPlan.major);
-      if (inPlan || inMajor) {
-        courseMap.set(c.code.toUpperCase(), { ...c, files: [...c.files] });
-      }
+    if (apiClient.isUsingMock() && hasPlanSelected) {
+      initialCourses.forEach((c) => {
+        const inPlan = selectedPlan.courses.some((pc) => pc.code.toLowerCase() === c.code.toLowerCase());
+        const inMajor = isCourseInMajor(c.code, selectedPlan.major);
+        if (inPlan || inMajor) {
+          courseMap.set(c.code.toUpperCase(), { ...c, files: [...c.files] });
+        }
+      });
+    }
+
+    liveCatalog?.subjects.forEach((subject) => {
+      const code = subject.subject_code.toUpperCase();
+      courseMap.set(code, {
+        code: subject.subject_code,
+        nameAr: subject.subject_name,
+        nameEn: subject.subject_code,
+        majorName: subject.major.name,
+        instructor: "غير متاح",
+        level: "جميع المستويات",
+        semester: "—",
+        files: [],
+      });
     });
 
-    selectedPlan.courses.forEach((pc) => {
+    if (hasPlanSelected) selectedPlan.courses.forEach((pc) => {
       const code = pc.code.toUpperCase();
       if (!courseMap.has(code)) {
         courseMap.set(code, {
           code: pc.code,
           nameAr: pc.name,
           nameEn: pc.name,
-          instructor: "هيئة تدريس القسم",
+          instructor: "",
           level:
             pc.semester <= 2
               ? "السنة الأولى"
@@ -79,11 +140,17 @@ export function useStudentLibrary() {
             title: m.title,
             category,
             author: m.author,
-            fileType: (m.fileType === "SLIDES" || m.fileType === "ZIP" || m.fileType === "VIDEO"
+            fileType: m.fileType.toLowerCase().includes("pdf")
+              ? "PDF"
+              : m.fileType.toLowerCase().includes("wordprocessingml") || m.fileType.toLowerCase().includes("msword")
+              ? "DOCX"
+              : m.fileType.toLowerCase().includes("presentationml") || m.fileType.toLowerCase().includes("powerpoint")
+              ? "SLIDES"
+              : m.fileType === "SLIDES" || m.fileType === "ZIP" || m.fileType === "VIDEO"
               ? m.fileType
-              : "PDF") as "PDF" | "SLIDES" | "ZIP" | "VIDEO",
+              : "PDF",
             fileSize: m.fileSize,
-            downloads: m.downloads || 0,
+            downloads: m.downloads,
             date: m.date,
             description: m.description,
           });
@@ -92,7 +159,7 @@ export function useStudentLibrary() {
     });
 
     return Array.from(courseMap.values());
-  }, [selectedPlan, materials]);
+  }, [selectedPlan, hasPlanSelected, materials, liveCatalog]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
@@ -109,10 +176,10 @@ export function useStudentLibrary() {
   const [uploadFileName, setUploadFileName] = useState("");
   const [uploadFileSize, setUploadFileSize] = useState("");
 
-  const currentUser = authService.getCurrentUser();
-  const currentStudentName = currentUser?.name || "سارة محمد أبو حسن";
+  const currentStudentName = user?.name || "";
 
   const myContributions = useMemo(() => {
+    if (!apiClient.isUsingMock()) return [];
     return materials.filter(
       (m) =>
         m.studentName === currentStudentName ||
@@ -145,6 +212,10 @@ export function useStudentLibrary() {
   };
 
   const handleDownload = (file: LibraryFile) => {
+    if (!apiClient.isUsingMock()) {
+      window.open(`/api/backend/library/resources/${encodeURIComponent(file.id)}/download`, "_blank", "noopener,noreferrer");
+      return;
+    }
     notify({
       type: "library",
       title: "بدأ تحميل الملف",
@@ -174,6 +245,11 @@ export function useStudentLibrary() {
     e.preventDefault();
     if (!uploadTitle.trim()) return;
 
+    if (!apiClient.isUsingMock()) {
+      reportApiError(new Error("عقد مساهمة المكتبة في OpenAPI لا يحدد حقول الملف المطلوبة بعد؛ لم يُرسل الطلب."));
+      return;
+    }
+
     const matchedCourse = courses.find((c) => c.code.toUpperCase() === uploadCourseCode.toUpperCase());
 
     const catMap: Record<LibraryCategory, string> = {
@@ -191,7 +267,7 @@ export function useStudentLibrary() {
       courseCode: uploadCourseCode,
       title: uploadTitle.trim(),
       category: catMap[uploadCategory] || "الملخصات",
-      fileType: fileType as any,
+      fileType,
       fileSize: uploadFileSize || "3.5 MB",
       author: currentStudentName,
       studentName: currentStudentName,
@@ -229,6 +305,9 @@ export function useStudentLibrary() {
     courses,
     selectedPlan,
     hasPlanSelected,
+    isPlanLoaded,
+    isLoading,
+    loadError,
     searchQuery,
     setSearchQuery,
     selectedLevel,

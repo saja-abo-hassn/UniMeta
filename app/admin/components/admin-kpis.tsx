@@ -2,7 +2,7 @@ import { StatCard } from "@/components/admin/stat-card";
 
 interface AdminKPIsProps {
   totalStudents: number;
-  activeNow: number;
+  activeNow: number | null;
   pendingAgreementsCount: number;
   activeAgreementsCount: number;
   publishedMaterialsCount: number;
@@ -26,7 +26,7 @@ export function AdminKPIs({
       <StatCard
         title="إجمالي حسابات الطلاب"
         value={totalStudents}
-        subtext={`${activeNow} حسابات نشطة حالياً`}
+        subtext={activeNow === null ? "بيانات النشاط غير متاحة" : `${activeNow} حسابات نشطة حالياً`}
         variant="default"
         icon={
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

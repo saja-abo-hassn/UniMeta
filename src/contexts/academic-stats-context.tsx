@@ -113,6 +113,8 @@ export function AcademicStatsProvider({ children }: { children: React.ReactNode 
   });
 
   useEffect(() => {
+    // Reset account-scoped plan state before loading data for the new auth context.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!live) { setIsLoaded(true); return; }
     setCourseGrades({}); setHasPlanSelectedState(false); setPlans([]);
     if (user?.role !== "student") { setIsLoaded(true); return; }

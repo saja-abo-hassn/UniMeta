@@ -1,3 +1,14 @@
+import type { paths } from "../../types/api";
+
+export type ApiPath = keyof paths;
+export type ApiMethod<P extends ApiPath> = Exclude<keyof paths[P], "parameters">;
+export type ApiSuccessData<P extends ApiPath, M extends ApiMethod<P>> =
+  NonNullable<paths[P][M]> extends { responses: infer Responses }
+    ? Responses extends { 200: { content: { "application/json": { data: infer Data } } } }
+      ? Data
+      : never
+    : never;
+
 /**
  * UniMeta Unified API Client
  *
@@ -12,7 +23,7 @@
  * BACKEND_API_URL with /api/v1. Demo mode is explicitly opt-in.
  */
 
-export interface LaravelResponse<T = any> {
+export interface LaravelResponse<T = unknown> {
   data: T | null;
   message: string;
   errors: Record<string, string[]> | null;
@@ -113,6 +124,9 @@ class ApiClient {
         this.removeToken();
         window.dispatchEvent(new Event("unimeta_auth_unauthorized"));
       }
+      if (response.status === 403 && endpoint !== "/users/me/profile" && typeof window !== "undefined") {
+        window.dispatchEvent(new Event("unimeta_api_forbidden"));
+      }
       return {
         data: payload.data ?? null,
         message: payload.message || messages[response.status] || "تعذر إتمام الطلب.",
@@ -137,7 +151,7 @@ class ApiClient {
   /**
    * Standard GET request
    */
-  public async get<T = any>(endpoint: string): Promise<LaravelResponse<T>> {
+  public async get<T = unknown>(endpoint: string): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for GET ${endpoint}`);
     }
@@ -148,7 +162,7 @@ class ApiClient {
   /**
    * Standard POST request
    */
-  public async post<T = any>(endpoint: string, body?: any): Promise<LaravelResponse<T>> {
+  public async post<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for POST ${endpoint}`);
     }
@@ -156,7 +170,7 @@ class ApiClient {
     return this.request<T>(endpoint, { method: "POST", body: body ? JSON.stringify(body) : undefined });
   }
 
-  public async patch<T = any>(endpoint: string, body?: any): Promise<LaravelResponse<T>> {
+  public async patch<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for PATCH ${endpoint}`);
     }
@@ -164,7 +178,7 @@ class ApiClient {
     return this.request<T>(endpoint, { method: "PATCH", body: body ? JSON.stringify(body) : undefined });
   }
 
-  public async put<T = any>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
+  public async put<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
     return this.request<T>(endpoint, { method: "PUT", body: JSON.stringify(body) });
   }
 
@@ -189,7 +203,7 @@ class ApiClient {
     }
   }
 
-  public async delete<T = any>(endpoint: string): Promise<LaravelResponse<T>> {
+  public async delete<T = unknown>(endpoint: string): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for DELETE ${endpoint}`);
     }

@@ -5,9 +5,9 @@ export interface LibraryFile {
   title: string;
   category: LibraryCategory;
   author: string;
-  fileType: "PDF" | "SLIDES" | "ZIP" | "VIDEO";
+  fileType: "PDF" | "DOCX" | "SLIDES" | "ZIP" | "VIDEO";
   fileSize: string;
-  downloads: number;
+  downloads?: number;
   date: string;
   description?: string;
   url?: string;
@@ -17,6 +17,7 @@ export interface LibraryCourse {
   code: string;
   nameAr: string;
   nameEn: string;
+  majorName?: string;
   instructor: string;
   level: string;
   semester: string;
