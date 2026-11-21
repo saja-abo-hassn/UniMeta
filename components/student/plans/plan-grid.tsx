@@ -17,6 +17,7 @@ export function PlanGrid() {
     selectedPlanId,
     selectedPlan,
     hasPlanSelected,
+    isLoaded,
     selectPlan,
     completedCredits,
     remainingCredits,
@@ -58,6 +59,14 @@ export function PlanGrid() {
       return true;
     });
   }, [plans, selectedDegree, searchQuery]);
+
+  if (!isLoaded) {
+    return (
+      <div className="p-6 rounded-3xl bg-white border border-brand-border-soft shadow-xs text-center text-sm text-brand-muted" dir="rtl" role="status">
+        جارٍ تحميل الخطط الدراسية...
+      </div>
+    );
+  }
 
   const handleSelectPlan = async (plan: StudyPlan) => {
     try { await selectPlan(plan.id); } catch (error) { reportApiError(error); return; }

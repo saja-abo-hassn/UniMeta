@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
+import { apiClient } from "@/src/services/api-client";
+import { reportApiError } from "@/src/services/api-result";
 import { CourseCategory, CATEGORY_LABELS, Course } from "@/src/data/study-plans-data";
 import {
   EditingCourseState,
@@ -199,6 +201,11 @@ export function useMyHours() {
   const handleSaveNewCourse = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCourse.code || !newCourse.name) return;
+
+    if (!apiClient.isUsingMock()) {
+      reportApiError(new Error("الإضافة اليدوية غير متاحة عبر الخادم حالياً. يمكنك تسجيل محاولة لمادة موجودة في الخطة بعد اعتمادها."));
+      return;
+    }
 
     const code = newCourse.code.trim().toUpperCase();
     addCustomCourse(

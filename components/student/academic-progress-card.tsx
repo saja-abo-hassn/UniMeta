@@ -1,25 +1,16 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { useStudyPlan } from "@/src/contexts/study-plan-context";
 
 export function AcademicProgressCard() {
   const {
-    allCourses,
     selectedPlan,
     completedCredits,
     remainingCredits,
     totalCredits,
     completionPercentage,
   } = useStudyPlan();
-
-  // Current semester hours (credits currently being studied)
-  const currentSemesterHours = React.useMemo(() => {
-    const sem2Courses = allCourses.filter((c) => c.semester === 2);
-    const sem2Hours = sem2Courses.reduce((sum, c) => sum + c.credits, 0);
-    return Math.min(sem2Hours || 15, remainingCredits);
-  }, [allCourses, remainingCredits]);
 
   return (
     <div
@@ -84,7 +75,7 @@ export function AcademicProgressCard() {
           {/* Completed Hours */}
           <div>
             <div className="flex justify-between text-xs font-semibold mb-1">
-              <span className="text-brand-ink">منجزة</span>
+              <span className="text-brand-ink" title="تقدير واجهة بناءً على العلامات المدخلة، وليس حالة نجاح رسمية من الجامعة">بعلامة 60+ (تقديري)</span>
               <span className="text-brand-primary font-bold">{completedCredits} ساعة</span>
             </div>
             <div className="w-full h-2 rounded-full bg-brand-surface-blue overflow-hidden">
@@ -98,13 +89,13 @@ export function AcademicProgressCard() {
           {/* Current Semester */}
           <div>
             <div className="flex justify-between text-xs font-semibold mb-1">
-              <span className="text-brand-ink">قيد الدراسة (الفصل الحالي)</span>
-              <span className="text-brand-secondary font-bold">{currentSemesterHours} ساعة</span>
+              <span className="text-brand-ink">الساعات المسجلة للفصل الحالي</span>
+              <span className="text-brand-secondary font-bold">—</span>
             </div>
             <div className="w-full h-2 rounded-full bg-brand-surface-blue overflow-hidden">
               <div
                 className="h-full bg-brand-secondary rounded-full transition-all duration-500"
-                style={{ width: `${totalCredits > 0 ? (currentSemesterHours / totalCredits) * 100 : 0}%` }}
+                style={{ width: "0%" }}
               />
             </div>
           </div>
