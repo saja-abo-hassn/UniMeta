@@ -40,6 +40,7 @@ export function useExchangeBooks() {
     currency: offer.currency,
     rentalPeriod: offer.duration_days ? offer.duration_days + " يوم" : undefined,
     exchangeTarget: offer.item_details?.exchange_target,
+    contactPhone: offer.contact_phone ?? undefined,
     status: "متاح فوراً",
     notes: offer.description,
   }));
@@ -91,8 +92,11 @@ export function useExchangeBooks() {
           throw new Error("أدخل مدة الاستئجار بالأيام، من 1 إلى 3650.");
         }
         if (isExchange && !target) throw new Error("حدّد الكتاب المطلوب بالمقابل.");
+        const phone = payload.contactPhone?.trim() || null;
+        if (phone && !isPalestinianMobile(phone)) throw new Error("أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.");
         const offer = await marketplaceService.publish({
           item_type: "BOOK",
+          contact_phone: phone,
           title: payload.title.trim(),
           description: payload.notes?.trim() || payload.title.trim(),
           offer_type: isRental ? "RENTAL" : isExchange ? "PERMANENT_EXCHANGE" : payload.type === "إعارة" ? "LOAN" : "SALE",

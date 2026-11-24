@@ -16,6 +16,8 @@ interface OfferFields {
   price?: number;
   currency?: OfferCurrency;
   duration_days?: number;
+  /** Optional published contact number: 10 digits starting with 059 or 056. */
+  contact_phone?: string | null;
 }
 export interface MarketplaceOffer extends Omit<OfferFields, "price" | "item_details"> {
   id: number;
@@ -24,6 +26,7 @@ export interface MarketplaceOffer extends Omit<OfferFields, "price" | "item_deta
   price?: string | number;
   deposit?: string | number;
   item_details?: ItemDetails;
+  contact_phone?: string | null;
 }
 interface MarketplaceRequest {
   id: number;

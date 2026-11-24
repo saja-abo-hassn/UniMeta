@@ -40,6 +40,7 @@ export function useExchangeDevices() {
         ? money.format(Number(offer.price)) + (offer.duration_days ? " / " + offer.duration_days + " يوم" : "")
         : offer.item_details?.exchange_target || (offer.offer_type === "LOAN" ? "مجاناً" : "—"),
       deposit: offer.deposit != null ? money.format(Number(offer.deposit)) : "—",
+      contactPhone: offer.contact_phone ?? undefined,
       status: "متاح فوراً",
       description: offer.description,
     };
@@ -86,8 +87,14 @@ export function useExchangeDevices() {
           throw new Error("أدخل السعر بالشيكل ثم شرطة مائلة ثم المدة بالأيام، مثل 15 / 7.");
         }
         if (exchange && !terms) throw new Error("حدّد الأداة المطلوبة بالمقابل.");
+        const phone = contactPhone.trim() || null;
+        if (phone && !isPalestinianMobile(phone)) {
+          setContactPhoneError("أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.");
+          return;
+        }
         const offer = await marketplaceService.publish({
           item_type: "DEVICE",
+          contact_phone: phone,
           title: newDeviceName.trim(),
           description: newDeviceName.trim(),
           item_condition: "GOOD",
@@ -101,6 +108,7 @@ export function useExchangeDevices() {
         setIsAddModalOpen(false);
         setNewDeviceName("");
         setNewFeeText("");
+        setContactPhone("");
         notify({ type: "rent", title: "تم نشر الجهاز", message: offer.title });
       });
       return;

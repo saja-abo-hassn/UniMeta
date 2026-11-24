@@ -66,9 +66,9 @@ export function AddDeviceModal({
 
           <div className="space-y-1">
             <label className="font-bold text-brand-ink block">رقم الجوال للتواصل:</label>
-            <input type="tel" required={mock} disabled={!mock} inputMode="numeric" maxLength={10} value={contactPhone}
+            <input type="tel" required={mock} inputMode="numeric" maxLength={10} value={contactPhone}
               onChange={(e) => setContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-              placeholder={mock ? "مثال: 0599182744" : "التواصل عبر طلب العرض"} dir="ltr"
+              placeholder="مثال: 0599182744" dir="ltr"
               className={`w-full px-3.5 py-2 rounded-xl bg-white border font-semibold text-brand-ink ${contactPhoneError ? "border-red-400" : "border-brand-border-soft"}`} />
             {contactPhoneError && <p className="text-[11px] text-red-600">{contactPhoneError}</p>}
           </div>
