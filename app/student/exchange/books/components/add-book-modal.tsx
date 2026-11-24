@@ -86,7 +86,7 @@ export function AddBookModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!localTitle.trim() || isSaving) return;
-    if (mock && !isPalestinianMobile(contactPhone)) {
+    if (!isPalestinianMobile(contactPhone)) {
       setContactPhoneError("أدخل رقم جوال فلسطيني من 10 أرقام يبدأ بـ 059 أو 056.");
       return;
     }
@@ -171,9 +171,8 @@ export function AddBookModal({
               inputMode="numeric"
               maxLength={10}
               value={contactPhone}
-              disabled={!mock}
               onChange={(e) => { setContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10)); setContactPhoneError(""); }}
-              placeholder={mock ? "مثال: 0599182744" : "التواصل عبر طلب العرض"}
+              placeholder="مثال: 0599182744"
               dir="ltr"
               className={`w-full px-3.5 py-2.5 rounded-xl bg-white border font-semibold text-brand-ink ${contactPhoneError ? "border-red-400" : "border-brand-border-soft"}`}
             />
