@@ -13,10 +13,15 @@ const attemptIds = new Map<string, number>();
 const gradeWrites = new Map<string, Promise<void>>();
 // Share catalogue reads across mounts and plan selections; never cache personal records.
 const references = new Map<string, Promise<unknown[]>>();
-function reference<T>(path:string):Promise<T[]> {
+async function reference<T>(path:string):Promise<T[]> {
   let pending=references.get(path);
-  if(!pending){pending=apiClient.all<T>(path).then(requireData).catch(error=>{references.delete(path);throw error;});references.set(path,pending);}
-  return pending as Promise<T[]>;
+  if(!pending){pending=apiClient.all<T>(path).then(requireData);references.set(path,pending);}
+  try {
+    return await pending as T[];
+  } finally {
+    // Share concurrent reads, but don't keep a stale plan catalogue after a later reload.
+    if (references.get(path) === pending) references.delete(path);
+  }
 }
 export const academicService = {
   async load() {

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { apiClient } from "@/src/services/api-client";
-import { requireData, reportApiError } from "@/src/services/api-result";
+import { requireData } from "@/src/services/api-result";
 import { Modal } from "@/components/shared/modal";
 import type { components } from "@/types/api";
 
@@ -42,10 +42,14 @@ export function NewProjectModal({
   const [majors,setMajors]=useState<Major[]>([]);
   const [majorsLoading,setMajorsLoading]=useState(!apiClient.isUsingMock());
   const [majorsError,setMajorsError]=useState<string | null>(null);
+  const [majorsRetry,setMajorsRetry]=useState(0);
   useEffect(()=>{
     if(apiClient.isUsingMock()||!isOpen)return;
     let active = true;
-    void apiClient.all<Major>("/majors").then(requireData).then((items)=>{
+    const controller = new AbortController();
+    setMajorsLoading(true);
+    setMajorsError(null);
+    void apiClient.all<Major>("/majors", controller.signal).then(requireData).then((items)=>{
       if (!active) return;
       setMajors(items);
       setMajorsError(null);
@@ -54,10 +58,9 @@ export function NewProjectModal({
       if (!active) return;
       setMajors([]);
       setMajorsError(error instanceof Error ? `تعذر تحميل التخصصات: ${error.message}` : "تعذر تحميل التخصصات حالياً.");
-      reportApiError(error);
     }).finally(()=>{ if(active)setMajorsLoading(false); });
-    return ()=>{active=false;};
-  },[isOpen]);
+    return ()=>{active=false;controller.abort();};
+  },[isOpen,majorsRetry]);
   if (!isOpen) return null;
 
   return (
@@ -88,6 +91,8 @@ export function NewProjectModal({
               <select
                 value={newMajor}
                 onChange={(e) => onMajorChange(e.target.value)}
+                disabled={!apiClient.isUsingMock() && (majorsLoading || majors.length === 0)}
+                required={!apiClient.isUsingMock()}
                 className="w-full px-3.5 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted"
               >
                 {!apiClient.isUsingMock() ? <><option value="">{majorsLoading ? "جارٍ تحميل التخصصات…" : majorsError ?? "اختر التخصص"}</option>{majors.map(m=><option key={m.id} value={m.name}>{m.name}</option>)}</> : <><option value="هندسة البرمجيات ونظم المعلومات">هندسة البرمجيات ونظم المعلومات</option>
@@ -96,7 +101,7 @@ export function NewProjectModal({
                 <option value="الوسائط المتعددة">الوسائط المتعددة</option>
                 <option value="هندسة الميكاترونكس">هندسة الميكاترونكس</option></>}
               </select>
-              {!apiClient.isUsingMock() && majorsError && <p className="text-[11px] text-red-600">{majorsError}</p>}
+              {!apiClient.isUsingMock() && majorsError && <div className="flex flex-wrap items-center gap-2 text-[11px] text-red-600"><span>{majorsError}</span><button type="button" onClick={() => setMajorsRetry((count) => count + 1)} disabled={majorsLoading} className="underline font-bold disabled:opacity-50">إعادة المحاولة</button></div>}
             </div>
 
             <div className="space-y-1">
@@ -145,7 +150,8 @@ export function NewProjectModal({
           </button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
+            disabled={!apiClient.isUsingMock() && (majorsLoading || majors.length === 0 || !newMajor)}
+            className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             نشر الإعلان
           </button>

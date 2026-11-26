@@ -22,6 +22,12 @@ const DynamicNewProjectModal = dynamic(
 export default function GraduationProjectsPage() {
   const {
     projects,
+    isLoadingProjects,
+    projectsError,
+    majors,
+    majorsLoading,
+    majorsError,
+    reloadLiveData,
     filteredProjects,
     searchQuery,
     setSearchQuery,
@@ -62,7 +68,7 @@ export default function GraduationProjectsPage() {
     <div className="space-y-6 animate-fade-in" dir="rtl">
       <ProjectsHeader onOpenNewProjectModal={() => setIsNewProjectModalOpen(true)} />
 
-      <ProjectsKPIs projects={projects} />
+      <ProjectsKPIs projects={projects} unavailable={isLoadingProjects || !!projectsError} />
 
       <ProjectsFilterBar
         searchQuery={searchQuery}
@@ -74,11 +80,18 @@ export default function GraduationProjectsPage() {
         scopeFilter={scopeFilter}
         onScopeFilterChange={setScopeFilter}
         matchingCount={filteredProjects.length}
+        majors={majors}
+        majorsLoading={majorsLoading}
+        majorsError={majorsError}
+        onRetryMajors={reloadLiveData}
       />
 
       <ProjectsGrid
         projects={filteredProjects}
         appliedProjects={appliedProjects}
+        isLoading={isLoadingProjects}
+        error={projectsError}
+        onRetry={reloadLiveData}
         onResetFilters={() => {
           setSearchQuery("");
           setStatusFilter("all");

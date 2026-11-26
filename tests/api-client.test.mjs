@@ -38,6 +38,14 @@ test('passes through field validation errors and an empty successful delete',asy
   assert.equal(removed.status,204);assert.equal(removed.errors,null);
 });
 
+test('captures Retry-After from a 429 response without retrying the request', async () => {
+  const h=client([Response.json({message:'Busy.',retry_after:12},{status:429,headers:{'Retry-After':'9'}})]);
+  const response=await h.api.post('/ai/assistant',{message:'Hello'});
+  assert.equal(response.status,429);
+  assert.equal(response.retryAfterSeconds,9);
+  assert.equal(h.calls.length,1);
+});
+
 
 test('rejects oversized files before sending them through the Vercel proxy',async()=>{
   const h=client([],{NEXT_PUBLIC_LIBRARY_MAX_MB:'4'});const form=new FormData();form.set('file',new Blob([new Uint8Array(4*1024*1024+1)]),'large.pdf');

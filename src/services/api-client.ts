@@ -30,6 +30,7 @@ export interface LaravelResponse<T = unknown> {
   status?: number;
   meta?: { current_page?: number; last_page?: number; [key: string]: unknown };
   code?: string;
+  retryAfterSeconds?: number;
 }
 
 export const API_CONFIG = {
@@ -51,6 +52,7 @@ export const API_CONFIG = {
 
 class ApiClient {
   private baseUrl: string;
+  private readonly inFlightGets = new Map<string, Promise<LaravelResponse<unknown>>>();
 
   constructor() {
     this.baseUrl = API_CONFIG.baseUrl;
@@ -90,11 +92,15 @@ class ApiClient {
     try {
       const timeoutSignal =
         typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(timeoutMs) : undefined;
+      const requestSignal = init.signal;
+      const signal = timeoutSignal && requestSignal && typeof AbortSignal.any === "function"
+        ? AbortSignal.any([requestSignal, timeoutSignal])
+        : requestSignal ?? timeoutSignal;
       const headers = new Headers({ ...this.getHeaders(), ...init.headers });
       if (init.body instanceof FormData) headers.delete("Content-Type");
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         ...init,
-        signal: init.signal ?? timeoutSignal,
+        signal,
         headers,
         credentials: "same-origin",
       });
@@ -133,6 +139,7 @@ class ApiClient {
         errors: payload.errors ?? { http: [String(response.status)] },
         status: response.status,
         code: payload.code,
+        retryAfterSeconds: parseRetryAfter(response.headers.get("Retry-After"), payload),
       };
     } catch (error) {
       const isTimeout = error instanceof Error && error.name === "TimeoutError";
@@ -151,23 +158,34 @@ class ApiClient {
   /**
    * Standard GET request
    */
-  public async get<T = unknown>(endpoint: string): Promise<LaravelResponse<T>> {
+  public async get<T = unknown>(endpoint: string, options: { signal?: AbortSignal } = {}): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for GET ${endpoint}`);
     }
 
-    return this.request<T>(endpoint, { method: "GET" });
+    if (options.signal) return this.request<T>(endpoint, { method: "GET", signal: options.signal });
+
+    const existing = this.inFlightGets.get(endpoint);
+    if (existing) return existing as Promise<LaravelResponse<T>>;
+
+    const request = this.request<T>(endpoint, { method: "GET" });
+    this.inFlightGets.set(endpoint, request as Promise<LaravelResponse<unknown>>);
+    try {
+      return await request;
+    } finally {
+      if (this.inFlightGets.get(endpoint) === request) this.inFlightGets.delete(endpoint);
+    }
   }
 
   /**
    * Standard POST request
    */
-  public async post<T = unknown>(endpoint: string, body?: unknown, timeoutMs?: number): Promise<LaravelResponse<T>> {
+  public async post<T = unknown>(endpoint: string, body?: unknown, timeoutMs?: number, signal?: AbortSignal): Promise<LaravelResponse<T>> {
     if (this.isUsingMock()) {
       throw new Error(`Mock handler not implemented for POST ${endpoint}`);
     }
 
-    return this.request<T>(endpoint, { method: "POST", body: body ? JSON.stringify(body) : undefined }, timeoutMs);
+    return this.request<T>(endpoint, { method: "POST", body: body ? JSON.stringify(body) : undefined, signal }, timeoutMs);
   }
 
   public async patch<T = unknown>(endpoint: string, body?: unknown): Promise<LaravelResponse<T>> {
@@ -193,10 +211,10 @@ class ApiClient {
       headers: { "Content-Type": "" } });
   }
 
-  public async all<T>(endpoint: string): Promise<LaravelResponse<T[]>> {
+  public async all<T>(endpoint: string, signal?: AbortSignal): Promise<LaravelResponse<T[]>> {
     const items: T[] = [];
     for (let page = 1; ; page++) {
-      const response = await this.get<T[]>(`${endpoint}${endpoint.includes("?") ? "&" : "?"}page=${page}${/[?&]per_page=/.test(endpoint)?"":"&per_page=100"}`);
+      const response = await this.get<T[]>(`${endpoint}${endpoint.includes("?") ? "&" : "?"}page=${page}${/[?&]per_page=/.test(endpoint)?"":"&per_page=100"}`, { signal });
       if (response.errors || !Array.isArray(response.data)) return { ...response, data: null };
       items.push(...response.data);
       if (page >= (response.meta?.last_page ?? 1)) return { ...response, data: items };
@@ -233,6 +251,13 @@ class ApiClient {
       errors,
     };
   }
+}
+
+function parseRetryAfter(header: string | null, payload: Partial<LaravelResponse<unknown>>): number | undefined {
+  const headerSeconds = header ? Number(header) : NaN;
+  if (Number.isFinite(headerSeconds) && headerSeconds >= 0) return Math.ceil(headerSeconds);
+  const bodySeconds = Number((payload as { retry_after?: unknown }).retry_after);
+  return Number.isFinite(bodySeconds) && bodySeconds >= 0 ? Math.ceil(bodySeconds) : undefined;
 }
 
 export const apiClient = new ApiClient();

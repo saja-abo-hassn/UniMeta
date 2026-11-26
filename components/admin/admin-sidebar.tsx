@@ -55,6 +55,13 @@ export const adminNavItems: AdminNavItem[] = [
     requiredPermission: "manage_members",
   },
   {
+    id: "academic-plans",
+    title: "الخطط الجامعية",
+    path: "/admin/academic-plans",
+    icon: "calendar",
+    superAdminOnly: true,
+  },
+  {
     id: "permissions",
     title: "الصلاحيات والمشرفون",
     path: "/admin/permissions",

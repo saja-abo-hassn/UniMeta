@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { apiClient } from "@/src/services/api-client";
 import { notificationsService } from "@/src/services/notifications-service";
 import { requireData, reportApiError } from "@/src/services/api-result";
@@ -136,6 +136,7 @@ const NotificationsContext = createContext<NotificationsContextValue | undefined
 
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
   const {user}=useAuth();
+  const lastPollError = useRef<string | null>(null);
   const [notifications, setNotifications] = useState<NotificationItem[]>(() => {
     if(!apiClient.isUsingMock())return [];
     if (typeof window === "undefined") return initialSeedNotifications;
@@ -170,9 +171,27 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     setNotifications([]);
     if(user?.role!=="student")return;
     let active=true;
-    const load=()=>{void notificationsService.getNotifications().then(requireData).then(items=>{if(active)setNotifications(prev=>[...items,...prev.filter(n=>!n.id.startsWith("project-")&&!n.id.startsWith("server-"))]);}).catch(reportApiError);};
-    load();const timer=window.setInterval(load,30000);
-    return()=>{active=false;window.clearInterval(timer);};
+    let inFlight=false;
+    let controller:AbortController|null=null;
+    const load=()=>{
+      if(!active||inFlight||document.visibilityState==="hidden")return;
+      inFlight=true;
+      controller=new AbortController();
+      void notificationsService.getNotifications(controller.signal).then(requireData).then(items=>{
+        if(!active)return;
+        lastPollError.current=null;
+        setNotifications(prev=>[...items,...prev.filter(n=>!n.id.startsWith("project-")&&!n.id.startsWith("server-"))]);
+      }).catch((error:unknown)=>{
+        if(!active||controller?.signal.aborted)return;
+        const message=error instanceof Error?error.message:"تعذر تحميل الإشعارات.";
+        if(lastPollError.current!==message){lastPollError.current=message;reportApiError(error);}
+      }).finally(()=>{inFlight=false;controller=null;});
+    };
+    const onVisibilityChange=()=>{if(document.visibilityState==="visible")load();};
+    load();
+    const timer=window.setInterval(load,30000);
+    document.addEventListener("visibilitychange",onVisibilityChange);
+    return()=>{active=false;controller?.abort();window.clearInterval(timer);document.removeEventListener("visibilitychange",onVisibilityChange);};
   },[user?.id,user?.role]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;

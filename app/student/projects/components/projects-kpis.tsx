@@ -2,9 +2,10 @@ import { GraduationProject } from "@/src/data/graduation-projects-data";
 
 interface ProjectsKPIsProps {
   projects: GraduationProject[];
+  unavailable?: boolean;
 }
 
-export function ProjectsKPIs({ projects }: ProjectsKPIsProps) {
+export function ProjectsKPIs({ projects, unavailable = false }: ProjectsKPIsProps) {
   const lookingForPartnersCount = projects.filter((p) => p.status === "يبحث عن شركاء").length;
   const completedTeamCount = projects.filter((p) => p.status === "مكتمل الفريق").length;
 
@@ -12,7 +13,7 @@ export function ProjectsKPIs({ projects }: ProjectsKPIsProps) {
     <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <div className="card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs">
         <span className="text-xs font-semibold text-brand-muted block mb-1">المشاريع المسجلة</span>
-        <div className="text-2xl sm:text-3xl font-black text-brand-ink">{projects.length} مشاريع</div>
+        <div className="text-2xl sm:text-3xl font-black text-brand-ink">{unavailable ? "—" : `${projects.length} مشاريع`}</div>
         <span className="text-[11px] text-brand-primary font-bold mt-1 block">الفصل الثاني 2025/2026</span>
       </div>
 
@@ -22,7 +23,7 @@ export function ProjectsKPIs({ projects }: ProjectsKPIsProps) {
           <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
         </div>
         <div className="text-2xl sm:text-3xl font-black text-brand-primary">
-          {lookingForPartnersCount} فريق
+          {unavailable ? "—" : `${lookingForPartnersCount} فريق`}
         </div>
         <span className="text-[11px] text-brand-hover-medium mt-1 block">مقاعد شاغرة لمطورين وباحثين</span>
       </div>
@@ -30,7 +31,7 @@ export function ProjectsKPIs({ projects }: ProjectsKPIsProps) {
       <div className="card-hover-effect p-5 rounded-2xl bg-white border border-brand-border-soft shadow-xs">
         <span className="text-xs font-semibold text-brand-muted block mb-1">أفرقة مكتملة</span>
         <div className="text-2xl sm:text-3xl font-black text-emerald-700">
-          {completedTeamCount} فريق
+          {unavailable ? "—" : `${completedTeamCount} فريق`}
         </div>
         <span className="text-[11px] text-emerald-600 mt-1 block">في مرحلة التطوير والاختبار</span>
       </div>

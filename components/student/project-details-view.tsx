@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { apiClient } from "@/src/services/api-client";
 import { projectsService } from "@/src/services/projects-service";
 import { useStudentUser } from "@/src/hooks/use-student-user";
@@ -13,6 +14,8 @@ import { Modal } from "@/components/shared/modal";
 export function ProjectDetailsView({ id }: { id: string }) {
   const { notify } = useNotifications();
   const { user } = useStudentUser();
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [liveProject, setLiveProject] = useState<GraduationProject | null>(null);
   const project = apiClient.isUsingMock() ? initialGraduationProjects.find((p) => p.id === id) ?? null : liveProject;
   const [loadedProjectId, setLoadedProjectId] = useState<string | null>(null);
@@ -55,18 +58,43 @@ export function ProjectDetailsView({ id }: { id: string }) {
   const isLookingForMembers = project.status === "يبحث عن شركاء";
   const isOwner = Boolean(project.ownerId && user?.id && String(user.id) === project.ownerId);
   const prepareDeleteConfirmation = async () => {
-    const result = await projectsService.remove(project.id);
-    setDeleteNotice(result.message);
+    setDeleteNotice(null);
     setIsDeleteConfirmOpen(true);
   };
+  const confirmDelete = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await projectsService.remove(project.id);
+      setIsDeleteConfirmOpen(false);
+      notify({ type: "project", title: "تم حذف الإعلان", message: project.title });
+      router.push("/student/projects");
+    } catch (error) {
+      setDeleteNotice(error instanceof Error ? error.message : "تعذر حذف الإعلان.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-  const handleApplySubmit = (e: React.FormEvent) => {
+  const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!applicantStage) {
       setStageError("يرجى تحديد المرحلة الدراسية للمشروع (مشروع 1 أو 2 أو 1 و 2).");
       return;
     }
     setStageError("");
+    if (!apiClient.isUsingMock()) {
+      if (isSubmitting) return;
+      setIsSubmitting(true);
+      try {
+        await projectsService.apply(project.id, [applicantStage, applicantRole, applicantMessage].filter(Boolean).join("\n"));
+      } catch (error) {
+        setStageError(error instanceof Error ? error.message : "تعذر إرسال طلب الانضمام.");
+        return;
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
 
     notify({
       type: "project",
@@ -408,6 +436,7 @@ export function ProjectDetailsView({ id }: { id: string }) {
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               className="px-5 py-2 rounded-xl bg-brand-primary text-white font-bold shadow-xs hover:bg-brand-hover-medium cursor-pointer"
             >
               إرسال الطلب الآن
@@ -420,12 +449,12 @@ export function ProjectDetailsView({ id }: { id: string }) {
         <Modal.Header title="تأكيد حذف الإعلان" onClose={() => setIsDeleteConfirmOpen(false)} />
         <Modal.Body className="p-5 space-y-3 text-xs">
           <p className="text-brand-ink">هل تريد حذف إعلان «{project.title}»؟</p>
-          <p className="text-red-600">الحذف غير متاح حالياً؛ OpenAPI لا يعرّف مسار DELETE لإعلانات المشاريع.</p>
+          <p className="text-red-600">سيُحذف الإعلان مع طلبات الانضمام غير المقبولة. لا يمكن الحذف بعد انضمام أعضاء إلى الفريق.</p>
           {deleteNotice && <p role="status" className="text-brand-muted">{deleteNotice}</p>}
         </Modal.Body>
         <Modal.Footer>
           <button type="button" onClick={() => setIsDeleteConfirmOpen(false)} className="px-4 py-2 rounded-xl border border-brand-border-soft text-brand-ink font-semibold">إلغاء</button>
-          <button type="button" disabled className="px-4 py-2 rounded-xl bg-slate-300 text-white font-bold cursor-not-allowed" title="لا يوجد endpoint DELETE موثق">الحذف غير متاح</button>
+          <button type="button" disabled={isSubmitting} onClick={() => void confirmDelete()} className="px-4 py-2 rounded-xl bg-red-600 text-white font-bold disabled:bg-slate-300 disabled:cursor-not-allowed">تأكيد الحذف</button>
         </Modal.Footer>
       </Modal>
     </div>

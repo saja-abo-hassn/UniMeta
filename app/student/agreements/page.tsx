@@ -7,6 +7,7 @@ import { ActiveAgreementsSection } from "./components/active-agreements-section"
 import { OutgoingRequestsSection } from "./components/outgoing-requests-section";
 import { IncomingRequestsSection } from "./components/incoming-requests-section";
 import { useNotifications } from "@/src/contexts/notifications-context";
+import { apiClient } from "@/src/services/api-client";
 
 const TwoStepExchangeModal = dynamic(
   () =>
@@ -27,6 +28,7 @@ const AgreementStudentModals = dynamic(
 export default function StudentAgreementsPage() { return <MockStudentAgreementsPage/>; }
 function MockStudentAgreementsPage() {
   const { notify } = useNotifications();
+  const mock = apiClient.isUsingMock();
   const {
     currentStudentName,
     currentStudentId,
@@ -50,6 +52,13 @@ function MockStudentAgreementsPage() {
     returningCount,
     pendingIncomingCount,
     pendingOutgoingCount,
+    agreementsLoading,
+    outgoingLoading,
+    incomingLoading,
+    agreementsError,
+    outgoingError,
+    incomingError,
+    retryLiveSections,
     handleConfirmExtension,
     handleConfirmReturn,
     handleAcceptIncoming,
@@ -91,6 +100,9 @@ function MockStudentAgreementsPage() {
         returningCount={returningCount}
         pendingIncomingCount={pendingIncomingCount}
         pendingOutgoingCount={pendingOutgoingCount}
+        agreementsUnavailable={!mock && (agreementsLoading || !!agreementsError)}
+        incomingUnavailable={!mock && (incomingLoading || !!incomingError)}
+        outgoingUnavailable={!mock && (outgoingLoading || !!outgoingError)}
       />
 
       <div className="bg-white border border-brand-border-soft rounded-2xl p-1.5 shadow-xs overflow-x-auto">
@@ -110,7 +122,7 @@ function MockStudentAgreementsPage() {
                 activeTab === "agreements" ? "bg-white/20 text-white" : "bg-brand-surface-soft text-brand-primary"
               }`}
             >
-              {filteredAgreements.length}
+              {!mock && (agreementsLoading || agreementsError) ? "—" : filteredAgreements.length}
             </span>
           </button>
 
@@ -129,7 +141,7 @@ function MockStudentAgreementsPage() {
                 activeTab === "outgoing" ? "bg-white/20 text-white" : "bg-brand-surface-soft text-brand-primary"
               }`}
             >
-              {outgoingRequests.length}
+              {!mock && (outgoingLoading || outgoingError) ? "—" : outgoingRequests.length}
             </span>
           </button>
 
@@ -143,7 +155,7 @@ function MockStudentAgreementsPage() {
             }`}
           >
             <span>طلباتي الواردة</span>
-            {pendingIncomingCount > 0 && (
+            {(mock ? pendingIncomingCount > 0 : !incomingLoading && !incomingError && pendingIncomingCount > 0) && (
               <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500 text-white font-bold">
                 {pendingIncomingCount}
               </span>
@@ -152,7 +164,9 @@ function MockStudentAgreementsPage() {
         </div>
       </div>
 
-      {activeTab === "agreements" && (
+      {activeTab === "agreements" && !mock && agreementsLoading && <SectionLoadState loading onRetry={retryLiveSections} />}
+      {activeTab === "agreements" && !mock && agreementsError && <SectionLoadState error={agreementsError} onRetry={retryLiveSections} />}
+      {activeTab === "agreements" && (mock || (!agreementsLoading && !agreementsError)) && (
         <ActiveAgreementsSection
           agreements={filteredAgreements}
           filteredAgreements={filteredAgreements}
@@ -169,7 +183,9 @@ function MockStudentAgreementsPage() {
         />
       )}
 
-      {activeTab === "outgoing" && (
+      {activeTab === "outgoing" && !mock && outgoingLoading && <SectionLoadState loading onRetry={retryLiveSections} />}
+      {activeTab === "outgoing" && !mock && outgoingError && <SectionLoadState error={outgoingError} onRetry={retryLiveSections} />}
+      {activeTab === "outgoing" && (mock || (!outgoingLoading && !outgoingError)) && (
         <OutgoingRequestsSection
           outgoingRequests={outgoingRequests}
           onCancelOutgoing={handleCancelOutgoing}
@@ -177,7 +193,9 @@ function MockStudentAgreementsPage() {
         />
       )}
 
-      {activeTab === "incoming" && (
+      {activeTab === "incoming" && !mock && incomingLoading && <SectionLoadState loading onRetry={retryLiveSections} />}
+      {activeTab === "incoming" && !mock && incomingError && <SectionLoadState error={incomingError} onRetry={retryLiveSections} />}
+      {activeTab === "incoming" && (mock || (!incomingLoading && !incomingError)) && (
         <IncomingRequestsSection
           incomingRequests={incomingRequests}
           onAcceptIncoming={handleAcceptIncoming}
@@ -226,6 +244,15 @@ function MockStudentAgreementsPage() {
           }}
         />
       )}
+    </div>
+  );
+}
+
+function SectionLoadState({ loading = false, error, onRetry }: { loading?: boolean; error?: string; onRetry: () => void }) {
+  return (
+    <div className={`p-8 text-center rounded-3xl border bg-white ${error ? "border-red-200" : "border-brand-border-soft"}`} role={error ? "alert" : "status"} aria-busy={loading}>
+      <p className={`text-sm ${error ? "text-red-700" : "text-brand-muted"}`}>{error ? `تعذر تحميل هذا القسم: ${error}` : "جارٍ تحميل البيانات…"}</p>
+      {error && <button type="button" onClick={onRetry} className="mt-3 min-h-10 rounded-xl border border-red-200 px-4 py-2 text-xs font-bold text-red-700">إعادة المحاولة</button>}
     </div>
   );
 }

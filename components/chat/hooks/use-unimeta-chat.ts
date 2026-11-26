@@ -5,6 +5,7 @@ import { aiChatService, ChatMessage } from "@/src/services/ai-chat-service";
 import { apiClient } from "@/src/services/api-client";
 import { liveChatService, ChatSession } from "@/src/services/live-chat-service";
 import { useAuth } from "@/src/contexts/auth-context";
+import { ApiError } from "@/src/services/api-result";
 import {
   MascotState,
   mascotReducer,
@@ -29,6 +30,7 @@ export function useUniMetaChat(initiallyOpen = false) {
   const [sessionId,setSessionId]=useState<number|null>(null);
   const [historyBusy,setHistoryBusy]=useState(false);
   const requestInFlightRef = useRef(false);
+  const sendAbortRef = useRef<AbortController | null>(null);
   const changeHistory = async (action: () => Promise<void>) => {
     if (requestInFlightRef.current) return;
     requestInFlightRef.current = true;
@@ -62,6 +64,16 @@ export function useUniMetaChat(initiallyOpen = false) {
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState("");
   const [retryQuery, setRetryQuery] = useState("");
+  const [retryAfterSeconds, setRetryAfterSeconds] = useState(0);
+  useEffect(() => {
+    if (retryAfterSeconds <= 0) return;
+    const timer = setInterval(() => setRetryAfterSeconds((seconds) => Math.max(0, seconds - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [retryAfterSeconds > 0]);
+  useEffect(() => {
+    if (!isOpen) sendAbortRef.current?.abort();
+    return () => sendAbortRef.current?.abort();
+  }, [isOpen]);
   useEffect(() => {
     if (!isOpen || !user?.id || apiClient.isUsingMock()) return;
     let active = true;
@@ -196,22 +208,25 @@ export function useUniMetaChat(initiallyOpen = false) {
   const handleSend = async (e?: React.FormEvent, suggestedQuestion?: string) => {
     if (e) e.preventDefault();
     const query = (suggestedQuestion ?? inputVal).trim();
-    if (!query || isTyping || historyBusy || requestInFlightRef.current) return;
+    if (!query || isTyping || historyBusy || requestInFlightRef.current || retryAfterSeconds > 0) return;
     if (!apiClient.isUsingMock() && Array.from(query).length > 4000) {
       setError("الحد الأقصى لطول الرسالة 4000 حرف.");
       return;
     }
     requestInFlightRef.current = true;
+    const controller = new AbortController();
+    sendAbortRef.current = controller;
     setError("");
     setRetryQuery("");
+    setRetryAfterSeconds(0);
     if(!apiClient.isUsingMock()&&!user){
       setIsTyping(true);setError("");clearAllTimers();dispatchMascot({type:"SEND_MESSAGE"});
-      void liveChatService.publicSend(query,messages).then(saved=>{setMessages(prev=>[...prev,...saved]);setInputVal("");setRetryQuery("");dispatchMascot({type:"RECEIVE_ANSWER"});}).catch(e=>{setRetryQuery(query);setError((e as Error).message);}).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;});
+      void liveChatService.publicSend(query,messages,controller.signal).then(saved=>{setMessages(prev=>[...prev,...saved]);setInputVal("");setRetryQuery("");dispatchMascot({type:"RECEIVE_ANSWER"});}).catch((e:unknown)=>{if(controller.signal.aborted)return;setRetryQuery(query);if(e instanceof ApiError && e.status===429){const delay=e.retryAfterSeconds??10;setRetryAfterSeconds(delay);setError(`الخدمة مزدحمة حالياً. جرّب بعد ${delay} ثانية.`);}else if(e instanceof ApiError && (e.status===502||e.status===503||e.status===504)){setError("خدمة المساعد غير متاحة مؤقتاً. يمكنك إعادة المحاولة يدوياً.");}else setError(e instanceof Error?e.message:"تعذر إرسال الرسالة. حاول مجدداً.");}).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;if(sendAbortRef.current===controller)sendAbortRef.current=null;});
       return;
     }
     if(!apiClient.isUsingMock()){
       setIsTyping(true);setError("");clearAllTimers();dispatchMascot({type:"SEND_MESSAGE"});
-      void (async()=>{let id=sessionId;if(id===null){const created=await liveChatService.create(query);id=created.id;setSessionId(id);setSessions(s=>[created,...s]);}const saved=await liveChatService.send(id,query);setMessages(prev=>[...prev,...saved]);setInputVal("");setRetryQuery("");dispatchMascot({type:"RECEIVE_ANSWER"});})().catch(e=>{setRetryQuery(query);setError((e as Error).message);}).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;});
+      void (async()=>{let id=sessionId;if(id===null){const created=await liveChatService.create(query,controller.signal);id=created.id;setSessionId(id);setSessions(s=>[created,...s]);}const saved=await liveChatService.send(id,query,controller.signal);setMessages(prev=>[...prev,...saved]);setInputVal("");setRetryQuery("");dispatchMascot({type:"RECEIVE_ANSWER"});})().catch((e:unknown)=>{if(controller.signal.aborted)return;setRetryQuery(query);if(e instanceof ApiError&&e.status===429){const delay=e.retryAfterSeconds??10;setRetryAfterSeconds(delay);setError(`الخدمة مزدحمة حالياً. جرّب بعد ${delay} ثانية.`);}else if(e instanceof ApiError&&[502,503,504].includes(e.status??0))setError("خدمة المساعد غير متاحة مؤقتاً. يمكنك إعادة المحاولة يدوياً.");else setError(e instanceof Error?e.message:"تعذر إرسال الرسالة. حاول مجدداً.");}).finally(()=>{setIsTyping(false);requestInFlightRef.current=false;if(sendAbortRef.current===controller)sendAbortRef.current=null;});
       return;
     }
 
@@ -234,8 +249,9 @@ export function useUniMetaChat(initiallyOpen = false) {
       setMessages((prev) => [...prev, assistantMsg]);
       dispatchMascot({ type: "RECEIVE_ANSWER" });
     } catch (requestError) {
+      if(controller.signal.aborted)return;
       setRetryQuery(query);
-      setError(
+      if(requestError instanceof ApiError && requestError.status===429){const delay=requestError.retryAfterSeconds??10;setRetryAfterSeconds(delay);setError(`الخدمة مزدحمة حالياً. جرّب بعد ${delay} ثانية.`);}else setError(
         requestError instanceof Error
           ? requestError.message
           : "تعذر الحصول على رد من المساعد. حاول مجددًا لاحقًا."
@@ -243,6 +259,7 @@ export function useUniMetaChat(initiallyOpen = false) {
     } finally {
       setIsTyping(false);
       requestInFlightRef.current = false;
+      if(sendAbortRef.current===controller)sendAbortRef.current=null;
     }
   };
 
@@ -260,6 +277,7 @@ export function useUniMetaChat(initiallyOpen = false) {
     isTyping,
     error,
     retryQuery,
+    retryAfterSeconds,
     windowRef,
     buttonRef,
     messagesEndRef,

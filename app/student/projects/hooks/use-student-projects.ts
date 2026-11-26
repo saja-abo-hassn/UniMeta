@@ -8,7 +8,10 @@ import { ScopeFilterType, AppliedProjectInfo } from "../types";
 
 import { apiClient } from "@/src/services/api-client";
 import { projectsService } from "@/src/services/projects-service";
-import { reportApiError } from "@/src/services/api-result";
+import { requireData, reportApiError } from "@/src/services/api-result";
+import type { components } from "@/types/api";
+
+type Major = components["schemas"]["Major"];
 
 export function useStudentProjects() {
   const { notify } = useNotifications();
@@ -31,6 +34,12 @@ export function useStudentProjects() {
   const [applicantStage, setApplicantStage] = useState<"مشروع 1" | "مشروع 2" | "مشروع 1 و 2" | "">("");
   const [stageError, setStageError] = useState("");
   const [appliedProjects, setAppliedProjects] = useState<Record<string, AppliedProjectInfo>>({});
+  const [isLoadingProjects, setIsLoadingProjects] = useState(!apiClient.isUsingMock());
+  const [projectsError, setProjectsError] = useState<string | null>(null);
+  const [majors, setMajors] = useState<Major[]>([]);
+  const [majorsLoading, setMajorsLoading] = useState(!apiClient.isUsingMock());
+  const [majorsError, setMajorsError] = useState<string | null>(null);
+  const [reloadCount, setReloadCount] = useState(0);
 
   const [newTitle, setNewTitle] = useState("");
   const [newMajor, setNewMajor] = useState(apiClient.isUsingMock() ? "هندسة البرمجيات" : "");
@@ -41,13 +50,49 @@ export function useStudentProjects() {
   useEffect(() => {
     if (apiClient.isUsingMock()) return;
     let active = true;
-    Promise.all([projectsService.list(), projectsService.mine()]).then(([items, applications]) => {
+    void Promise.allSettled([
+      projectsService.list(),
+      projectsService.mine(),
+      apiClient.all<Major>("/majors"),
+    ]).then(([projectsResult, applicationsResult, majorsResult]) => {
       if (!active) return;
-      setProjects(items);
-      setAppliedProjects(Object.fromEntries(applications.filter(a => a.status !== "WITHDRAWN" && a.status !== "REJECTED").map(a => [String(a.project_id), {stage: "مشروع 1", date: a.created_at}])));
-    }).catch(reportApiError);
+      if (projectsResult.status === "fulfilled") {
+        setProjects(projectsResult.value);
+        setProjectsError(null);
+      } else {
+        setProjectsError(projectsResult.reason instanceof Error ? projectsResult.reason.message : "تعذر تحميل المشاريع.");
+      }
+      if (applicationsResult.status === "fulfilled") {
+        setAppliedProjects(Object.fromEntries(applicationsResult.value
+          .filter(a => a.status !== "WITHDRAWN" && a.status !== "REJECTED")
+          .map(a => [String(a.project_id), {stage: "مشروع 1", date: a.created_at}])));
+      }
+      if (majorsResult.status === "fulfilled" && !majorsResult.value.errors && Array.isArray(majorsResult.value.data)) {
+        setMajors(majorsResult.value.data);
+        setMajorsError(majorsResult.value.data.length ? null : "لا توجد تخصصات متاحة حالياً.");
+      } else {
+        setMajors([]);
+        const result = majorsResult.status === "rejected" ? majorsResult.reason : majorsResult.value;
+        const message = result instanceof Error
+          ? result.message
+          : result && typeof result === "object" && "message" in result && typeof result.message === "string"
+            ? result.message
+            : "تعذر تحميل التخصصات.";
+        setMajorsError(message);
+      }
+      setIsLoadingProjects(false);
+      setMajorsLoading(false);
+    });
     return () => { active = false; };
-  }, []);
+  }, [reloadCount]);
+
+  const reloadLiveData = () => {
+    setIsLoadingProjects(true);
+    setProjectsError(null);
+    setMajorsLoading(true);
+    setMajorsError(null);
+    setReloadCount((count) => count + 1);
+  };
 
   const filteredProjects = projects.filter((p) => {
     const q = searchQuery.toLowerCase().trim();
@@ -159,6 +204,12 @@ export function useStudentProjects() {
 
   return {
     projects,
+    isLoadingProjects,
+    projectsError,
+    majors,
+    majorsLoading,
+    majorsError,
+    reloadLiveData,
     filteredProjects,
     searchQuery,
     setSearchQuery,

@@ -34,8 +34,8 @@ interface LiveAgreement {
   terms: { title?: string; deposit?: string | null; currency?: "ILS" | "JOD" | "USD" | null };
 }
 
-async function loadAgreements(userId: string): Promise<AgreementItem[]> {
-  const rows = requireData(await apiClient.all<LiveAgreement>("/agreements"));
+async function loadAgreements(userId: string, signal?: AbortSignal): Promise<AgreementItem[]> {
+  const rows = requireData(await apiClient.all<LiveAgreement>("/agreements", signal));
   return rows.map((row) => {
     const deadline = row.return_due_date?.slice(0, 10);
     return {
@@ -74,32 +74,57 @@ export function useStudentAgreements() {
   const [outgoingRequests, setOutgoingRequests] = useState<OutgoingRequestItem[]>(mock ? initialOutgoingRequests : []);
   const [incomingRequests, setIncomingRequests] = useState<IncomingRequestItem[]>(mock ? initialIncomingRequests : []);
   const [modifyingRequest, setModifyingRequest] = useState<OutgoingRequestItem | null>(null);
+  const [liveLoad, setLiveLoad] = useState({
+    agreementsLoading: !mock, outgoingLoading: !mock, incomingLoading: !mock,
+    agreementsError: null as string | null, outgoingError: null as string | null, incomingError: null as string | null,
+  });
+  const [reloadCount, setReloadCount] = useState(0);
+  const retryLiveSections = () => {
+    setLiveLoad({ agreementsLoading: true, outgoingLoading: true, incomingLoading: true, agreementsError: null, outgoingError: null, incomingError: null });
+    setReloadCount((count) => count + 1);
+  };
 
   useEffect(() => {
     if (!mock) {
       if (!user?.id) return;
       let active = true;
-      void loadAgreements(user.id).then((rows) => {
-        if (active) setAgreements(rows);
-      }).catch((error: unknown) => { if (active) reportApiError(error); });
-      void marketplaceService.outgoing().then((rows) => {
-        if (active) setOutgoingRequests(rows.map((request) => ({
+      const controller = new AbortController();
+      const loadSection = async <T,>(section: "agreements" | "outgoing" | "incoming", load: () => Promise<T>, save: (value: T) => void) => {
+        try {
+          const value = await load();
+          if (active) save(value);
+        } catch (error) {
+          if (active && !controller.signal.aborted) {
+            const message = error instanceof Error ? error.message : "تعذر تحميل البيانات.";
+            setLiveLoad((current) => section === "agreements"
+              ? { ...current, agreementsError: message }
+              : section === "outgoing"
+                ? { ...current, outgoingError: message }
+                : { ...current, incomingError: message });
+          }
+        } finally {
+          if (active) setLiveLoad((current) => section === "agreements"
+            ? { ...current, agreementsLoading: false }
+            : section === "outgoing"
+              ? { ...current, outgoingLoading: false }
+              : { ...current, incomingLoading: false });
+        }
+      };
+      void loadSection("agreements", () => loadAgreements(user.id, controller.signal), setAgreements);
+      void loadSection("outgoing", () => marketplaceService.outgoing(controller.signal), (rows) => setOutgoingRequests(rows.map((request) => ({
           id: String(request.id), itemName: request.offer?.title ?? "—",
           category: "—", ownerName: "—", ownerMajor: "", deposit: null,
           requestedDuration: "—", proposedStartDate: "—", requestDate: request.created_at.slice(0, 10),
           status: outgoingStatuses[request.status],
-        })));
-      }).catch((error: unknown) => { if (active) reportApiError(error); });
-      void marketplaceService.incoming().then((rows) => {
-        if (active) setIncomingRequests(rows.map(({ offer, request }) => ({
+        }))));
+      void loadSection("incoming", () => marketplaceService.incoming(controller.signal), (rows) => setIncomingRequests(rows.map(({ offer, request }) => ({
           id: String(request.id), itemName: offer.title, offerId: offer.id, offerType: offer.offer_type,
           category: offer.item_type === "DEVICE" ? "أجهزة" : "كتب ومراجع",
           requesterName: request.requester?.full_name ?? "—", requesterMajor: "—",
           requestedDuration: offer.duration_days ? offer.duration_days + " يوم" : "—",
           proposedStartDate: "—", requestDate: request.created_at.slice(0, 10), message: request.message ?? undefined,
-        })));
-      }).catch((error: unknown) => { if (active) reportApiError(error); });
-      return () => { active = false; };
+        }))));
+      return () => { active = false; controller.abort(); };
     }
     const loadDynamicOutgoing = () => {
       try {
@@ -161,7 +186,7 @@ export function useStudentAgreements() {
       window.removeEventListener("unimeta_agreements_updated", loadDynamicOutgoing);
       window.removeEventListener("unimeta_admin_agreements_updated", loadDynamicOutgoing);
     };
-  }, [mock, user?.id]);
+  }, [mock, user?.id, reloadCount]);
 
   const [extensionModal, setExtensionModal] = useState<{ open: boolean; agreement?: AgreementItem; days: number }>({
     open: false,
@@ -364,6 +389,8 @@ export function useStudentAgreements() {
     returningCount,
     pendingIncomingCount,
     pendingOutgoingCount,
+    ...liveLoad,
+    retryLiveSections,
     handleConfirmExtension,
     handleConfirmReturn,
     handleAcceptIncoming,

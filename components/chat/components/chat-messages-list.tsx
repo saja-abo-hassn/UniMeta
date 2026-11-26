@@ -6,19 +6,15 @@ interface ChatMessagesListProps {
   messages: ChatMessage[];
   isTyping: boolean;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
+}
+
+interface ChatSuggestionsProps {
   isAuthenticated: boolean;
-  suggestionsDisabled: boolean;
+  disabled: boolean;
   onSuggestion: (question: string) => void;
 }
 
-export function ChatMessagesList({
-  messages,
-  isTyping,
-  messagesEndRef,
-  isAuthenticated,
-  suggestionsDisabled,
-  onSuggestion,
-}: ChatMessagesListProps) {
+export function ChatSuggestions({ isAuthenticated, disabled, onSuggestion }: ChatSuggestionsProps) {
   const suggestions = [
     { label: "🎓 شو بتقدم المنصة؟", question: "ما الخدمات التي تقدمها منصة UniMeta وكيف أبدأ باستخدامها؟" },
     ...(isAuthenticated
@@ -34,8 +30,29 @@ export function ChatMessagesList({
     { label: "📊 كيف أحسب معدلي؟", question: "كيف أستخدم حاسبة المعدل والساعات في المنصة؟" },
     { label: "⏰ ساعدني أنظم دراستي", question: "ساعدني بخطوات بسيطة لتنظيم وقت الدراسة والبدء بجلسة مذاكرة." },
   ];
+
   return (
-    <div className="flex-1 min-h-0 p-4 overflow-y-auto space-y-3.5 text-sm text-start" aria-busy={isTyping}>
+    <div className="shrink-0 min-w-0 px-3 pt-3" role="group" aria-label="أسئلة جاهزة">
+      <p className="text-brand-muted mb-2 text-xs">اضغط على سؤال لإرساله مباشرة</p>
+      <div className="grid grid-cols-2 gap-2">
+        {suggestions.map(({ label, question }) => (
+          <button key={label} type="button" disabled={disabled} onClick={() => onSuggestion(question)}
+            className="min-h-10 min-w-0 max-w-full rounded-xl border border-brand-border-soft bg-brand-surface-blue px-2.5 py-1.5 text-start text-[11px] font-semibold leading-snug text-brand-primary hover:bg-brand-primary hover:text-white transition-colors focus-ring cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed [overflow-wrap:anywhere]">
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ChatMessagesList({
+  messages,
+  isTyping,
+  messagesEndRef,
+}: ChatMessagesListProps) {
+  return (
+    <div className="min-w-0 max-w-full flex-1 min-h-0 p-4 overflow-x-hidden overflow-y-auto space-y-3.5 text-sm text-start" aria-busy={isTyping}>
       {messages.length === 0 && (
         <p className="rounded-2xl bg-brand-surface-blue border border-brand-border-soft p-3.5 leading-relaxed text-brand-ink">
           أهلاً فيك 👋 اختار سؤال من الأزرار وبجاوبك، بدون ما تحتاج تكتب. وبتقدر تكتب سؤالك إذا بتحب.
@@ -101,22 +118,6 @@ export function ChatMessagesList({
         </div>
       )}
 
-      <div role="group" aria-label="أسئلة جاهزة">
-        <p className="text-brand-muted mb-2">اضغط على سؤال لإرساله مباشرة</p>
-        <div className="grid grid-cols-2 gap-2">
-          {suggestions.map(({ label, question }) => (
-            <button
-              key={label}
-              type="button"
-              disabled={suggestionsDisabled}
-              onClick={() => onSuggestion(question)}
-              className="min-h-11 rounded-xl border border-brand-border-soft bg-brand-surface-blue px-2.5 py-2 text-start font-semibold leading-relaxed text-brand-primary hover:bg-brand-primary hover:text-white transition-colors focus-ring cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
       <div ref={messagesEndRef} />
     </div>
   );

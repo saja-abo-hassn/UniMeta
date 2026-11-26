@@ -1,4 +1,7 @@
 import { ScopeFilterType } from "../types";
+import type { components } from "@/types/api";
+
+type Major = components["schemas"]["Major"];
 
 interface ProjectsFilterBarProps {
   searchQuery: string;
@@ -10,6 +13,10 @@ interface ProjectsFilterBarProps {
   scopeFilter: ScopeFilterType;
   onScopeFilterChange: (val: ScopeFilterType) => void;
   matchingCount: number;
+  majors: Major[];
+  majorsLoading: boolean;
+  majorsError: string | null;
+  onRetryMajors: () => void;
 }
 
 export function ProjectsFilterBar({
@@ -22,6 +29,10 @@ export function ProjectsFilterBar({
   scopeFilter,
   onScopeFilterChange,
   matchingCount,
+  majors,
+  majorsLoading,
+  majorsError,
+  onRetryMajors,
 }: ProjectsFilterBarProps) {
   return (
     <section className="p-5 rounded-3xl bg-white border border-brand-border-soft shadow-xs space-y-4">
@@ -57,14 +68,18 @@ export function ProjectsFilterBar({
             onChange={(e) => onMajorFilterChange(e.target.value)}
             className="px-3 py-2 rounded-xl border border-brand-border-soft font-semibold text-brand-ink bg-brand-surface-muted outline-hidden"
           >
-            <option value="all">كافة التخصصات</option>
-            <option value="هندسة البرمجيات">هندسة البرمجيات</option>
-            <option value="هندسة أنظمة الحاسوب">هندسة الحاسوب</option>
-            <option value="علوم الحاسوب">علوم الحاسوب</option>
-            <option value="علم البيانات والذكاء الاصطناعي">الذكاء الاصطناعي</option>
+            <option value="all">{majorsLoading ? "جارٍ تحميل التخصصات…" : "كافة التخصصات"}</option>
+            {majors.map((major) => <option key={major.id} value={major.name}>{major.name}</option>)}
           </select>
         </div>
       </div>
+
+      {majorsError && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700" role="alert">
+          <span>{majorsError}</span>
+          <button type="button" onClick={onRetryMajors} className="min-h-10 rounded-lg border border-red-200 bg-white px-3 py-1.5 font-bold">إعادة المحاولة</button>
+        </div>
+      )}
 
       <div className="pt-3 border-t border-brand-border-soft flex flex-wrap items-center justify-between gap-2.5">
         <div className="flex items-center gap-2">

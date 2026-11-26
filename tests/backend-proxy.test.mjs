@@ -4,7 +4,7 @@ import fs from "node:fs";
 import vm from "node:vm";
 import ts from "typescript";
 
-function loadRoute(upstreamResponse, token = null) {
+function loadRoute(upstreamResponse, token = null, fetchImpl = async () => upstreamResponse) {
   const exports = {};
   const cookieWrites = [];
   class NextResponse extends Response {
@@ -31,7 +31,7 @@ function loadRoute(upstreamResponse, token = null) {
       if (name === "next/server") return { NextResponse };
       throw new Error(`Unexpected import ${name}`);
     },
-    fetch: async () => upstreamResponse,
+    fetch: fetchImpl,
   });
   return { handlers: exports, cookieWrites };
 }
@@ -67,6 +67,20 @@ test("BFF supports empty 204 responses without trying to serialize a body", asyn
 
   assert.equal(response.status, 204);
   assert.equal(await response.text(), "");
+});
+
+test("BFF preserves an upstream assistant 429 and Retry-After without retrying POST", async () => {
+  let calls = 0;
+  const upstream = () => new Response(JSON.stringify({ message: "Rate limited" }), {
+    status: 429,
+    headers: { "content-type": "application/json", "retry-after": "8", "x-ratelimit-remaining": "0" },
+  });
+  const { handlers } = loadRoute(upstream(), null, async () => { calls += 1; return upstream(); });
+  const response = await handlers.POST(request("POST"), context("ai", "assistant"));
+  assert.equal(response.status, 429);
+  assert.equal(response.headers.get("retry-after"), "8");
+  assert.equal(response.headers.get("x-ratelimit-remaining"), "0");
+  assert.equal(calls, 1);
 });
 
 test("BFF stores a login token in an HttpOnly cookie and returns only a sentinel", async () => {

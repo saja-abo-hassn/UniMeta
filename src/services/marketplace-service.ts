@@ -16,6 +16,7 @@ interface OfferFields {
   price?: number;
   currency?: OfferCurrency;
   duration_days?: number;
+  contact_phone?: string | null;
 }
 export interface MarketplaceOffer extends Omit<OfferFields, "price" | "item_details"> {
   id: number;
@@ -24,6 +25,7 @@ export interface MarketplaceOffer extends Omit<OfferFields, "price" | "item_deta
   price?: string | number;
   deposit?: string | number;
   item_details?: ItemDetails;
+  contact_phone?: string | null;
 }
 interface MarketplaceRequest {
   id: number;
@@ -49,8 +51,8 @@ export const conditionLabels = {
 } as const;
 
 export const marketplaceService = {
-  async offers(kind: MarketplaceKind) {
-    return requireData(await apiClient.all<MarketplaceOffer>("/marketplace/offers?item_type=" + kind));
+  async offers(kind: MarketplaceKind, signal?: AbortSignal) {
+    return requireData(await apiClient.all<MarketplaceOffer>("/marketplace/offers?item_type=" + kind, signal));
   },
   async publish(fields: OfferFields) {
     return requireData(await apiClient.post<MarketplaceOffer>("/marketplace/offers", fields));
@@ -58,14 +60,14 @@ export const marketplaceService = {
   async request(id: string, message: string) {
     return requireData(await apiClient.post("/marketplace/offers/" + encodeURIComponent(id) + "/requests", { message: message || null }));
   },
-  async outgoing() {
-    return requireData(await apiClient.all<MarketplaceRequest>("/students/me/marketplace-requests"));
+  async outgoing(signal?: AbortSignal) {
+    return requireData(await apiClient.all<MarketplaceRequest>("/students/me/marketplace-requests", signal));
   },
-  async incoming() {
-    const offers = requireData(await apiClient.all<MarketplaceOffer>("/students/me/marketplace-offers"));
+  async incoming(signal?: AbortSignal) {
+    const offers = requireData(await apiClient.all<MarketplaceOffer>("/students/me/marketplace-offers", signal));
     const lists = await Promise.all(offers.filter((offer) => offer.availability_status === "ACTIVE").map(async (offer) => ({
       offer,
-      requests: requireData(await apiClient.all<MarketplaceRequest>("/marketplace/offers/" + offer.id + "/requests")),
+      requests: requireData(await apiClient.all<MarketplaceRequest>("/marketplace/offers/" + offer.id + "/requests", signal)),
     })));
     return lists.flatMap(({ offer, requests }) => requests.filter((request) => request.status === "PENDING").map((request) => ({ offer, request })));
   },

@@ -27,9 +27,9 @@ class NotificationsService {
     }
   }
 
-  async getNotifications(): Promise<LaravelResponse<MockNotification[]>> {
+  async getNotifications(signal?: AbortSignal): Promise<LaravelResponse<MockNotification[]>> {
     if (!apiClient.isUsingMock()) {
-      const [response,notices]=await Promise.all([apiClient.all<ProjectEvent>("/project-context-events"),apiClient.all<ServerNotification>("/notifications")]);
+      const [response,notices]=await Promise.all([apiClient.all<ProjectEvent>("/project-context-events", signal),apiClient.all<ServerNotification>("/notifications", signal)]);
       if(response.errors||notices.errors)return {...(response.errors?response:notices),data:null};
       return {...response,data:[...(response.data??[]).map(e=>({id:`project-${e.id}`,type:"project" as const,title:"تحديث مشروع تخرج",message:e.event_type,createdAt:Date.parse(e.created_at),read:e.is_read,link:`/student/projects/${e.project_id}`})),...(notices.data??[]).map(n=>({id:`server-${n.id}`,type:n.type,title:n.title,message:n.message,createdAt:Date.parse(n.created_at),read:!!n.read_at,link:n.link}))].sort((a,b)=>b.createdAt-a.createdAt)};
     }

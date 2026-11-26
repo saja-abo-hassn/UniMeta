@@ -7,6 +7,9 @@ interface ProjectsGridProps {
   appliedProjects: Record<string, AppliedProjectInfo>;
   onResetFilters: () => void;
   onApplyToProject: (p: GraduationProject) => void;
+  isLoading: boolean;
+  error: string | null;
+  onRetry: () => void;
 }
 
 export function ProjectsGrid({
@@ -14,15 +17,26 @@ export function ProjectsGrid({
   appliedProjects,
   onResetFilters,
   onApplyToProject,
+  isLoading,
+  error,
+  onRetry,
 }: ProjectsGridProps) {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between text-xs text-brand-muted px-1 font-semibold">
-        <span>نتائج مشاريع التخرج ({projects.length})</span>
+        <span>نتائج مشاريع التخرج ({isLoading || error ? "—" : projects.length})</span>
         <span>تحديث مباشر من عمادة كلية الهندسة وتكنولوجيا المعلومات</span>
       </div>
 
-      {projects.length === 0 ? (
+      {isLoading ? (
+        <div className="p-12 text-center bg-white rounded-3xl border border-brand-border-soft shadow-xs text-sm text-brand-muted" role="status" aria-busy="true">جارٍ تحميل مشاريع التخرج…</div>
+      ) : error ? (
+        <div className="p-8 text-center bg-white rounded-3xl border border-red-200 shadow-xs space-y-3" role="alert">
+          <h3 className="font-bold text-base text-brand-ink">تعذر تحميل مشاريع التخرج</h3>
+          <p className="text-xs text-red-700 [overflow-wrap:anywhere]">{error}</p>
+          <button type="button" onClick={onRetry} className="min-h-10 px-4 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold">إعادة المحاولة</button>
+        </div>
+      ) : projects.length === 0 ? (
         <div className="p-12 text-center bg-white rounded-3xl border border-brand-border-soft shadow-xs space-y-3">
           <h3 className="font-bold text-base text-brand-ink">لا توجد مشاريع تطابق خيارات البحث</h3>
           <p className="text-xs text-brand-muted">جرب تغيير كلمات البحث أو إعادة تعيين الفلاتر.</p>
@@ -35,13 +49,13 @@ export function ProjectsGrid({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
+        <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 items-stretch">
           {projects.map((p) => {
             const isLookingForMembers = p.status === "يبحث عن شركاء";
             return (
               <div
                 key={p.id}
-                className="card-hover-effect rounded-3xl bg-white border border-brand-border-soft hover:border-brand-primary shadow-xs p-6 sm:p-7 flex flex-col justify-between gap-5 transition-all h-full"
+                className="card-hover-effect min-w-0 rounded-3xl bg-white border border-brand-border-soft hover:border-brand-primary shadow-xs p-5 sm:p-7 flex flex-col justify-between gap-5 transition-all h-full"
               >
                 <div className="space-y-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -82,9 +96,9 @@ export function ProjectsGrid({
 
                   {isLookingForMembers && p.neededRoles.length > 0 && (
                     <div className="p-3.5 rounded-2xl bg-[#FFF9F2] border border-brand-border-soft flex items-center justify-between gap-2 text-xs">
-                      <div className="flex items-center gap-2 text-amber-900 font-semibold">
+                    <div className="flex min-w-0 items-center gap-2 text-amber-900 font-semibold">
                         <span>📢</span>
-                        <span>مطلوب للفريق: <strong>{p.neededRoles.join("، ")}</strong></span>
+                        <span className="min-w-0 [overflow-wrap:anywhere]">مطلوب للفريق: <strong>{p.neededRoles.join("، ")}</strong></span>
                       </div>
                       <span className="text-[11px] font-black text-brand-primary shrink-0">
                         ({p.neededCount} مقاعد شاغرة)
@@ -104,12 +118,12 @@ export function ProjectsGrid({
                   </div>
 
                   <div className="pt-3 border-t border-brand-border-soft/60 flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
-                    <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex flex-wrap items-center gap-2 [overflow-wrap:anywhere]">
                       <span>المشرف الأكاديمي:</span>
                       <span className="font-bold text-brand-ink">{p.supervisor}</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex items-center gap-2">
                       <span>الأعضاء:</span>
                       <div className="flex items-center -space-x-1.5 rtl:space-x-reverse">
                         {p.members.map((m, i) => (
@@ -126,10 +140,10 @@ export function ProjectsGrid({
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-brand-border-soft flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5">
+                <div className="pt-4 border-t border-brand-border-soft flex flex-wrap items-center justify-between gap-2.5">
                   <Link
                     href={`/student/projects/${p.id}`}
-                    className="px-4 py-2.5 rounded-xl border border-brand-border-soft hover:border-brand-primary hover:bg-brand-surface-soft text-brand-primary text-xs font-bold transition-all text-center flex-1 sm:flex-none"
+                    className="min-w-0 max-w-full px-4 py-2.5 rounded-xl border border-brand-border-soft hover:border-brand-primary hover:bg-brand-surface-soft text-brand-primary text-xs font-bold transition-all text-center flex-1 basis-full sm:basis-auto [overflow-wrap:anywhere]"
                   >
                     عرض تفاصيل المشروع الكاملة &larr;
                   </Link>
@@ -142,7 +156,7 @@ export function ProjectsGrid({
                     <button
                       type="button"
                       onClick={() => onApplyToProject(p)}
-                      className="px-5 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold transition-all shadow-xs text-center flex-1 sm:flex-none"
+                      className="min-w-0 max-w-full px-5 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-hover-medium text-white text-xs font-bold transition-all shadow-xs text-center flex-1 basis-full sm:basis-auto [overflow-wrap:anywhere]"
                     >
                       طلب انضمام للفريق 🤝
                     </button>
