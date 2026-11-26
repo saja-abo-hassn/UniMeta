@@ -2621,7 +2621,7 @@ export interface paths {
         };
         /**
          * Get an announcement
-         * @description STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). An unknown id is a 404.
+         * @description STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). An unknown id is a 404. Returns the details (supervisor_name, department, problem_statement, goals, open_roles, milestones) and the team members.
          */
         get: {
             parameters: {
@@ -2651,12 +2651,40 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete an announcement (owner only)
+         * @description STUDENT only: a guest gets 401 and an ADMIN gets 403. Only the owner may delete it; any other student gets 403 and an unknown id is a 404. Refused with a 422 on the field project once any student has joined the team (accepted members are never removed implicitly). Otherwise the announcement is deleted together with its own applications (pending, rejected or withdrawn) and its context events, in one transaction.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Graduation project id. A non-numeric value or an unknown id is a 404. */
+                    id: components["parameters"]["GraduationProjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted. No body. */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthenticated"];
+                403: components["responses"]["Forbidden"];
+                404: components["responses"]["NotFound"];
+                422: components["responses"]["ValidationFailed"];
+            };
+        };
         options?: never;
         head?: never;
         /**
          * Update an announcement (owner only)
-         * @description STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). Only the owner may change it; any other student gets 403. Only title, description, major_id, project_stage and required_members_preference can change; owner_id and available_slots are ignored (the open places change only when an application is accepted).
+         * @description STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). Only the owner may change it; any other student gets 403. Only title, description, major_id, project_stage, required_members_preference and the detail fields (supervisor_name, department, problem_statement, goals, open_roles, milestones) can change; owner_id and available_slots are ignored (the open places change only when an application is accepted).
          */
         patch: {
             parameters: {
@@ -4431,11 +4459,38 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** GET /admin/academic-plans */
+        /**
+         * GET /admin/academic-plans
+         * @description Super Admin only (moderators, students 403; guests 401). Same plans and ids as the student list GET /academic-plans; each item adds the display fields (college, degree, semesters_count) and timestamps. Paginated: meta {current_page, last_page, per_page, total}.
+         */
         get: operations["api_v1_completion_get_admin_academic_plans"];
         put?: never;
-        post?: never;
+        /**
+         * POST /admin/academic-plans
+         * @description Super Admin only (a moderator, a student and a guest are refused). Creates an academic plan; it is listed immediately by GET /academic-plans for students. The same major cannot have two plans with the same plan_name and plan_year (422 on plan_name).
+         */
+        post: operations["api_v1_completion_post_admin_academic_plans"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/academic-plans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * DELETE /admin/academic-plans/{id}
+         * @description Super Admin only. Refused with a 422 on the field academic_plan while any student has this plan assigned (student data is never removed or reassigned implicitly). Otherwise the plan is deleted together with the rows that only describe its own structure: its plan course links and its requirement categories. The shared course catalogue, majors, tuition rates and student course attempts are not touched.
+         */
+        delete: operations["api_v1_completion_delete_admin_academic_plans_id"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4952,7 +5007,7 @@ export interface components {
             data: components["schemas"]["ProjectContextEvent"][];
             meta: components["schemas"]["PaginationMeta"];
         };
-        /** @description A LOAN offer (first marketplace slice, D-106). No amount, image, contact or location field. */
+        /** @description A marketplace offer of a BOOK or DEVICE. contact_phone is the number the owner chose to publish on this offer (null when none); it is never copied from the account. No image or location field. */
         MarketplaceOffer: {
             id: number;
             /** @description Another student by id and full name only; never an email or contact field. */
@@ -4980,6 +5035,8 @@ export interface components {
             item_details?: {
                 [key: string]: unknown;
             };
+            /** @description Palestinian mobile number published by the owner, or null. */
+            contact_phone: string | null;
         };
         MarketplaceOfferResponse: {
             data: components["schemas"]["MarketplaceOffer"];
@@ -4998,13 +5055,16 @@ export interface components {
             offer_type: "LOAN" | "SALE" | "RENTAL" | "TEMPORARY_EXCHANGE" | "PERMANENT_EXCHANGE";
             /** @enum {string} */
             item_condition: "NEW" | "LIKE_NEW" | "GOOD" | "FAIR";
+            /** @description Optional. A Palestinian mobile number: 10 digits starting with 059 or 056. Any other format is a 422. */
+            contact_phone?: string | null;
         };
-        /** @description EITHER one or more of title, description, item_condition, OR availability_status alone. owner_id, item_type and offer_type are immutable: sending any of them is a 422. Other unknown properties are ignored. */
+        /** @description EITHER one or more of title, description, item_condition, contact_phone (null clears it), OR availability_status alone. owner_id, item_type and offer_type are immutable: sending any of them is a 422. Other unknown properties are ignored. */
         UpdateMarketplaceOfferRequest: {
             title?: string;
             description?: string;
             /** @enum {string} */
             item_condition?: "NEW" | "LIKE_NEW" | "GOOD" | "FAIR";
+            contact_phone?: string | null;
             /** @enum {string} */
             availability_status?: "ACTIVE" | "PAUSED" | "CLOSED";
         };
@@ -5043,7 +5103,7 @@ export interface components {
         CreateMarketplaceRequestRequest: {
             message?: string | null;
         };
-        /** @description A graduation-project announcement. The owner is shown by id and full name only. */
+        /** @description A graduation-project announcement. The owner and members are shown by id and full name only. The detail fields are null until the owner fills them. members is returned by GET /graduation-projects/{id} only. */
         GraduationProject: {
             id: number;
             title: string;
@@ -5055,6 +5115,22 @@ export interface components {
             required_members_preference: "ONE" | "TWO" | "EITHER";
             /** @description Open places. Decreased by one each time an application is accepted. */
             available_slots: number;
+            /** @description Academic supervisor (free text). */
+            supervisor_name: string | null;
+            department: string | null;
+            problem_statement: string | null;
+            goals: string[] | null;
+            /** @description Roles the team is still looking for. */
+            open_roles: string[] | null;
+            milestones: components["schemas"]["GraduationProjectMilestone"][] | null;
+            /** @description Detail endpoint only. The owner first (role OWNER; joined_at is the announcement creation time), then accepted members by join order (role MEMBER). */
+            members?: {
+                id: number;
+                full_name: string;
+                /** @enum {string} */
+                role: "OWNER" | "MEMBER";
+                joined_at: components["schemas"]["Timestamp"];
+            }[];
             owner?: {
                 id: number;
                 full_name: string;
@@ -5062,6 +5138,103 @@ export interface components {
             created_at: components["schemas"]["Timestamp"];
             /** @description ISO 8601 UTC timestamp ending in Z. */
             updated_at: string | null;
+        };
+        GraduationProjectMilestone: {
+            title: string;
+            /**
+             * Format: date
+             * @description YYYY-MM-DD.
+             */
+            due_date: string;
+        };
+        AdminAcademicPlanList: {
+            data: components["schemas"]["AdminAcademicPlan"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        AcademicPlanDetails: {
+            id: number;
+            college: string | null;
+            /** @enum {string|null} */
+            degree: "BACHELOR" | "MASTER" | null;
+            semesters_count: number | null;
+            /** @description The major's tuition rate (id, major_id, hourly_rate, registration_fee, services_fee as decimal strings, currency), or null when none is set. */
+            tuition_rate: {
+                [key: string]: unknown;
+            } | null;
+            course_semesters: {
+                course_id: number;
+                semester: number | null;
+            }[];
+        };
+        AcademicPlanDetailsResponse: {
+            data: components["schemas"]["AcademicPlanDetails"];
+        };
+        /** @description AcademicPlanDetails plus the plan's courses. */
+        AdminAcademicPlanDetails: {
+            id: number;
+            college: string | null;
+            /** @enum {string|null} */
+            degree: "BACHELOR" | "MASTER" | null;
+            semesters_count: number | null;
+            /** @description The major's tuition rate (id, major_id, hourly_rate, registration_fee, services_fee as decimal strings, currency), or null when none is set. */
+            tuition_rate: {
+                [key: string]: unknown;
+            } | null;
+            course_semesters: {
+                course_id: number;
+                semester: number | null;
+            }[];
+            /** @description The plan's courses by course id. */
+            courses: {
+                id: number;
+                course_code: string;
+                course_name: string;
+                semester: number | null;
+            }[];
+        };
+        AdminAcademicPlanDetailsResponse: {
+            data: components["schemas"]["AdminAcademicPlanDetails"];
+        };
+        /** @description Every property is optional; unknown properties are ignored. */
+        UpdateAcademicPlanDetailsRequest: {
+            college?: string | null;
+            /** @enum {string|null} */
+            degree?: "BACHELOR" | "MASTER" | null;
+            semesters_count?: number | null;
+        };
+        UpdatePlanCourseSemesterRequest: {
+            semester: number;
+        };
+        PlanCourseSemesterResponse: {
+            data: {
+                course_id: number;
+                semester: number;
+            };
+        };
+        /** @description The id is generated by the server; sending id is a 422. Other unknown properties are ignored. */
+        CreateAcademicPlanRequest: {
+            /** @description An existing major. */
+            major_id: number;
+            plan_name: string;
+            plan_year: number;
+            total_required_hours: number;
+            college?: string | null;
+            /** @enum {string|null} */
+            degree?: "BACHELOR" | "MASTER" | null;
+            semesters_count?: number | null;
+        };
+        AdminAcademicPlan: {
+            id: number;
+            major_id: number;
+            plan_name: string;
+            plan_year: number;
+            total_required_hours: number;
+            college: string | null;
+            /** @enum {string|null} */
+            degree: "BACHELOR" | "MASTER" | null;
+            semesters_count: number | null;
+            created_at: components["schemas"]["Timestamp"];
+            updated_at: components["schemas"]["Timestamp"];
         };
         GraduationProjectResponse: {
             data: components["schemas"]["GraduationProject"];
@@ -5080,6 +5253,14 @@ export interface components {
             /** @enum {string} */
             required_members_preference: "ONE" | "TWO" | "EITHER";
             available_slots: number;
+            /** @description Academic supervisor (free text). */
+            supervisor_name?: string | null;
+            department?: string | null;
+            problem_statement?: string | null;
+            goals?: string[] | null;
+            /** @description Roles the team is still looking for. */
+            open_roles?: string[] | null;
+            milestones?: components["schemas"]["GraduationProjectMilestone"][] | null;
         };
         /** @description Every property is optional. owner_id and available_slots are ignored. */
         UpdateGraduationProjectRequest: {
@@ -5090,6 +5271,14 @@ export interface components {
             project_stage?: "PROJECT_1" | "PROJECT_2" | "BOTH";
             /** @enum {string} */
             required_members_preference?: "ONE" | "TWO" | "EITHER";
+            /** @description Academic supervisor (free text). */
+            supervisor_name?: string | null;
+            department?: string | null;
+            problem_statement?: string | null;
+            goals?: string[] | null;
+            /** @description Roles the team is still looking for. */
+            open_roles?: string[] | null;
+            milestones?: components["schemas"]["GraduationProjectMilestone"][] | null;
         };
         /** @description A request to join a project. applicant is present on project-side responses, and project on the student's own list. */
         ProjectApplication: {
@@ -6521,12 +6710,7 @@ export interface operations {
     };
     api_v1_completion_get_academic_plans_id_details: {
         parameters: {
-            query?: {
-                /** @description Page number, starting at 1. A page beyond the last returns 200 with an empty data list and accurate meta. Rejecting invalid values with 422 is a provisional detail. */
-                page?: components["parameters"]["Page"];
-                /** @description Items per page. Rejecting values above the maximum with 422 is a provisional detail. */
-                per_page?: components["parameters"]["PerPage"];
-            };
+            query?: never;
             header?: never;
             path: {
                 id: number;
@@ -6535,21 +6719,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Successful operation. The representation is documented in completion-contracts.md. */
+            /** @description The plan display details. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: ({
-                            [key: string]: unknown;
-                        } | {
-                            [key: string]: unknown;
-                        }[]) | null;
-                    } & {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AcademicPlanDetailsResponse"];
                 };
             };
             401: components["responses"]["Unauthenticated"];
@@ -8153,12 +8329,7 @@ export interface operations {
     };
     api_v1_completion_get_admin_academic_plans_id_details: {
         parameters: {
-            query?: {
-                /** @description Page number, starting at 1. A page beyond the last returns 200 with an empty data list and accurate meta. Rejecting invalid values with 422 is a provisional detail. */
-                page?: components["parameters"]["Page"];
-                /** @description Items per page. Rejecting values above the maximum with 422 is a provisional detail. */
-                per_page?: components["parameters"]["PerPage"];
-            };
+            query?: never;
             header?: never;
             path: {
                 id: number;
@@ -8167,21 +8338,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Successful operation. The representation is documented in completion-contracts.md. */
+            /** @description The plan display details with its courses and their semesters. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: ({
-                            [key: string]: unknown;
-                        } | {
-                            [key: string]: unknown;
-                        }[]) | null;
-                    } & {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AdminAcademicPlanDetailsResponse"];
                 };
             };
             401: components["responses"]["Unauthenticated"];
@@ -8201,30 +8364,20 @@ export interface operations {
             };
             cookie?: never;
         };
-        /** @description Validated fields and state transitions: see docs/api/completion-contracts.md. */
-        requestBody?: {
+        /** @description Every field optional; null clears it. plan_name, plan_year and total_required_hours are not changed here. */
+        requestBody: {
             content: {
-                "application/json": {
-                    [key: string]: unknown;
-                };
+                "application/json": components["schemas"]["UpdateAcademicPlanDetailsRequest"];
             };
         };
         responses: {
-            /** @description Successful operation. The representation is documented in completion-contracts.md. */
+            /** @description The updated details. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: ({
-                            [key: string]: unknown;
-                        } | {
-                            [key: string]: unknown;
-                        }[]) | null;
-                    } & {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AcademicPlanDetailsResponse"];
                 };
             };
             401: components["responses"]["Unauthenticated"];
@@ -8245,30 +8398,20 @@ export interface operations {
             };
             cookie?: never;
         };
-        /** @description Validated fields and state transitions: see docs/api/completion-contracts.md. */
-        requestBody?: {
+        /** @description The course must belong to this plan (404 otherwise). */
+        requestBody: {
             content: {
-                "application/json": {
-                    [key: string]: unknown;
-                };
+                "application/json": components["schemas"]["UpdatePlanCourseSemesterRequest"];
             };
         };
         responses: {
-            /** @description Successful operation. The representation is documented in completion-contracts.md. */
+            /** @description The saved semester. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: ({
-                            [key: string]: unknown;
-                        } | {
-                            [key: string]: unknown;
-                        }[]) | null;
-                    } & {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["PlanCourseSemesterResponse"];
                 };
             };
             401: components["responses"]["Unauthenticated"];
@@ -8336,21 +8479,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Successful operation. The representation is documented in completion-contracts.md. */
+            /** @description Plans by id ascending. An empty table is data: [] (never null). */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: ({
-                            [key: string]: unknown;
-                        } | {
-                            [key: string]: unknown;
-                        }[]) | null;
-                    } & {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["AdminAcademicPlanList"];
                 };
             };
             401: components["responses"]["Unauthenticated"];
@@ -8359,6 +8494,59 @@ export interface operations {
             422: components["responses"]["ValidationFailed"];
             429: components["responses"]["RateLimited"];
             503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    api_v1_completion_post_admin_academic_plans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAcademicPlanRequest"];
+            };
+        };
+        responses: {
+            /** @description The created plan. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminAcademicPlan"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+        };
+    };
+    api_v1_completion_delete_admin_academic_plans_id: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. No body. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ValidationFailed"];
         };
     };
     api_v1_completion_get_admin_interest_categories: {

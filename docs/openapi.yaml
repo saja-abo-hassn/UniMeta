@@ -1744,7 +1744,7 @@ paths:
       tags: [Graduation teams]
       summary: Get an announcement
       description: >-
-        STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). An unknown id is a 404.
+        STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). An unknown id is a 404. Returns the details (supervisor_name, department, problem_statement, goals, open_roles, milestones) and the team members.
       parameters:
         - $ref: '#/components/parameters/GraduationProjectId'
       responses:
@@ -1764,7 +1764,7 @@ paths:
       tags: [Graduation teams]
       summary: Update an announcement (owner only)
       description: >-
-        STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). Only the owner may change it; any other student gets 403. Only title, description, major_id, project_stage and required_members_preference can change; owner_id and available_slots are ignored (the open places change only when an application is accepted).
+        STUDENT only: a guest gets 401 and an ADMIN gets 403 (the admin does not manage teams). Only the owner may change it; any other student gets 403. Only title, description, major_id, project_stage, required_members_preference and the detail fields (supervisor_name, department, problem_statement, goals, open_roles, milestones) can change; owner_id and available_slots are ignored (the open places change only when an application is accepted).
       parameters:
         - $ref: '#/components/parameters/GraduationProjectId'
       requestBody:
@@ -1780,6 +1780,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GraduationProjectResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+    delete:
+      tags: [Graduation teams]
+      summary: Delete an announcement (owner only)
+      description: >-
+        STUDENT only: a guest gets 401 and an ADMIN gets 403. Only the owner may delete it; any other student gets 403 and an unknown id is a 404. Refused with a 422 on the field project once any student has joined the team (accepted members are never removed implicitly). Otherwise the announcement is deleted together with its own applications (pending, rejected or withdrawn) and its context events, in one transaction.
+      parameters:
+        - $ref: '#/components/parameters/GraduationProjectId'
+      responses:
+        '204':
+          description: Deleted. No body.
         '401':
           $ref: '#/components/responses/Unauthenticated'
         '403':
@@ -3454,32 +3472,13 @@ paths:
           required: true
           schema:
             type: integer
-        -
-          $ref: '#/components/parameters/Page'
-        -
-          $ref: '#/components/parameters/PerPage'
       responses:
         200:
-          description: 'Successful operation. The representation is documented in completion-contracts.md.'
+          description: 'The plan display details.'
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - data
-                properties:
-                  data:
-                    nullable: true
-                    oneOf:
-                      -
-                        type: object
-                        additionalProperties: true
-                      -
-                        type: array
-                        items:
-                          type: object
-                          additionalProperties: true
-                additionalProperties: true
+                $ref: '#/components/schemas/AcademicPlanDetailsResponse'
         401:
           $ref: '#/components/responses/Unauthenticated'
         403:
@@ -5414,34 +5413,19 @@ paths:
           schema:
             type: integer
       requestBody:
-        description: 'Validated fields and state transitions: see docs/api/completion-contracts.md.'
+        required: true
+        description: 'Every field optional; null clears it. plan_name, plan_year and total_required_hours are not changed here.'
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              $ref: '#/components/schemas/UpdateAcademicPlanDetailsRequest'
       responses:
         200:
-          description: 'Successful operation. The representation is documented in completion-contracts.md.'
+          description: 'The updated details.'
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - data
-                properties:
-                  data:
-                    nullable: true
-                    oneOf:
-                      -
-                        type: object
-                        additionalProperties: true
-                      -
-                        type: array
-                        items:
-                          type: object
-                          additionalProperties: true
-                additionalProperties: true
+                $ref: '#/components/schemas/AcademicPlanDetailsResponse'
         401:
           $ref: '#/components/responses/Unauthenticated'
         403:
@@ -5466,32 +5450,13 @@ paths:
           required: true
           schema:
             type: integer
-        -
-          $ref: '#/components/parameters/Page'
-        -
-          $ref: '#/components/parameters/PerPage'
       responses:
         200:
-          description: 'Successful operation. The representation is documented in completion-contracts.md.'
+          description: 'The plan display details with its courses and their semesters.'
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - data
-                properties:
-                  data:
-                    nullable: true
-                    oneOf:
-                      -
-                        type: object
-                        additionalProperties: true
-                      -
-                        type: array
-                        items:
-                          type: object
-                          additionalProperties: true
-                additionalProperties: true
+                $ref: '#/components/schemas/AdminAcademicPlanDetailsResponse'
         401:
           $ref: '#/components/responses/Unauthenticated'
         403:
@@ -5524,34 +5489,19 @@ paths:
           schema:
             type: integer
       requestBody:
-        description: 'Validated fields and state transitions: see docs/api/completion-contracts.md.'
+        required: true
+        description: 'The course must belong to this plan (404 otherwise).'
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              $ref: '#/components/schemas/UpdatePlanCourseSemesterRequest'
       responses:
         200:
-          description: 'Successful operation. The representation is documented in completion-contracts.md.'
+          description: 'The saved semester.'
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - data
-                properties:
-                  data:
-                    nullable: true
-                    oneOf:
-                      -
-                        type: object
-                        additionalProperties: true
-                      -
-                        type: array
-                        items:
-                          type: object
-                          additionalProperties: true
-                additionalProperties: true
+                $ref: '#/components/schemas/PlanCourseSemesterResponse'
         401:
           $ref: '#/components/responses/Unauthenticated'
         403:
@@ -5624,6 +5574,8 @@ paths:
         - 'Completion modules'
       summary: 'GET /admin/academic-plans'
       operationId: api_v1_completion_get_admin_academic_plans
+      description: >-
+        Super Admin only (moderators, students 403; guests 401). Same plans and ids as the student list GET /academic-plans; each item adds the display fields (college, degree, semesters_count) and timestamps. Paginated: meta {current_page, last_page, per_page, total}.
       parameters:
         -
           $ref: '#/components/parameters/Page'
@@ -5631,26 +5583,11 @@ paths:
           $ref: '#/components/parameters/PerPage'
       responses:
         200:
-          description: 'Successful operation. The representation is documented in completion-contracts.md.'
+          description: 'Plans by id ascending. An empty table is data: [] (never null).'
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - data
-                properties:
-                  data:
-                    nullable: true
-                    oneOf:
-                      -
-                        type: object
-                        additionalProperties: true
-                      -
-                        type: array
-                        items:
-                          type: object
-                          additionalProperties: true
-                additionalProperties: true
+                $ref: '#/components/schemas/AdminAcademicPlanList'
         401:
           $ref: '#/components/responses/Unauthenticated'
         403:
@@ -5663,6 +5600,64 @@ paths:
           $ref: '#/components/responses/RateLimited'
         503:
           $ref: '#/components/responses/ServiceUnavailable'
+    post:
+      tags:
+        - 'Completion modules'
+      summary: 'POST /admin/academic-plans'
+      operationId: api_v1_completion_post_admin_academic_plans
+      description: >-
+        Super Admin only (a moderator, a student and a guest are refused). Creates an academic plan; it is listed immediately by GET /academic-plans for students. The same major cannot have two plans with the same plan_name and plan_year (422 on plan_name).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAcademicPlanRequest'
+      responses:
+        201:
+          description: 'The created plan.'
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AdminAcademicPlan'
+        401:
+          $ref: '#/components/responses/Unauthenticated'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        422:
+          $ref: '#/components/responses/ValidationFailed'
+  '/admin/academic-plans/{id}':
+    delete:
+      tags:
+        - 'Completion modules'
+      summary: 'DELETE /admin/academic-plans/{id}'
+      operationId: api_v1_completion_delete_admin_academic_plans_id
+      description: >-
+        Super Admin only. Refused with a 422 on the field academic_plan while any student has this plan assigned (student data is never removed or reassigned implicitly). Otherwise the plan is deleted together with the rows that only describe its own structure: its plan course links and its requirement categories. The shared course catalogue, majors, tuition rates and student course attempts are not touched.
+      parameters:
+        -
+          in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: 'Deleted. No body.'
+        401:
+          $ref: '#/components/responses/Unauthenticated'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/ValidationFailed'
   /admin/interest-categories:
     get:
       tags:
@@ -6846,9 +6841,10 @@ components:
         - description
         - item_condition
         - availability_status
+        - contact_phone
         - created_at
         - updated_at
-      description: 'A LOAN offer (first marketplace slice, D-106). No amount, image, contact or location field.'
+      description: 'A marketplace offer of a BOOK or DEVICE. contact_phone is the number the owner chose to publish on this offer (null when none); it is never copied from the account. No image or location field.'
       properties:
         id:
           type: integer
@@ -6916,6 +6912,11 @@ components:
         item_details:
           type: object
           additionalProperties: true
+        contact_phone:
+          type: string
+          nullable: true
+          pattern: '^(059|056)[0-9]{7}$'
+          description: 'Palestinian mobile number published by the owner, or null.'
     MarketplaceOfferResponse:
       type: object
       additionalProperties: false
@@ -6970,10 +6971,15 @@ components:
             - LIKE_NEW
             - GOOD
             - FAIR
+        contact_phone:
+          type: string
+          nullable: true
+          pattern: '^(059|056)[0-9]{7}$'
+          description: 'Optional. A Palestinian mobile number: 10 digits starting with 059 or 056. Any other format is a 422.'
     UpdateMarketplaceOfferRequest:
       type: object
       description: >-
-        EITHER one or more of title, description, item_condition, OR availability_status alone.
+        EITHER one or more of title, description, item_condition, contact_phone (null clears it), OR availability_status alone.
         owner_id, item_type and offer_type are immutable: sending any of them is a 422. Other unknown
         properties are ignored.
       properties:
@@ -6986,6 +6992,10 @@ components:
         item_condition:
           type: string
           enum: [NEW, LIKE_NEW, GOOD, FAIR]
+        contact_phone:
+          type: string
+          nullable: true
+          pattern: '^(059|056)[0-9]{7}$'
         availability_status:
           type: string
           enum: [ACTIVE, PAUSED, CLOSED]
@@ -7077,8 +7087,8 @@ components:
     GraduationProject:
       type: object
       additionalProperties: false
-      required: [id, title, description, major_id, project_stage, required_members_preference, available_slots, created_at, updated_at]
-      description: A graduation-project announcement. The owner is shown by id and full name only.
+      required: [id, title, description, major_id, project_stage, required_members_preference, available_slots, supervisor_name, department, problem_statement, goals, open_roles, milestones, created_at, updated_at]
+      description: A graduation-project announcement. The owner and members are shown by id and full name only. The detail fields are null until the owner fills them. members is returned by GET /graduation-projects/{id} only.
       properties:
         id:
           type: integer
@@ -7101,6 +7111,57 @@ components:
           type: integer
           minimum: 0
           description: Open places. Decreased by one each time an application is accepted.
+        supervisor_name:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: Academic supervisor (free text).
+        department:
+          type: string
+          nullable: true
+          maxLength: 255
+        problem_statement:
+          type: string
+          nullable: true
+          maxLength: 5000
+        goals:
+          type: array
+          nullable: true
+          maxItems: 20
+          items:
+            type: string
+            maxLength: 500
+        open_roles:
+          type: array
+          nullable: true
+          maxItems: 20
+          description: Roles the team is still looking for.
+          items:
+            type: string
+            maxLength: 100
+        milestones:
+          type: array
+          nullable: true
+          maxItems: 30
+          items:
+            $ref: '#/components/schemas/GraduationProjectMilestone'
+        members:
+          type: array
+          description: Detail endpoint only. The owner first (role OWNER; joined_at is the announcement creation time), then accepted members by join order (role MEMBER).
+          items:
+            type: object
+            additionalProperties: false
+            required: [id, full_name, role, joined_at]
+            properties:
+              id:
+                type: integer
+              full_name:
+                type: string
+              role:
+                type: string
+                enum: [OWNER, MEMBER]
+              joined_at:
+                $ref: '#/components/schemas/Timestamp'
         owner:
           type: object
           additionalProperties: false
@@ -7116,6 +7177,229 @@ components:
           type: string
           nullable: true
           description: ISO 8601 UTC timestamp ending in Z.
+    GraduationProjectMilestone:
+      type: object
+      additionalProperties: false
+      required: [title, due_date]
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        due_date:
+          type: string
+          format: date
+          description: YYYY-MM-DD.
+    AdminAcademicPlanList:
+      type: object
+      additionalProperties: false
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminAcademicPlan'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    AcademicPlanDetails:
+      type: object
+      additionalProperties: false
+      required: [id, college, degree, semesters_count, tuition_rate, course_semesters]
+      properties:
+        id:
+          type: integer
+        college:
+          type: string
+          nullable: true
+        degree:
+          type: string
+          nullable: true
+          enum: [BACHELOR, MASTER]
+        semesters_count:
+          type: integer
+          nullable: true
+        tuition_rate:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: The major's tuition rate (id, major_id, hourly_rate, registration_fee, services_fee as decimal strings, currency), or null when none is set.
+        course_semesters:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [course_id, semester]
+            properties:
+              course_id:
+                type: integer
+              semester:
+                type: integer
+                nullable: true
+    AcademicPlanDetailsResponse:
+      type: object
+      additionalProperties: false
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/AcademicPlanDetails'
+    AdminAcademicPlanDetails:
+      type: object
+      additionalProperties: false
+      required: [id, college, degree, semesters_count, tuition_rate, course_semesters, courses]
+      description: AcademicPlanDetails plus the plan's courses.
+      properties:
+        id:
+          type: integer
+        college:
+          type: string
+          nullable: true
+        degree:
+          type: string
+          nullable: true
+          enum: [BACHELOR, MASTER]
+        semesters_count:
+          type: integer
+          nullable: true
+        tuition_rate:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: The major's tuition rate (id, major_id, hourly_rate, registration_fee, services_fee as decimal strings, currency), or null when none is set.
+        course_semesters:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [course_id, semester]
+            properties:
+              course_id:
+                type: integer
+              semester:
+                type: integer
+                nullable: true
+        courses:
+          type: array
+          description: The plan's courses by course id.
+          items:
+            type: object
+            additionalProperties: false
+            required: [id, course_code, course_name, semester]
+            properties:
+              id:
+                type: integer
+              course_code:
+                type: string
+              course_name:
+                type: string
+              semester:
+                type: integer
+                nullable: true
+    AdminAcademicPlanDetailsResponse:
+      type: object
+      additionalProperties: false
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/AdminAcademicPlanDetails'
+    UpdateAcademicPlanDetailsRequest:
+      type: object
+      description: Every property is optional; unknown properties are ignored.
+      properties:
+        college:
+          type: string
+          nullable: true
+          maxLength: 255
+        degree:
+          type: string
+          nullable: true
+          enum: [BACHELOR, MASTER]
+        semesters_count:
+          type: integer
+          nullable: true
+          minimum: 1
+          maximum: 20
+    UpdatePlanCourseSemesterRequest:
+      type: object
+      required: [semester]
+      properties:
+        semester:
+          type: integer
+          minimum: 1
+          maximum: 20
+    PlanCourseSemesterResponse:
+      type: object
+      additionalProperties: false
+      required: [data]
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required: [course_id, semester]
+          properties:
+            course_id:
+              type: integer
+            semester:
+              type: integer
+    CreateAcademicPlanRequest:
+      type: object
+      required: [major_id, plan_name, plan_year, total_required_hours]
+      description: The id is generated by the server; sending id is a 422. Other unknown properties are ignored.
+      properties:
+        major_id:
+          type: integer
+          description: An existing major.
+        plan_name:
+          type: string
+          maxLength: 255
+        plan_year:
+          type: integer
+          minimum: 1900
+          maximum: 2100
+        total_required_hours:
+          type: integer
+          minimum: 1
+          maximum: 400
+        college:
+          type: string
+          nullable: true
+          maxLength: 255
+        degree:
+          type: string
+          nullable: true
+          enum: [BACHELOR, MASTER]
+        semesters_count:
+          type: integer
+          nullable: true
+          minimum: 1
+          maximum: 20
+    AdminAcademicPlan:
+      type: object
+      additionalProperties: false
+      required: [id, major_id, plan_name, plan_year, total_required_hours, college, degree, semesters_count, created_at, updated_at]
+      properties:
+        id:
+          type: integer
+        major_id:
+          type: integer
+        plan_name:
+          type: string
+        plan_year:
+          type: integer
+        total_required_hours:
+          type: integer
+        college:
+          type: string
+          nullable: true
+        degree:
+          type: string
+          nullable: true
+          enum: [BACHELOR, MASTER]
+        semesters_count:
+          type: integer
+          nullable: true
+        created_at:
+          $ref: '#/components/schemas/Timestamp'
+        updated_at:
+          $ref: '#/components/schemas/Timestamp'
     GraduationProjectResponse:
       type: object
       additionalProperties: false
@@ -7158,6 +7442,40 @@ components:
           type: integer
           minimum: 1
           maximum: 65535
+        supervisor_name:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: Academic supervisor (free text).
+        department:
+          type: string
+          nullable: true
+          maxLength: 255
+        problem_statement:
+          type: string
+          nullable: true
+          maxLength: 5000
+        goals:
+          type: array
+          nullable: true
+          maxItems: 20
+          items:
+            type: string
+            maxLength: 500
+        open_roles:
+          type: array
+          nullable: true
+          maxItems: 20
+          description: Roles the team is still looking for.
+          items:
+            type: string
+            maxLength: 100
+        milestones:
+          type: array
+          nullable: true
+          maxItems: 30
+          items:
+            $ref: '#/components/schemas/GraduationProjectMilestone'
     UpdateGraduationProjectRequest:
       type: object
       description: Every property is optional. owner_id and available_slots are ignored.
@@ -7177,6 +7495,40 @@ components:
         required_members_preference:
           type: string
           enum: [ONE, TWO, EITHER]
+        supervisor_name:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: Academic supervisor (free text).
+        department:
+          type: string
+          nullable: true
+          maxLength: 255
+        problem_statement:
+          type: string
+          nullable: true
+          maxLength: 5000
+        goals:
+          type: array
+          nullable: true
+          maxItems: 20
+          items:
+            type: string
+            maxLength: 500
+        open_roles:
+          type: array
+          nullable: true
+          maxItems: 20
+          description: Roles the team is still looking for.
+          items:
+            type: string
+            maxLength: 100
+        milestones:
+          type: array
+          nullable: true
+          maxItems: 30
+          items:
+            $ref: '#/components/schemas/GraduationProjectMilestone'
     ProjectApplication:
       type: object
       additionalProperties: false
